@@ -1,11 +1,13 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Breadcrumb from "../../common/breadcrumb";
-import data from "../../../assets/data/sub-category";
-import Datatable from "../../common/datatable";
-import {Modal, Button, Card, CardBody, CardHeader, Col, Container, Row,  ModalHeader, ModalBody, Form, FormGroup, Label, Input, ModalFooter } from "reactstrap";
+import { Modal, Button, Card, CardBody, CardHeader, Col, Container, Row, ModalHeader, ModalBody, Form, FormGroup, Label, Input, ModalFooter } from "reactstrap";
+import MaterialTable from "material-table";
+import CancelIcon from '@material-ui/icons/Cancel';
+import EditIcon from '@material-ui/icons/Edit';
 
 const Sub_category = () => {
 	const [open, setOpen] = useState(false);
+	const [listCategoriasDos, setListCategoriasDos] = useState([]);
 
 	const onOpenModal = () => {
 		setOpen(true);
@@ -15,16 +17,61 @@ const Sub_category = () => {
 		setOpen(false);
 	};
 
+	useEffect(() => {
+		let data = JSON.parse(localStorage.getItem('datosentorno'));
+		//console.log("DATA PROVEEDORES: ", JSON.parse(data))
+		//console.log("DATA UNO : ", data.vgl_condicionproducto);
+		setListCategoriasDos(data.vgl_categoriasDos);
+		//console.log("CATEGORIAS DE PRODUCTOS : ", data.vgl_categorias)
+	}, []);
+
+	const seleccionarOrden = (orden, caso) => {
+
+	}
+
+	const columnas = [
+		{
+			field: 'id',
+			title: 'ID SubCategoría',
+			cellStyle: { minWidth: 50 }
+		},
+		{
+			field: 'nombrecategoriados',
+			title: 'Nombre SubCategoría',
+			cellStyle: { minWidth: 150 }
+		},
+		{
+			field: 'nombretipoproducto',
+			title: 'Tipo de Producto',
+			cellStyle: { minWidth: 150 }
+		},
+		{
+			field: 'nombrecategoriauno',
+			title: 'Categoría',
+			cellStyle: { minWidth: 150 }
+		},
+		{
+			field: 'descripcion',
+			title: 'Descripción',
+			cellStyle: { minWidth: 200 }
+		},
+		{
+			field: 'nombreestado',
+			title: 'Estado',
+			cellStyle: { minWidth: 50 }
+		}
+	]
+
 	return (
 		<Fragment>
-			<Breadcrumb title="Sub Category" parent="Physical" />
+			<Breadcrumb title="SubCategoría Uno" parent="Physical" />
 			{/* <!-- Container-fluid starts--> */}
 			<Container fluid={true}>
 				<Row>
 					<Col sm="12">
 						<Card>
 							<CardHeader>
-								<h5>Products Sub Category</h5>
+								<h5>SubCategoría Productos</h5>
 							</CardHeader>
 							<CardBody>
 								<div className="btn-popup pull-right">
@@ -36,7 +83,7 @@ const Sub_category = () => {
 										data-original-title="test"
 										data-target="#exampleModal"
 									>
-										Add Sub Category
+										Agregar SubCategoría
 									</Button>
 									<Modal isOpen={open} toggle={onCloseModal}>
 										<ModalHeader toggle={onCloseModal}>
@@ -93,12 +140,35 @@ const Sub_category = () => {
 								</div>
 								<div className="clearfix"></div>
 								<div id="basicScenario" className="product-physical">
-									<Datatable
-										myData={data}
-										multiSelectOption={false}
-										pageSize={10}
-										pagination={true}
-										class="-striped -highlight"
+									<MaterialTable
+										columns={columnas}
+										data={listCategoriasDos}
+										fontSize={14}
+										title="SUBCATEGORIA UNO DE PRODUCTOS"
+										actions={[
+											{
+												icon: EditIcon,
+												tooltip: 'Editar Categoría',
+												onClick: (event, rowData) => seleccionarOrden(rowData, "Editar")
+											},
+											{
+												icon: CancelIcon,
+												tooltip: 'Inactivar Categoría',
+												onClick: (event, rowData) => seleccionarOrden(rowData, "Cancelar")
+											}
+										]}
+										options={{
+											actionsColumnIndex: 11,
+											headerStyle: { backgroundColor: '#015CAB', fontSize: 14, color: 'white' },
+											rowStyle: {
+												fontSize: 14,
+											}
+										}}
+										localization={{
+											header: {
+												actions: "Acciones"
+											}
+										}}
 									/>
 								</div>
 							</CardBody>

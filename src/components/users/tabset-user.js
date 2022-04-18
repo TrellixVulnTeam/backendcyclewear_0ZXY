@@ -7,15 +7,15 @@ const TabsetUser = () => {
 		<Fragment>
 			<Tabs>
 				<TabList className="nav nav-tabs tab-coupon">
-					<Tab className="nav-link">Account</Tab>
-					<Tab className="nav-link">Permission</Tab>
+					<Tab className="nav-link">Cuenta</Tab>
+					<Tab className="nav-link">Permisos</Tab>
 				</TabList>
 				<TabPanel>
 					<Form className="needs-validation user-add" noValidate="">
-						<h4>Account Details</h4>
+						<h4>Detalle de la Cuenta</h4>
 						<FormGroup className="row">
 							<Label className="col-xl-3 col-md-4">
-								<span>*</span> First Name
+								<span>*</span> Primer nombre
 							</Label>
 							<Input
 								className="form-control col-xl-8 col-md-7"
@@ -26,7 +26,7 @@ const TabsetUser = () => {
 						</FormGroup>
 						<FormGroup className="row">
 							<Label className="col-xl-3 col-md-4">
-								<span>*</span> Last Name
+								<span>*</span> Segundo nombre
 							</Label>
 							<Input
 								className="form-control col-xl-8 col-md-7"
@@ -48,7 +48,7 @@ const TabsetUser = () => {
 						</FormGroup>
 						<FormGroup className="row">
 							<Label className="col-xl-3 col-md-4">
-								<span>*</span> Password
+								<span>*</span> Contraseña
 							</Label>
 							<Input
 								className="form-control col-xl-8 col-md-7"
@@ -59,7 +59,7 @@ const TabsetUser = () => {
 						</FormGroup>
 						<FormGroup className="row">
 							<Label className="col-xl-3 col-md-4">
-								<span>*</span> Confirm Password
+								<span>*</span> Confirmar contraseña
 							</Label>
 							<Input
 								className="form-control col-xl-8 col-md-7"
@@ -74,10 +74,10 @@ const TabsetUser = () => {
 					<Form className="needs-validation user-add" noValidate="">
 						<div className="permission-block">
 							<div className="attribute-blocks">
-								<h5 className="f-w-600 mb-3">Product Related Permission </h5>
+								<h5 className="f-w-600 mb-3">Productos </h5>
 								<Row>
 									<Col xl="3" sm="4">
-										<label>Add Product</label>
+										<label>Agregar productos</label>
 									</Col>
 									<Col xl="9" sm="8">
 										<FormGroup className="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
@@ -88,7 +88,7 @@ const TabsetUser = () => {
 													type="radio"
 													name="rdo-ani"
 												/>
-												Allow
+												Habilitar
 											</Label>
 											<Label className="d-block">
 												<Input
@@ -98,14 +98,14 @@ const TabsetUser = () => {
 													name="rdo-ani"
 													defaultChecked
 												/>
-												Deny
+												Denegar
 											</Label>
 										</FormGroup>
 									</Col>
 								</Row>
 								<Row>
 									<Col xl="3" sm="4">
-										<Label>Update Product</Label>
+										<Label>Actualizar productos</Label>
 									</Col>
 									<Col xl="9" sm="8">
 										<FormGroup className="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
@@ -117,7 +117,7 @@ const TabsetUser = () => {
 													name="rdo-ani1"
 													defaultChecked
 												/>
-												Allow
+												Habilitar
 											</Label>
 											<Label className="d-block">
 												<Input
@@ -126,14 +126,14 @@ const TabsetUser = () => {
 													type="radio"
 													name="rdo-ani1"
 												/>
-												Deny
+												Denegar
 											</Label>
 										</FormGroup>
 									</Col>
 								</Row>
 								<Row>
 									<Col xl="3" sm="4">
-										<Label>Delete Product</Label>
+										<Label>Borrar productos</Label>
 									</Col>
 									<Col xl="9" sm="8">
 										<FormGroup className=" m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
@@ -144,7 +144,7 @@ const TabsetUser = () => {
 													type="radio"
 													name="rdo-ani2"
 												/>
-												Allow
+												Habilitar
 											</Label>
 											<Label className="d-block">
 												<Input
@@ -154,7 +154,7 @@ const TabsetUser = () => {
 													name="rdo-ani2"
 													defaultChecked
 												/>
-												Deny
+												Denegar
 											</Label>
 										</FormGroup>
 									</Col>

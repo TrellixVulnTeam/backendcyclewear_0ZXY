@@ -1,8 +1,9 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Breadcrumb from "../../common/breadcrumb";
 import "react-toastify/dist/ReactToastify.css";
-import { data } from "../../../assets/data/category";
-import Datatable from "../../common/datatable";
+import MaterialTable from "material-table";
+import CancelIcon from '@material-ui/icons/Cancel';
+import EditIcon from '@material-ui/icons/Edit';
 import {
 	Button,
 	Card,
@@ -23,6 +24,7 @@ import {
 
 const Category = () => {
 	const [open, setOpen] = useState(false);
+	const [listCategorias, setListCategorias] = useState([]);
 
 	const onOpenModal = () => {
 		setOpen(true);
@@ -32,16 +34,56 @@ const Category = () => {
 		setOpen(false);
 	};
 
+	useEffect(() => {
+		let data = JSON.parse(localStorage.getItem('datosentorno'));
+		//console.log("DATA PROVEEDORES: ", JSON.parse(data))
+		//console.log("DATA UNO : ", data.vgl_condicionproducto);
+		setListCategorias(data.vgl_categorias);
+		console.log("CATEGORIAS DE PRODUCTOS : ", data.vgl_categorias)
+	}, []);
+
+	const seleccionarOrden = (orden, caso) => {
+
+	}
+
+	const columnas = [
+		{
+			field: 'id',
+			title: 'ID Categoría',
+			cellStyle: { minWidth: 50 }
+		},
+		{
+			field: 'nombrecategoriauno',
+			title: 'Nombre Categoría',
+			cellStyle: { minWidth: 150 }
+		},
+		{
+			field: 'nombretipoproducto',
+			title: 'Tipo de Producto',
+			cellStyle: { minWidth: 150 }
+		},
+		{
+			field: 'descripcion',
+			title: 'Descripción',
+			cellStyle: { minWidth: 200 }
+		},
+		{
+			field: 'nombreestado',
+			title: 'Estado',
+			cellStyle: { minWidth: 50 }
+		}
+	]
+	
 	return (
 		<Fragment>
-			<Breadcrumb title="Category" parent="Physical" />
+			<Breadcrumb title="Categorias de Productos" parent="Physical" />
 			{/* <!-- Container-fluid starts--> */}
 			<Container fluid={true}>
 				<Row>
 					<Col sm="12">
 						<Card>
 							<CardHeader>
-								<h5>Products Category</h5>
+								<h5>Listar Categorías</h5>
 							</CardHeader>
 							<CardBody>
 								<div className="btn-popup pull-right">
@@ -53,7 +95,7 @@ const Category = () => {
 										data-original-title="test"
 										data-target="#exampleModal"
 									>
-										Add Category
+										Adicionar Categoría
 									</Button>
 									<Modal isOpen={open} toggle={onCloseModal}>
 										<ModalHeader toggle={onCloseModal}>
@@ -110,12 +152,35 @@ const Category = () => {
 								</div>
 								<div className="clearfix"></div>
 								<div id="basicScenario" className="product-physical">
-									<Datatable
-										myData={data}
-										multiSelectOption={false}
-										pageSize={10}
-										pagination={true}
-										class="-striped -highlight"
+									<MaterialTable
+										columns={columnas}
+										data={listCategorias}
+										fontSize={14}
+										title="CATEGORIAS DE PRODUCTOS"
+										actions={[
+											{
+												icon: EditIcon,
+												tooltip: 'Editar Categoría',
+												onClick: (event, rowData) => seleccionarOrden(rowData, "Editar")
+											},
+											{
+												icon: CancelIcon,
+												tooltip: 'Inactivar Categoría',
+												onClick: (event, rowData) => seleccionarOrden(rowData, "Cancelar")
+											}
+										]}
+										options={{
+											actionsColumnIndex: 11,
+											headerStyle: { backgroundColor: '#015CAB', fontSize: 14, color: 'white' },
+											rowStyle: {
+												fontSize: 14,
+											}
+										}}
+										localization={{
+											header: {
+												actions: "Acciones"
+											}
+										}}
 									/>
 								</div>
 							</CardBody>

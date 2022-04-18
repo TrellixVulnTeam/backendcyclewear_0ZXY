@@ -20,8 +20,11 @@ export const MENUITEMS = [
         title: 'Productos', icon: Box, type: 'sub', active: false, children: [
             {
                 title: 'En tienda', type: 'sub', active: false, children: [
+                    { path: '/products/physical/ProductType', title: 'Tipos de Productos', type: 'link' },
                     { path: '/products/physical/category', title: 'Categorias', type: 'link' },
                     { path: '/products/physical/sub-category', title: 'Sub Categorias', type: 'link' },
+                    { path: '/products/physical/sub-category-dos', title: 'Sub Categorias Dos', type: 'link' },
+                    { path: '/products/physical/productvariables', title: 'Variables Productos', type: 'link' },
                     { path: '/products/physical/product-list', title: 'Listar Productos', type: 'link' },
                     { path: '/products/physical/product-detail', title: 'Detalle Productos', type: 'link' },
                     { path: '/products/physical/add-product', title: 'Crear Productos', type: 'link' },
@@ -44,13 +47,19 @@ export const MENUITEMS = [
         ]
     },
     {
+        title: 'Clientes', icon: Users, type: 'sub', active: false, children: [
+            { path: '/customers/list-customers', title: 'Listar Clientes', type: 'link' },
+            { path: '/customers/create-customers', title: 'Crear Clientes', type: 'link' },
+        ]
+    },
+    {
         title: 'Promociones', icon: Tag, type: 'sub', active: false, children: [
             { path: '/coupons/list-coupons', title: 'List Coupons', type: 'link' },
             { path: '/coupons/create-coupons', title: 'Create Coupons', type: 'link' },
         ]
     },
     {
-        title: 'Pages', icon: Clipboard , type: 'sub', active: false, children: [
+        title: 'Páginas', icon: Clipboard , type: 'sub', active: false, children: [
             { path: '/pages/list-page', title: 'List Page', type: 'link' },
             { path: '/pages/create-page', title: 'Create Page', type: 'link' },
         ]
@@ -65,34 +74,28 @@ export const MENUITEMS = [
         ]
     },
     {
-        title: 'Users', icon: UserPlus, type: 'sub', active: false, children: [
+        title: 'Usuarios', icon: UserPlus, type: 'sub', active: false, children: [
             { path: '/users/list-user', title: 'User List', type: 'link' },
             { path: '/users/create-user', title: 'Create User', type: 'link' },
         ]
     },
     {
-        title: 'Vendors', icon: Users, type: 'sub', active: false, children: [
-            { path: '/vendors/list_vendors', title: 'Vendor List', type: 'link' },
-            { path: '/vendors/create-vendors', title: 'Create Vendor', type: 'link' },
-        ]
-    },
-    {
-        title: 'Localization', icon: Chrome, type: 'sub', children: [
+        title: 'Localización', icon: Chrome, type: 'sub', children: [
             { path: '/localization/transactions', title: 'Translations', type: 'link' },
             { path: '/localization/currency-rates', title: 'Currency Rates', type: 'link' },
             { path: '/localization/taxes', title: 'Taxes', type: 'link' }
         ]
     },
     {
-        title: 'Reports',path:'/reports/report', icon: BarChart, type: 'link', active: false
+        title: 'Informes',path:'/reports/report', icon: BarChart, type: 'link', active: false
     },
     {
-        title: 'Settings', icon: Settings, type: 'sub', children: [
+        title: 'Configuración', icon: Settings, type: 'sub', children: [
             { path: '/settings/profile', title: 'Profile', type: 'link' },
         ]
     },
     {
-        title: 'Invoice',path:'/invoice', icon: Archive, type: 'link', active: false
+        title: 'Facturas',path:'/invoice', icon: Archive, type: 'link', active: false
     },
     {
         title: 'Login',path:'/auth/login', icon: LogIn, type: 'link', active: false

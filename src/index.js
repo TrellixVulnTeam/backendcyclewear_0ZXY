@@ -13,8 +13,11 @@ import { Provider } from "react-redux";
 import generateStore from "./store/store";
 
 // Products physical
+import VariablesProducts from "./components/products/physical/Productvariables";
+import ProducType from "./components/products/physical/ProductType";
 import Category from "./components/products/physical/category";
 import Sub_category from "./components/products/physical/sub-category";
+import Sub_category_dos from "./components/products/physical/sub-category-dos";
 import Product_list from "./components/products/physical/product-list";
 import Add_product from "./components/products/physical/add-product";
 import Product_detail from "./components/products/physical/product-detail";
@@ -40,8 +43,8 @@ import List_menu from "./components/menus/list-menu";
 import Create_menu from "./components/menus/create-menu";
 import List_user from "./components/users/list-user";
 import Create_user from "./components/users/create-user";
-import List_vendors from "./components/vendors/list-vendors";
-import Create_vendors from "./components/vendors/create.vendors";
+import List_customers from "./components/customers/list-customers";
+import Create_customers from "./components/customers/create-customers";
 import Translations from "./components/localization/translations";
 import Rates from "./components/localization/rates";
 import Taxes from "./components/localization/taxes";
@@ -73,7 +76,7 @@ const Root = () => {
 					const uid = user.uid;
 					console.log("USUARIO LOGUEADO : ", user.metadata.createdAt);
 					setUser(true);
-				}else{
+				} else {
 					console.log("USUARIO NO ESTA LOGUEADO : ");
 				}
 			});
@@ -109,8 +112,22 @@ const Root = () => {
 						/>
 
 						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/ProductType`}
+							component={ProducType}
+						/>
+
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/Productvariables`}
+							component={VariablesProducts}
+						/>
+
+						<Route
 							path={`${process.env.PUBLIC_URL}/products/physical/sub-category`}
 							component={Sub_category}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/sub-category-dos`}
+							component={Sub_category_dos}
 						/>
 						<Route
 							path={`${process.env.PUBLIC_URL}/products/physical/product-list`}
@@ -190,12 +207,12 @@ const Root = () => {
 						/>
 
 						<Route
-							path={`${process.env.PUBLIC_URL}/vendors/list_vendors`}
-							component={List_vendors}
+							path={`${process.env.PUBLIC_URL}/customers/list-customers`}
+							component={List_customers}
 						/>
 						<Route
-							path={`${process.env.PUBLIC_URL}/vendors/create-vendors`}
-							component={Create_vendors}
+							path={`${process.env.PUBLIC_URL}/customers/create-customers`}
+							component={Create_customers}
 						/>
 
 						<Route
