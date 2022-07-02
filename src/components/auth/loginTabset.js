@@ -84,35 +84,10 @@ const LoginTabset = () => {
 			return;
 		}
 
-		console.log("VALOR FORMDATA : ", formData);
-
-		//Consulta en la BD de MR para ver si el email esta asociado a una cuenta
-		const emailusuario = {
-			usuario: formData.usuario,
-		};
-
-		//const respuestauser = await ReadUserEmail.getReadUsersEmail(
-		//  emailusuario
-		//);
-		///console.log("SI USUARIO EXISTE : ", respuestauser);
-		/*
-				if (respuestauser.length > 0) {
-					swal({
-						title: "Registro Usuarios",
-						text: "Por favor revisa el email, ya esta asignado a otra cuenta!",
-						icon: "warning",
-						button: "Aceptar",
-					});
-					return;
-				}
-				*/
+		//console.log("VALOR FORMDATA : ", formData);
 		setFormError(errors);
 
 		if (formOk) {
-			//setLoading(true);
-			//console.log("DATOS USAURIO : ", formData);
-			//console.log(formData.password);
-
 			const grabaUsuario = async () => {
 				const auth = getAuth(firebase);
 				createUserWithEmailAndPassword(
@@ -166,8 +141,6 @@ const LoginTabset = () => {
 						});
 					})
 					.catch((error) => {
-						//console.log("ERROR CODE : ",error.code)
-						//console.log("ERROR CODE : ",error.message)
 						const errorCode = error.code;
 						const errorMessage = error.message;
 						swal({
@@ -234,26 +207,10 @@ const LoginTabset = () => {
 						uid: user.metadata.createdAt,
 					};
 
+					console.log("DATOS USUARIO : ", dat.uid);
+
 					setIdUid(user.metadata.createdAt);
 					history.push(`${process.env.PUBLIC_URL}/dashboard`);
-					/*
-										const leeDatosUsuario = async () => {
-											const DatosUsuario = await Users.getUsers(dat);
-					
-											if (DatosUsuario.length > 0) {
-												setUsuario(DatosUsuario);
-												if (DatosUsuario[0].activo === "N") {
-													setShowModal(true);
-													//router.push("/loginaccount");
-												} else {
-													router.push("/");
-												}
-											}
-										};
-										leeDatosUsuario();
-					
-										setLoading(false);
-										*/
 					//console.log("ACCESO OK");
 					//.push("/");
 				})

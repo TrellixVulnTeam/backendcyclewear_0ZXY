@@ -4,37 +4,39 @@ import CKEditors from "react-ckeditor-component";
 import { useDispatch, useSelector } from "react-redux";
 import { obtenerProveedoresAccion } from "../../../store/Interlocutores/Proveedores";
 import { obtenerCondicionProductoAccion } from "../../../store/CondicionProducto/CondicionProducto";
+import axios from "axios";
+//import { Row, Col, Modal, Button, ButtonGroup } from "react-bootstrap";
+//import "bootstrap/dist/css/bootstrap.min.css";
 import {
-	Card,
-	CardBody,
-	CardHeader,
-	Col,
-	Container,
-	Form,
-	FormGroup,
-	Input,
-	Label,
-	Row,
-	Button,
+	Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row, Button, Modal, ModalFooter,
+	ModalHeader, ModalBody
 } from "reactstrap";
+
 import one from "../../../assets/images/pro3/1.jpg";
 import user from "../../../assets/images/user.png";
+import NumberFormat from "react-number-format";
 import Moment from "moment";
 import swal from "sweetalert";
 
 const Add_product = ({ afterPaste, onBlur, onChange }) => {
 	const dispatch = useDispatch();
 	const [formData, setFormData] = useState(defaultValueForm());
+	const [modalVariantes, setModalVariantes] = useState(false);
+
 	const [idProducto, setIdProducto] = useState(0);
 	const [proveedor, setProveedor] = useState(0);
 	const [condicionProducto, setCondicionProducto] = useState(0);
 	const [tipoCliente, setTipoCliente] = useState(0);
 	const [sexo, setSexo] = useState(0);
 	const [tiposProductos, setTiposProductos] = useState(0);
-    const fechaactual = Moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-	const [categorias, setCategorias] = useState(0);
+	const fechaactual = Moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+	const [categoriasUno, setCategoriasUno] = useState(0);
 	const [categoriasDos, setCategoriasDos] = useState(0);
 	const [categoriasTres, setCategoriasTres] = useState(0);
+	const [categoriasCuatro, setCategoriasCuatro] = useState(0);
+	const [muestraCategoriaDos, setMuestraCategoriaDos] = useState(false);
+	const [muestraCategoriaTres, setMuestraCategoriaTres] = useState(false);
+	const [muestraCategoriaCuatro, setMuestraCategoriaCuatro] = useState(false);
 
 	const [quantity, setQuantity] = useState(1);
 
@@ -44,14 +46,17 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 	const [listSexo, setListSexo] = useState([]);
 	const [listTiposProductos, setListTiposProductos] = useState([]);
 
-	const [listCategorias, setListCategorias] = useState([]);
-	const [listCategoriasSeleccionadas, setListCategoriasSeleccionadas] = useState([]);
+	const [listCategoriasUno, setListCategoriasUno] = useState([]);
+	const [listCategoriasUnoSeleccionadas, setListCategoriasUnoSeleccionadas] = useState([]);
 
 	const [listCategoriasDos, setListCategoriasDos] = useState([]);
 	const [listCategoriasDosSeleccionadas, setListCategoriasDosSeleccionadas] = useState([]);
 
 	const [listCategoriasTres, setListCategoriasTres] = useState([]);
 	const [listCategoriasTresSeleccionadas, setListCategoriasTresSeleccionadas] = useState([]);
+
+	const [listCategoriasCuatro, setListCategoriasCuatro] = useState([]);
+	const [listCategoriasCuatroSeleccionadas, setListCategoriasCuatroSeleccionadas] = useState([]);
 
 	//Arreglos caracteristicas de productos que pueden seleccionar
 	const [listColores, setListColores] = useState([]);
@@ -138,20 +143,10 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 	const [brazoBielaProducto, setBrazoBielaProducto] = useState(0);
 	const [muestraBrazoBiela, setMuestraBrazoBiela] = useState(false);
 
-	const [variableUno, setVariableUno] = useState(0);
-	const [nombreVariableUno, setNombreVariableUno] = useState(false);
-	const [variableDos, setVariableDos] = useState(0);
-	const [nombreVariableDos, setNombreVariableDos] = useState(false);
-	const [variableTres, setVariableTres] = useState(0);
-	const [nombreVariableTres, setNombreVariableTres] = useState(false);
-	const [variableCuatro, setVariableCuatro] = useState(0);
-	const [nombreVariableCuatro, setNombreVariableCuatro] = useState(false);
-	const [variableCinco, setVariableCinco] = useState(0);
-	const [nombreVariableCinco, setNombreVariableCinco] = useState(false);
-	const [variableSeis, setVariableSeis] = useState(0);
-	const [nombreVariableSeis, setNombreVariableSeis] = useState(false);
-
 	const [listVariablesProducto, setListVariablesProducto] = useState([]);
+	const [mostrarVariables, setMostrarVariables] = useState(false);
+
+	const [crearVariantes, setCrearVariantes] = useState(false);
 
 	const [file, setFile] = useState();
 	const [dummyimgs, setDummyimgs] = useState([
@@ -163,45 +158,7 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		{ img: user },
 	]);
 
-	const [variableSeleccionada, setVariableSeleccionada] = useState([]);
-
-	const [variablesProductoSeleccionadas, setvariablesProductoSeleccionadas] = useState({
-		acoplamiento: 0,
-		ancho: 0,
-		brazodelabiela: 0,
-		categoriados: 0,
-		categoriatres: 0,
-		categoriauno: 0,
-		color: 0,
-		descarrilador: 0,
-		diametro: 0,
-		empresa: 0,
-		estado: 0,
-		id: 0,
-		label: 0,
-		longitud: 0,
-		manzanadelantera: 0,
-		manzanatrasera: 0,
-		marcoenpulgadas: 0,
-		material: 0,
-		pinones: 0,
-		pistones: 0,
-		relacion: 0,
-		relaciondelcassette: 0,
-		rosca: 0,
-		sabor: 0,
-		sexo: 0,
-		talla: 0,
-		tallabandana: 0,
-		tallaencentimetros: 0,
-		tallaguantes: 0,
-		tallajersey: 0,
-		tallamedias: 0,
-		tallapantaloneta: 0,
-		tamanoaccesorio: 0,
-		tipoproducto: 0,
-		value: 0
-	})
+	const controlModalVariantes = () => setModalVariantes(!modalVariantes);
 
 	useEffect(() => {
 		let data = JSON.parse(localStorage.getItem('datosentorno'));
@@ -212,9 +169,10 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		setTipoCliente(data.vgl_tiposcliente);
 		setListSexo(data.vgl_sexo);
 		setListTiposProductos(data.vgl_tiposproductos);
-		setListCategorias(data.vgl_categorias);
+		setListCategoriasUno(data.vgl_categoriasUno);
 		setListCategoriasDos(data.vgl_categoriasDos);
 		setListCategoriasTres(data.vgl_categoriasTres);
+		setListCategoriasCuatro(data.vgl_categoriasCuatro);
 		setListColores(data.vgl_colores);
 		setListSabores(data.vgl_sabores);
 		setListTallas(data.vgl_tallas);
@@ -243,7 +201,7 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 	}, []);
 
 	const handleChangeIDProducto = (selectedOptions) => {
-		setIdProducto(selectedOptions)
+		//Lee consecutivo creacion proucto
 	};
 
 	const handleChangeIDProveedor = (selectedOptions) => {
@@ -263,7 +221,8 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		setTiposProductos(selectedOptions)
 		//console.log("CATEGORIAS DE  PRODUCTOS : ", listCategorias)
 		const newDet = [];
-		listCategorias.forEach((row) => {
+
+		listCategoriasUno && listCategoriasUno.forEach((row) => {
 			if (Number.parseInt(row.tipodeproducto) === Number.parseInt(selectedOptions)) {
 				//console.log("TIPO DE PRODUCTO SELECCIONADO ES : ", row.tipodeproducto)
 				let item = {
@@ -279,7 +238,8 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 				newDet.push(item);
 			}
 		});
-		setListCategoriasSeleccionadas(newDet);
+
+		setListCategoriasUnoSeleccionadas(newDet);
 		//console.log("TIPOS PRODUCTOS : ", selectedOptions)
 		setMuestraColor(false);
 		setMuestraSabor(false);
@@ -302,17 +262,17 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		setMuestraLongitud(false);
 		setMuestraAncho(false);
 		setMuestraBrazoBiela(false);
-
 	};
 
-	const handleChangeCategorias = (selectedOptions) => {
-		setCategorias(selectedOptions)
-		//console.log("CATEGORIA UNO SELECCIONADA : ",selectedOptions )
+	const handleChangeCategoriasUno = (selectedOptions) => {
+		setCategoriasUno(selectedOptions)
+		console.log("CATEGORIA UNO SELECCIONADA : ", selectedOptions)
 		const newDet = [];
-		listCategoriasDos.forEach((row) => {
+		listCategoriasDos && listCategoriasDos.forEach((row) => {
 			if (Number.parseInt(row.categoriauno) === Number.parseInt(selectedOptions)) {
-				//console.log("TIPO DE PRODUCTO SELECCIONADO ES : ", row.tipodeproducto)
-				let item = {
+				console.log("TIPO DE PRODUCTO SELECCIONADO ES : ", row.tipodeproducto)
+				
+				/*let item = {
 					id: row.id,
 					nombrecategoriados: row.nombrecategoriados,
 					descripcion: row.descripcion,
@@ -322,9 +282,21 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 					label: row.nombrecategoriados,
 					value: row.id
 				};
-				newDet.push(item);
+				newDet.push(item);*/
 			}
 		});
+		console.log("ARREGLO CATEGORIA DOS : ", newDet)
+
+		if (newDet.length > 0) {
+			if (newDet.length > 1) {
+				//setCategoriasDos(newDet[0].id)
+				setMuestraCategoriaDos(true);
+			} else {
+				setCrearVariantes(true);
+				setCategoriasDos(newDet[0].id)
+			}
+
+		}
 		setListCategoriasDosSeleccionadas(newDet);
 	};
 
@@ -332,7 +304,7 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		setCategoriasDos(selectedOptions)
 		//console.log("CATEGORIA DOS SELECCIONADA : ", selectedOptions)
 		const newDet = [];
-		listCategoriasTres.forEach((row) => {
+		listCategoriasTres && listCategoriasTres.forEach((row) => {
 			if (Number.parseInt(row.categoriados) === Number.parseInt(selectedOptions)) {
 				//console.log("TIPO DE PRODUCTO SELECCIONADO ES : ", row.tipodeproducto)
 				let item = {
@@ -348,124 +320,173 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 				newDet.push(item);
 			}
 		});
+		if (newDet.length > 0) {
+			if (newDet.length > 1) {
+				setMuestraCategoriaTres(true);
+			} else {
+				setCrearVariantes(true);
+				setCategoriasTres(newDet[0].id)
+			}
+		}
 		setListCategoriasTresSeleccionadas(newDet);
 	};
 
 	const handleChangeCategoriasTres = (selectedOptions) => {
 		//setvariablesProductoSeleccionadas(variablesProducto);
 		setCategoriasTres(selectedOptions);
-
-		listVariablesProducto && listVariablesProducto.forEach((row) => {
-			if ((Number.parseInt(row.tipoproducto) === Number.parseInt(tiposProductos)) &&
-				(Number.parseInt(row.categoriauno) === Number.parseInt(categorias))
-			) {
-				if (row.color === 1) {
-					setMuestraColor(true)
-				}
-
-				if (row.sabor === 1) {
-					setMuestraSabor(true)
-				}
-
-				if (row.acoplamiento === 1) {
-					setMuestraAcoplamiento(true)
-				}
-
-				if (row.ancho === 1) {
-					setMuestraAncho(true)
-				}
-
-				if (row.brazodelabiela === 1) {
-					setMuestraBrazoBiela(true)
-				}
-
-				//if (row.descarrilador === 1) {
-				//	setMuestraSabor(true)
-				//	}
-
-				if (row.diametro === 1) {
-					setMuestraDiametro(true)
-				}
-
-				if (row.longitud === 1) {
-					setMuestraLongitud(true)
-				}
-
-				//if (row.manzanadelantera === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				//if (row.manzanatrasera === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				if (row.marcoenpulgadas === 1) {
-					setMuestraMarcoPulgadas(true)
-				}
-
-				if (row.material === 1) {
-					setMuestraMaterial(true)
-				}
-
-				//if (row.pinones === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				//if (row.pistones === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				//if (row.relacion === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				//if (row.relaciondelcassette === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				if (row.rosca === 1) {
-					setMuestraRosca(true)
-				}
-
-				//if (row.sexo === 1) {
-				//	setMuestraSabor(true)
-				//}
-
-				if (row.talla === 1) {
-					setMuestraTallas(true)
-				}
-
-				if (row.tallabandana === 1) {
-					setMuestraTallaBandana(true)
-				}
-
-				if (row.tallaencentimetros === 1) {
-					setMuestraTallaCentimetro(true)
-				}
-
-				if (row.tallaguantes === 1) {
-					setMuestraTallaGuantes(true)
-				}
-
-				if (row.tallajersey === 1) {
-					setMuestraTallaJersey(true)
-				}
-
-				if (row.tallamedias === 1) {
-					setMuestraTallaMedias(true)
-				}
-
-				if (row.tallapantaloneta === 1) {
-					setMuestraTallaPantaloneta(true)
-				}
-
-				if (row.tamanoaccesorio === 1) {
-					setMuestraTamanoAccesorios(true)
-				}
-
+		const newDet = [];
+		listCategoriasCuatro && listCategoriasCuatro.forEach((row) => {
+			if (Number.parseInt(row.categoriatres) === Number.parseInt(selectedOptions)) {
+				//console.log("TIPO DE PRODUCTO SELECCIONADO ES : ", row.tipodeproducto)
+				let item = {
+					id: row.id,
+					nombrecategoriacuatro: row.nombrecategoriacuatro,
+					descripcion: row.descripcion,
+					categoriatres: row.categoriatres,
+					empresa: row.empresa,
+					estado: row.estado,
+					label: row.nombrecategoriacuatro,
+					value: row.id
+				};
+				newDet.push(item);
 			}
 		});
+
+		if (newDet.length > 0) {
+			if (newDet.length > 1) {
+				setMuestraCategoriaCuatro(true);
+			} else {
+				setCrearVariantes(true);
+				setCategoriasCuatro(newDet[0].id)
+			}
+		}
+		setListCategoriasCuatroSeleccionadas(newDet);
 	};
+
+	const handleChangeCategoriasCuatro = (selectedOptions) => {
+		setCategoriasCuatro(selectedOptions);
+	}
+
+	useEffect(() => {
+		if (mostrarVariables) {
+			//alert("ENTRE");
+			console.log("TIPOS PRODUCTOS : ", tiposProductos);
+			console.log("CATEGORIAS UNO : ", categoriasUno);
+
+			listVariablesProducto && listVariablesProducto.forEach((row) => {
+				if ((Number.parseInt(row.tipoproducto) === Number.parseInt(tiposProductos)) &&
+					(Number.parseInt(row.categoriauno) === Number.parseInt(categoriasUno))
+				) {
+					if (row.color === 1) {
+						setMuestraColor(true)
+					}
+
+					if (row.sabor === 1) {
+						setMuestraSabor(true)
+					}
+
+					if (row.acoplamiento === 1) {
+						setMuestraAcoplamiento(true)
+					}
+
+					if (row.ancho === 1) {
+						setMuestraAncho(true)
+					}
+
+					if (row.brazodelabiela === 1) {
+						setMuestraBrazoBiela(true)
+					}
+
+					//if (row.descarrilador === 1) {
+					//	setMuestraSabor(true)
+					//	}
+
+					if (row.diametro === 1) {
+						setMuestraDiametro(true)
+					}
+
+					if (row.longitud === 1) {
+						setMuestraLongitud(true)
+					}
+
+					//if (row.manzanadelantera === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					//if (row.manzanatrasera === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					if (row.marcoenpulgadas === 1) {
+						setMuestraMarcoPulgadas(true)
+					}
+
+					if (row.material === 1) {
+						setMuestraMaterial(true)
+					}
+
+					//if (row.pinones === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					//if (row.pistones === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					//if (row.relacion === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					//if (row.relaciondelcassette === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					if (row.rosca === 1) {
+						setMuestraRosca(true)
+					}
+
+					//if (row.sexo === 1) {
+					//	setMuestraSabor(true)
+					//}
+
+					if (row.talla === 1) {
+						setMuestraTallas(true)
+					}
+
+					if (row.tallabandana === 1) {
+						setMuestraTallaBandana(true)
+					}
+
+					if (row.tallaencentimetros === 1) {
+						setMuestraTallaCentimetro(true)
+					}
+
+					if (row.tallaguantes === 1) {
+						setMuestraTallaGuantes(true)
+					}
+
+					if (row.tallajersey === 1) {
+						setMuestraTallaJersey(true)
+					}
+
+					if (row.tallamedias === 1) {
+						setMuestraTallaMedias(true)
+					}
+
+					if (row.tallapantaloneta === 1) {
+						setMuestraTallaPantaloneta(true)
+					}
+
+					if (row.tamanoaccesorio === 1) {
+						setMuestraTamanoAccesorios(true)
+					}
+
+				}
+			});
+		}
+	}, [mostrarVariables]);
+
+
 
 	const handleChangeColor = (selectedOptions) => {
 		setColorProducto(selectedOptions);
@@ -583,14 +604,6 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		reader.readAsDataURL(image);
 	};
 
-	const handleChangeInformacion = () => {
-
-	}
-
-	const handleValidSubmit = (e) => {
-		console.log("ID PRODUCTO : ", idProducto)
-	};
-
 	const onChangePrueba = (e) => {
 		setFormData({
 			...formData,
@@ -598,109 +611,252 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 		});
 	};
 
-	const crearProducto = async () => {		
-		
+	const onChangeVariante = (e) => {
+		setFormData({
+			...formData,
+			[e.target.name]: e.target.value,
+		});
+	};
+
+	const leerConsecutivo = async () => {
+		const params = {
+			prefijo: "PRDT"
+		};
+
+		let consecutivo = 0;
+		let ultimo = 0;
+
+		await axios({
+			method: 'post',
+			url: 'https://sitbusiness.co/cyclewear/api/17', params
+		}).then(res => {
+			//console.log("CONSECUTIVO PRODUCTO : ", (res.data[0].consecutivo + 1));
+			ultimo = (res.data[0].consecutivo + 1);
+			let cadena = ultimo.toString();
+			consecutivo = params.prefijo + cadena.padStart(6, 0);
+		}
+		).catch(function (error) {
+			console.log("ERROR LEYENDO CONSECUTIVO");
+		})
+
+		const datos = {
+			ultimo: ultimo,
+			consecutivo: consecutivo
+		}
+		setIdProducto(consecutivo)
+		crearProducto(datos);
+	}
+
+	const crearProducto = async (datos) => {
+		console.log("DATOS CONSECUTIVO : ", datos);
+
 		const formdata = new FormData();
 		//formdata.append("idproductos", 0);
-		formdata.append("idinterno", formData.idproducto);
+		formdata.append("idinterno", datos.consecutivo);
+		formdata.append("codigosiigo", 0);
 		formdata.append("codigoproveedor", proveedor);
 		formdata.append("condicionproducto", condicionProducto);
 		formdata.append("sexo", sexo);
 		formdata.append("tipodeproducto", tiposProductos);
-		formdata.append("categoria", categorias);
-		formdata.append("subcategoria1", categoriasDos);
-		formdata.append("subcategoria2", categoriasTres);
-		formdata.append("color", colorProducto);
-		formdata.append("sabor", saborProducto);
-		formdata.append("talla", tallaProducto);
-		formdata.append("marcoenpulgadas", marcoPulgadasProducto);
-		formdata.append("tallabandana", tallaBandanaProducto);
-		formdata.append("tallaencentimetros", tallaCentimetrosProducto);
-		formdata.append("tallaguantes", tallaGuantesProducto);
-		formdata.append("tallajersey", tallaJerseyProducto);
-		formdata.append("tallamedias", tallaMediasProducto);
-		formdata.append("tallapantaloneta", tallaPantalonetaProducto);
-		formdata.append("tamanoaccesorio", tamanoAccesorioProducto);
-		formdata.append("tamanocomponentes", tamanoComponenteProducto);
-		formdata.append("tamanollantasyneumaticos", llantasyNeumaticosProducto);
-		formdata.append("tamanoruedasypartes", ruedasyPartesProducto);
-		formdata.append("acoplamiento", acoplamientoProducto);
-		formdata.append("diametro", diametroProducto);
-		formdata.append("rosca", 	roscaProducto);
-		formdata.append("longitud", longitudProducto);
-		formdata.append("ancho", anchoProducto);
-		formdata.append("material", materialProducto);
-		formdata.append("brazodelabiela", brazoBielaProducto);
-		formdata.append("relaciondelcassette", 0);
-		formdata.append("descarrilador", 0);
-		formdata.append("pistones", 0);
-		formdata.append("relacion", 0);
-		formdata.append("manzanatrasera", 0); 
-		formdata.append("manzanadelantera", 0);
-		formdata.append("inventariodisponible", 0); 
-		formdata.append("inventariototal", 0);
-		formdata.append("idalterno", 0);
-		formdata.append("codigoexternoproducto", 0); 
-		formdata.append("codigodebarra", 0);
-		formdata.append("SKU", 0);
-		formdata.append("notasadicionales", 0);
-		formdata.append("anno", 0);
-		formdata.append("descripcioncorta", 0); 
-		formdata.append("descripcionlarga", 0);
-		formdata.append("detalledelproducto", 0);
-		formdata.append("preciofull", 0);
-		formdata.append("preciodeventa", 0);
-		formdata.append("variacionesenprecio", 0);
-		formdata.append("costosenvio", 0);
-		formdata.append("imagen01", 0);
-		formdata.append("imagen02", 0);
-		formdata.append("imagen03", 0);
-		formdata.append("imagen04", 0);
-		formdata.append("imagen05", 0);
-		formdata.append("imagen06", 0);
-		formdata.append("imagen07", 0);
-		formdata.append("imagen08", 0);
-		formdata.append("imagen09", 0);
-		formdata.append("imagen10", 0);
-		formdata.append("documento01", 0); 
-		formdata.append("documento02", 0);
+		formdata.append("categoriauno", categoriasUno);
+		formdata.append("categoriados", categoriasDos);
+		formdata.append("categoriatres", categoriasTres);
+		formdata.append("categoriacuatro", categoriasCuatro);
 		formdata.append("fechaingreso", fechaactual);
-		formdata.append("fechamodificacion", fechaactual); 
+		formdata.append("fechamodificacion", fechaactual);
+		formdata.append("empresa", 1);
+		formdata.append("estado", 1);
+		/*
+				const dataproductos = {
+					"idinterno": consecutivo,
+					"codigosiigo": 0,
+					"codigoproveedor": proveedor,
+					"condicionproducto": condicionProducto,
+					"sexo": sexo,
+					"tipodeproducto": tiposProductos,
+					"categoriauno": categoriasUno,
+					"categoriados": categoriasDos,
+					"categoriatres": categoriasTres,
+					"categoriacuatro": categoriasCuatro,
+					"fechaingreso": fechaactual,
+					"fechamodificacion": fechaactual,
+					"empresao": 1,
+					"estado": 1
+				};
+		*/
+		console.log("DATOS FORMDATA : ", formdata);
+		fetch("https://sitbusiness.co/cyclewear/api/22", {
+			method: "POST",
+			body: formdata,
+		}).then((response) => {
+			if (response) {
+				console.log("RESPONSE : ", response)
+
+				if (response.status === 200) {
+
+					const actualizaConsecutivo = async () => {
+						const params = {
+							prefijo: "PRDT",
+							consecutivo: datos.ultimo
+						};
+
+						await axios({
+							method: 'post',
+							url: 'https://sitbusiness.co/cyclewear/api/19', params
+						}).then(res => {
+							swal(
+								"Actualizar Consecutivo",
+								"Consecutivo actualizado de forma correcta!",
+								"success",
+								{ button: "Aceptar" }
+							);
+
+							swal(
+								"Cyclewear Crear Producto",
+								"Ingreso de productos grabados de forma correcta!",
+								"success",
+								{ button: "Aceptar" }
+							);
+						}
+						).catch(function (error) {
+							swal(
+								"Actualizar Consecutivo",
+								"Error actualizando consecutivo!",
+								"success",
+								{ button: "Aceptar" }
+							);
+						})
+					}
+					actualizaConsecutivo();
+				} else {
+					swal(
+						"CYCLE WEAR",
+						"Se presentaron inconvenientes al grabar los productos, Intenta nuevamente!",
+						"warning",
+						{ button: "Aceptar" }
+					);
+				}
+			} else {
+				console.log("RESPONSE GRABAR PRODUCTOS : ", response);
+			}
+		});
+	}
+
+	const crearItemsProducto = () => {
+		//console.log("ID PRODUCTO  : ", idProducto)
+		if (!idProducto) {
+			swal(
+				"CYCLE WEAR",
+				"Aun no has creado el producto!",
+				"warning",
+				{ button: "Aceptar" }
+			);
+			return;
+		}
+		setModalVariantes(true);
+		setMostrarVariables(true);
+	}
+
+	const grabarVariantes = () => {
+		const params = {
+			idinterno: idProducto
+		};
+
+		let longitud = 0;
+		let ultimo = 0;
+
+		const leeUltimaVarianteProducto = async () => {
+			await axios({
+				method: 'post',
+				url: 'https://sitbusiness.co/cyclewear/api/25', params
+			}).then(res => {
+				//console.log("CONSECUTIVO VARIANTE PRODUCTO : ", (res.data));
+				ultimo = res.data.length + 1;
+				grabarVariantesBD(ultimo);
+			}
+			).catch(function (error) {
+				console.log("ERROR LEYENDO CONSECUTIVO");
+			})
+		}
+		leeUltimaVarianteProducto();
+	}
+
+	const grabarVariantesBD = (ultimo) => {
+
+		if (formData.precioventavariante >= formData.preciobasevariante) {
+			swal(
+				"GRABAR VARIANTE PRODUCTO",
+				"Precio de Venta debe ser menor a Precio Base!",
+				"warning",
+				{ button: "Aceptar" }
+			);
+			return;
+		}
+
+		var cadena = "" + formData.preciobasevariante;
+		var cadena1 = cadena.replace(",", "");
+		var preciobase = cadena1.replace("$", "");
+
+		var cadena = "" + formData.precioventavariante;
+		var cadena1 = cadena.replace(",", "");
+		var precioventa = cadena1.replace("$", "");
+
+		let idvariante = idProducto + ultimo;
+
+		const formdata = new FormData();
+		formdata.append("idvariante", idvariante);
+		formdata.append("idinterno", idProducto);
+		formdata.append("nombrevarianteuno", "");
+		formdata.append("nombrevariantedos", "");
+		formdata.append("nombrevariantetres", "");
+		formdata.append("nombrevariantecuatro", "");
+		formdata.append("nombrevariantecinco", "");
+		formdata.append("preciobasevariante", preciobase);
+		formdata.append("precioventavariante", precioventa);
+		formdata.append("cantidadvariante", formData.cantidadvariante);
+		formdata.append("codigobarravariante", formData.codigobarravariante);
+		formdata.append("skuvariante", formData.skuvariante);
+		formdata.append("taxcodevariante", formData.taxcodevariante);
+		formdata.append("fechaingreso", fechaactual);
+		formdata.append("fechamodificacion", fechaactual);
 		formdata.append("estado", 1);
 
-		console.log("DATOS GRABAR PRODUCTO : ", formdata)
-		fetch("https://sitbusiness.co/cyclewear/api/709", {
-            method: "POST",
-            body: formdata,
-        }).then((response) => {
-            if (response) {
-				console.log("RESPONSE : ", response )
+		const grabarVarianteProducto = async () => {
+			fetch("https://sitbusiness.co/cyclewear/api/21", {
+				method: "POST",
+				body: formdata,
+			}).then((res) => {
+				if (res) {
+					console.log("RESPONSE : ", res)
 
-                if (response.status === 200) {
-                    swal(
-                        "Cyclewear Crear Producto",
-                        "Ingreso de productos grabados de forma correcta!",
-                        "success",
-                        { button: "Aceptar" }
-                    );
-                } else {
-                    swal(
-                        "Mercado Repuesto",
-                        "Se presentaron inconvenientes al grabar los productos, Intenta nuevamente!",
-                        "warning",
-                        { button: "Aceptar" }
-                    );
-                }
-            } else {
-                console.log("RESPONSE GRABAR PRODUCTOS : ", response);
-            }
-        });
+					if (res.status === 200) {
+						swal(
+							"CYCLE WEAR",
+							"Ingreso variante producto grabada de forma correcta!",
+							"success",
+							{ button: "Aceptar" }
+						);
+						setModalVariantes(false);
+						//window.location.reload(false);
+					} else {
+						swal(
+							"CYCLE WEAR",
+							"Se presentaron inconvenientes al grabar la variante, Intenta nuevamente!",
+							"warning",
+							{ button: "Aceptar" }
+						);
+					}
+				} else {
+					console.log("RESPONSE GRABAR PRODUCTOS : ", res);
+				}
+			});
+		}
+		grabarVarianteProducto();
 	}
 
 	return (
 		<Fragment>
 			<Breadcrumb title="Estas en creación de productos" parent="Physical" />
-
 			<Container fluid={true}>
 				<Row>
 					<Col sm="12">
@@ -713,26 +869,19 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 									<Col xl="7">
 										<Form
 											className="needs-validation add-product-form"
-											onChange={onChangePrueba}
 										>
 											<div className="form form-label-center">
-												<FormGroup className="form-group mb-3 row">
+												<FormGroup className="form-group mb-1 row">
 													<Label className="col-xl-2 col-sm-4 mb-0">
 														ID Producto :
 													</Label>
 													<div className="col-xl-4 col-sm-7">
 														<Input
 															className="form-control"
-															onClick={(e) =>
-																handleChangeIDProducto(
-																	e.target
-																		.value
-																)
-															}
 															name="idproducto"
 															id="idproducto"
 															type="text"
-															required
+															disabled
 														/>
 													</div>
 													<Label className="col-xl-2 col-sm-4 mb-0">
@@ -775,7 +924,7 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 														</select>
 													</div>
 												</FormGroup>
-												<FormGroup className="form-group mb-3 row">
+												<FormGroup className="form-group mb-1 row">
 													<Label className="col-xl-2 col-sm-4 mb-0">
 														Condición Producto:
 													</Label>
@@ -852,7 +1001,7 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 														</select>
 													</div>
 												</FormGroup>
-												<FormGroup className="form-group mb-3 row">
+												<FormGroup className="form-group mb-2 row">
 													<Label className="col-xl-2 col-sm-4 mb-0">
 														Tipo Producto :
 													</Label>
@@ -890,15 +1039,15 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 															)}
 														</select>
 													</div>
-													<Label className="col-xl-2 col-sm-4 mb-0">
-														Categoria :
+													<Label className="col-xl-2 col-sm-4 mb-3">
+														Categoria Uno:
 													</Label>
 													<div className="col-xl-4 col-sm-7">
 														<select
 															//disabled="disabled"
 															className="form-control digits"
 															onClick={(e) =>
-																handleChangeCategorias(
+																handleChangeCategoriasUno(
 																	e.target
 																		.value
 																)
@@ -909,115 +1058,39 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 																className="select-fontsize ps-form__label">
 																Seleccione categoria del producto
 															</option>
-															{listCategoriasSeleccionadas && listCategoriasSeleccionadas.map(
-																(
-																	itemselect
-																) => {
-																	return (
-																		<option
-																			value={
-																				itemselect.value
-																			}>
-																			{
-																				itemselect.label
-																			}
-																		</option>
-																	);
-																}
-															)}
+															{listCategoriasUnoSeleccionadas &&
+																listCategoriasUnoSeleccionadas.map(
+																	(
+																		itemselect
+																	) => {
+																		return (
+																			<option
+																				value={
+																					itemselect.value
+																				}>
+																				{
+																					itemselect.label
+																				}
+																			</option>
+																		);
+																	}
+																)}
 														</select>
 													</div>
 												</FormGroup>
-												<FormGroup className="form-group mb-3 row">
-													<Label className="col-xl-2 col-sm-4 mb-0">
-														Subcategoría Uno:
-													</Label>
-													<div className="col-xl-4 col-sm-7">
-														<select
-															//disabled="disabled"
-															className="form-control digits"
-															onClick={(e) =>
-																handleChangeCategoriasDos(
-																	e.target
-																		.value
-																)
-															}
-														>
-															<option
-																selected
-																className="select-fontsize ps-form__label">
-																Seleccione subcategoria del producto
-															</option>
-															{listCategoriasDosSeleccionadas && listCategoriasDosSeleccionadas.map(
-																(
-																	itemselect
-																) => {
-																	return (
-																		<option
-																			value={
-																				itemselect.value
-																			}>
-																			{
-																				itemselect.label
-																			}
-																		</option>
-																	);
-																}
-															)}
-														</select>
-													</div>
-													<Label className="col-xl-2 col-sm-4 mb-0">
-														Subcategoría Dos:
-													</Label>
-													<div className="col-xl-4 col-sm-7">
-														<select
-															//disabled="disabled"
-															className="form-control digits"
-															onClick={(e) =>
-																handleChangeCategoriasTres(
-																	e.target
-																		.value
-																)
-															}
-														>
-															<option
-																selected
-																className="select-fontsize ps-form__label">
-																Seleccione subcategoria del producto
-															</option>
-															{listCategoriasTresSeleccionadas && listCategoriasTresSeleccionadas.map(
-																(
-																	itemselect
-																) => {
-																	return (
-																		<option
-																			value={
-																				itemselect.value
-																			}>
-																			{
-																				itemselect.label
-																			}
-																		</option>
-																	);
-																}
-															)}
-														</select>
-													</div>
-												</FormGroup>
-
 												{
-													muestraColor ?
+													muestraCategoriaDos ?
 														(
 															<FormGroup className="form-group mb-3 row">
 																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Color:
+																	Categoría Dos:
 																</Label>
 																<div className="col-xl-4 col-sm-7">
 																	<select
 																		//disabled="disabled"
 																		className="form-control digits"
 																		onClick={(e) =>
-																			handleChangeColor(
+																			handleChangeCategoriasDos(
 																				e.target
 																					.value
 																			)
@@ -1026,9 +1099,9 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 																		<option
 																			selected
 																			className="select-fontsize ps-form__label">
-																			Seleccione color del producto
+																			Seleccione subcategoria del producto
 																		</option>
-																		{listColores && listColores.map(
+																		{listCategoriasDosSeleccionadas && listCategoriasDosSeleccionadas.map(
 																			(
 																				itemselect
 																			) => {
@@ -1048,23 +1121,67 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 																</div>
 															</FormGroup>
 														)
-														:
-														null
+														: null
+												}
+												{
+													muestraCategoriaTres ?
+														(
+															<FormGroup className="form-group mb-1 row">
+																<Label className="col-xl-2 col-sm-4 mb-0">
+																	Categoría Tres:
+																</Label>
+																<div className="col-xl-4 col-sm-7">
+																	<select
+																		//disabled="disabled"
+																		className="form-control digits"
+																		onClick={(e) =>
+																			handleChangeCategoriasTres(
+																				e.target
+																					.value
+																			)
+																		}
+																	>
+																		<option
+																			selected
+																			className="select-fontsize ps-form__label">
+																			Seleccione subcategoría del producto
+																		</option>
+																		{listCategoriasTresSeleccionadas && listCategoriasTresSeleccionadas.map(
+																			(
+																				itemselect
+																			) => {
+																				return (
+																					<option
+																						value={
+																							itemselect.value
+																						}>
+																						{
+																							itemselect.label
+																						}
+																					</option>
+																				);
+																			}
+																		)}
+																	</select>
+																</div>
+															</FormGroup>
+														)
+														: null
 												}
 
 												{
-													muestraSabor ?
+													muestraCategoriaCuatro ?
 														(
-															<FormGroup className="form-group mb-3 row">
+															<FormGroup className="form-group mb-1 row">
 																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Sabor:
+																	Categoría Cuatro:
 																</Label>
 																<div className="col-xl-4 col-sm-7">
 																	<select
 																		//disabled="disabled"
 																		className="form-control digits"
 																		onClick={(e) =>
-																			handleChangeSabores(
+																			handleChangeCategoriasCuatro(
 																				e.target
 																					.value
 																			)
@@ -1073,923 +1190,30 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 																		<option
 																			selected
 																			className="select-fontsize ps-form__label">
-																			Seleccione sabor del producto
+																			Seleccione subcategoria del producto
 																		</option>
-																		{listSabores && listSabores.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
+																		{listCategoriasCuatroSeleccionadas &&
+																			listCategoriasCuatroSeleccionadas.map(
+																				(
+																					itemselect
+																				) => {
+																					return (
+																						<option
+																							value={
+																								itemselect.value
+																							}>
+																							{
+																								itemselect.label
+																							}
+																						</option>
+																					);
+																				}
+																			)}
 																	</select>
 																</div>
 															</FormGroup>
 														)
-														:
-														null
-												}
-
-												{
-													muestraTallas ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTalla(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla del producto
-																		</option>
-																		{listTallas && listTallas.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraMarcoPulgadas ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Marco en pulgadas:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeMarcoPulgadas(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione medida del marco en pulgadas
-																		</option>
-																		{listMarcoPulgadas && listMarcoPulgadas.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTallaBandana ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla Bandana:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaBandana(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla de la Bandana
-																		</option>
-																		{listTallaBandana && listTallaBandana.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTallaCentimetro ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla en centimetros:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaCentimetros(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla del producto en centimetros
-																		</option>
-																		{listTallaCentimetro && listTallaCentimetro.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTallaGuantes ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla Guantes:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaGuantes(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla de los guantes
-																		</option>
-																		{listTallaGuantes && listTallaGuantes.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTallaJersey ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla Jersey:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaJersey(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla del jersey
-																		</option>
-																		{listTallaJersey && listTallaJersey.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-												{
-													muestraTallaMedias ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla Medias:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaMedias(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla de las medias
-																		</option>
-																		{listTallaMedias && listTallaMedias.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-												{
-													muestraTallaPantaloneta ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Talla Pantaloneta:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTallaPantaloneta(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione talla de la pantaloneta
-																		</option>
-																		{listTallaPantaloneta && listTallaPantaloneta.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTamanoAccesorios ?
-														(
-
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Tamaño Accesorio:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTamanoAccesorio(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione tamaño accesorio
-																		</option>
-																		{listTamanoAccesorios && listTamanoAccesorios.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraTamanoComponentes ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Tamano Componente:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeTamanoComponente(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione tamano componente
-																		</option>
-																		{listTamanoComponentes && listTamanoComponentes.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraLlantasyNeumaticos ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Llantas y Neumáticos:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeLlantasyNeumaticos(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione Llanta y Neumático
-																		</option>
-																		{listLlantasyNeumaticos && listLlantasyNeumaticos.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraRuedasyPartes ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Ruedas y Partes:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeRuedasyPartes(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione ruedas y partes
-																		</option>
-																		{listRuedasyPartes && listRuedasyPartes.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraAcoplamiento ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Acoplamiento:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeAcoplamiento(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione Acoplamiento
-																		</option>
-																		{listAcoplamiento && listAcoplamiento.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraDiametro ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Diámetro:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeDiametro(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione diámetro
-																		</option>
-																		{listDiametro && listDiametro.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraRosca ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Rosca:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeRosca(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione Rosca
-																		</option>
-																		{listRosca && listRosca.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraLongitud ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Longitud:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeLongitud(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione longitud
-																		</option>
-																		{listLongitud && listLongitud.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraAncho ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Ancho:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeAncho(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione Ancho
-																		</option>
-																		{listRosca && listRosca.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraMaterial ?
-														(
-															<FormGroup className="form-group mb-3 row">
-
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Material:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeMaterial(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione material
-																		</option>
-																		{listMaterial && listMaterial.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
-												}
-
-												{
-													muestraBrazoBiela ?
-														(
-															<FormGroup className="form-group mb-3 row">
-																<Label className="col-xl-2 col-sm-4 mb-0">
-																	Brazo Biela:
-																</Label>
-																<div className="col-xl-4 col-sm-7">
-																	<select
-																		//disabled="disabled"
-																		className="form-control digits"
-																		onClick={(e) =>
-																			handleChangeBrazoBiela(
-																				e.target
-																					.value
-																			)
-																		}
-																	>
-																		<option
-																			selected
-																			className="select-fontsize ps-form__label">
-																			Seleccione Rosca
-																		</option>
-																		{listBrazoBiela && listBrazoBiela.map(
-																			(
-																				itemselect
-																			) => {
-																				return (
-																					<option
-																						value={
-																							itemselect.value
-																						}>
-																						{
-																							itemselect.label
-																						}
-																					</option>
-																				);
-																			}
-																		)}
-																	</select>
-																</div>
-															</FormGroup>
-														)
-														:
-														null
+														: null
 												}
 
 												<FormGroup className="form-group mb-3 row">
@@ -2018,7 +1242,6 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 														/>
 													</div>
 												</FormGroup>
-
 												<FormGroup className="form-group mb-3 row">
 													<Label className="col-xl-2 col-sm-4 mb-0">
 														Product Name :
@@ -2037,45 +1260,6 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 											</div>
 											<Form>
 												<FormGroup className="form-group row">
-													<Label className="col-xl-3 col-sm-4 mb-0">
-														Número de Productos :
-													</Label>
-													<fieldset className="qty-box ml-0">
-														<div className="input-group bootstrap-touchspin">
-															<div className="input-group-prepend">
-																<Button className="botondecreceunidadesproducto"
-																	onClick={DecreaseItem}
-																>
-																	<i className="fa fa-minus"></i>
-																</Button>
-															</div>
-
-															<div className="input-group-prepend">
-																<span className="input-group-text bootstrap-touchspin-prefix"></span>
-															</div>
-
-															<Input
-																className="touchspin form-control"
-																type="text"
-																value={quantity}
-																onChange={handleChange}
-															/>
-
-															<div className="input-group-append">
-																<span className="input-group-text bootstrap-touchspin-postfix"></span>
-															</div>
-															<div className="input-group-append ml-0">
-																<Button
-																	className="botondecreceunidadesproducto"
-																	onClick={IncrementItem}
-																>
-																	<i className="fa fa-plus"></i>
-																</Button>
-															</div>
-														</div>
-													</fieldset>
-												</FormGroup>
-												<FormGroup className="form-group row">
 													<Label className="col-xl-3 col-sm-4">
 														Información adicional del producto :
 													</Label>
@@ -2091,20 +1275,40 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 													</div>
 												</FormGroup>
 											</Form>
-											<div className="offset-xl-3 offset-sm-4">
-												<Button color="primary"
-													onClick={crearProducto}
-												>
-													Grabar producto
-												</Button>
-												<Button type="button" color="light">
-													Regresar
-												</Button>
+											<div className="offset-xl-1 offset-sm-4 margenizquierdo">
+												<Row className="product-adding">
+													<Col xl="3" lg="3">
+														<Button color="primary"
+															onClick={leerConsecutivo}
+														>
+															Grabar producto
+														</Button>
+													</Col>
+													<Col xl="3" lg="3">
+														{
+															crearVariantes ?
+																(
+																	<Button onClick={crearItemsProducto}>
+																		Crear Variante
+																	</Button>
+																)
+																:
+																null
+														}
+													</Col>
+													<Col xl="2" lg="2">
+														<Button 
+															color="danger"
+															type="button">
+															Regresar
+														</Button>
+													</Col>
+												</Row>
 											</div>
 										</Form>
 									</Col>
 									<Col xl="5">
-										<div className="add-product">
+										<div className="add-product margenizquierdofotosproductos">
 											<Row>
 												<Col xl="9 xl-50" sm="6 col-9">
 													<img
@@ -2143,6 +1347,1084 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 						</Card>
 					</Col>
 				</Row>
+
+				<Modal className="custom-modal-style" isOpen={modalVariantes} toggle={controlModalVariantes}>
+					<ModalHeader
+						toggle={controlModalVariantes}>
+						<div className="centrartextomodal">
+							CREAR VARIANTES POR PRODUCTO
+						</div>
+					</ModalHeader>
+					<ModalBody>
+						<Form
+							className="needs-validation add-product-form"
+							onChange={onChangeVariante}
+						>
+							{
+								muestraColor ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Color:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeColor(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione color del producto
+													</option>
+													{listColores && listColores.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraSabor ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Sabor:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeSabores(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione sabor del producto
+													</option>
+													{listSabores && listSabores.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTallas ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTalla(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla del producto
+													</option>
+													{listTallas && listTallas.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraMarcoPulgadas ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Marco en pulgadas:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeMarcoPulgadas(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione medida del marco en pulgadas
+													</option>
+													{listMarcoPulgadas && listMarcoPulgadas.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTallaBandana ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla Bandana:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaBandana(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla de la Bandana
+													</option>
+													{listTallaBandana && listTallaBandana.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTallaCentimetro ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla en centimetros:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaCentimetros(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla del producto en centimetros
+													</option>
+													{listTallaCentimetro && listTallaCentimetro.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTallaGuantes ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla Guantes:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaGuantes(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla de los guantes
+													</option>
+													{listTallaGuantes && listTallaGuantes.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTallaJersey ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla Jersey:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaJersey(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla del jersey
+													</option>
+													{listTallaJersey && listTallaJersey.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+							{
+								muestraTallaMedias ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla Medias:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaMedias(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla de las medias
+													</option>
+													{listTallaMedias && listTallaMedias.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+							{
+								muestraTallaPantaloneta ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Talla Pantaloneta:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTallaPantaloneta(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione talla de la pantaloneta
+													</option>
+													{listTallaPantaloneta && listTallaPantaloneta.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTamanoAccesorios ?
+									(
+
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Tamaño Accesorio:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTamanoAccesorio(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione tamaño accesorio
+													</option>
+													{listTamanoAccesorios && listTamanoAccesorios.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraTamanoComponentes ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Tamano Componente:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeTamanoComponente(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione tamano componente
+													</option>
+													{listTamanoComponentes && listTamanoComponentes.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraLlantasyNeumaticos ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Llantas y Neumáticos:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeLlantasyNeumaticos(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione Llanta y Neumático
+													</option>
+													{listLlantasyNeumaticos && listLlantasyNeumaticos.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraRuedasyPartes ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Ruedas y Partes:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeRuedasyPartes(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione ruedas y partes
+													</option>
+													{listRuedasyPartes && listRuedasyPartes.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraAcoplamiento ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Acoplamiento:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeAcoplamiento(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione Acoplamiento
+													</option>
+													{listAcoplamiento && listAcoplamiento.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraDiametro ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Diámetro:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeDiametro(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione diámetro
+													</option>
+													{listDiametro && listDiametro.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraRosca ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Rosca:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeRosca(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione Rosca
+													</option>
+													{listRosca && listRosca.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraLongitud ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Longitud:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeLongitud(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione longitud
+													</option>
+													{listLongitud && listLongitud.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraAncho ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Ancho:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeAncho(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione Ancho
+													</option>
+													{listRosca && listRosca.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraMaterial ?
+									(
+										<FormGroup className="form-group mb-3 row">
+
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Material:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeMaterial(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione material
+													</option>
+													{listMaterial && listMaterial.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+
+							{
+								muestraBrazoBiela ?
+									(
+										<FormGroup className="form-group mb-3 row">
+											<Label className="col-xl-2 col-sm-4 mb-0">
+												Brazo Biela:
+											</Label>
+											<div className="col-xl-4 col-sm-7">
+												<select
+													//disabled="disabled"
+													className="form-control digits"
+													onClick={(e) =>
+														handleChangeBrazoBiela(
+															e.target
+																.value
+														)
+													}
+												>
+													<option
+														selected
+														className="select-fontsize ps-form__label">
+														Seleccione Rosca
+													</option>
+													{listBrazoBiela && listBrazoBiela.map(
+														(
+															itemselect
+														) => {
+															return (
+																<option
+																	value={
+																		itemselect.value
+																	}>
+																	{
+																		itemselect.label
+																	}
+																</option>
+															);
+														}
+													)}
+												</select>
+											</div>
+										</FormGroup>
+									)
+									:
+									null
+							}
+							<hr />
+							<div className="form form-label-center">
+								<FormGroup className="form-group mb-1 row">
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										Precio base:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<NumberFormat
+											className="form-control"
+											name="preciobasevariante"
+											//placeholder="Ingrese precio base"
+											thousandSeparator={true}
+											prefix={"$"}
+										/>
+									</div>
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										Precio venta:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<NumberFormat
+											className="form-control"
+											name="precioventavariante"
+											//placeholder="Ingrese precio del producto"
+											thousandSeparator={true}
+											prefix={"$"}
+										/>
+									</div>
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										Cantidad:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<Input
+											className="form-control"
+											name="cantidadvariante"
+											type="text"
+										/>
+									</div>
+								</FormGroup>
+
+								<FormGroup className="form-group mb-0 row">
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										Código de barras:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<Input
+											className="form-control"
+											name="codigobarravariante"
+											type="text"
+										/>
+									</div>
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										SKU:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<Input
+											className="form-control"
+											name="skuvariante"
+											type="text"
+										/>
+									</div>
+									<Label className="col-xl-2 col-sm-3 mb-0">
+										Tax code:
+									</Label>
+									<div className="col-xl-2 col-sm-7">
+										<Input
+											className="form-control"
+											name="taxcodevariante"
+											type="text"
+										/>
+									</div>
+								</FormGroup>
+							</div>
+						</Form>
+					</ModalBody>
+					<ModalFooter>
+						<Button color="primary" onClick={grabarVariantes}>Grabar variante</Button>
+					</ModalFooter>
+				</Modal>
+
 			</Container>
 		</Fragment >
 	);
@@ -2150,15 +2432,12 @@ const Add_product = ({ afterPaste, onBlur, onChange }) => {
 
 function defaultValueForm() {
 	return {
-		idproducto: "",
-		proveedor: "",
-		condicionProducto: "",
-		tipoCliente: "",
-		sexo: "",
-		tiposProductos: "",
-		categorias: "",
-		categoriasDos: "",
-		categoriasTres: "",
+		preciobasevariante: "",
+		precioventavariante: "",
+		cantidadvariante: "",
+		codigobarravariante: "",
+		skuvariante: "",
+		taxcodevariante: ""
 	};
 }
 

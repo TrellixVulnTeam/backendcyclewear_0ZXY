@@ -6,12 +6,14 @@ import usuariosReducer from "./Usuarios/UsuariosDucks";
 import proveedoresReducer from "./Interlocutores/Proveedores";
 import condicionProductoReducer from "./CondicionProducto/CondicionProducto";
 import datosEntornoReducer from "./DatosEnterno/DatosEnterno";
+import listarProductosReducer from "./ListarProductos/ListarProductos";
 
 const rootReducer = combineReducers({
     usuarios : usuariosReducer,
     proveedores : proveedoresReducer,
     condicionproducto : condicionProductoReducer,
-    datosentorno : datosEntornoReducer
+    datosentorno : datosEntornoReducer,
+    listaproductos : listarProductosReducer
 });
 
 export default function generateStore() {

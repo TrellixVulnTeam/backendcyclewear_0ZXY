@@ -19,6 +19,9 @@ import Category from "./components/products/physical/category";
 import Sub_category from "./components/products/physical/sub-category";
 import Sub_category_dos from "./components/products/physical/sub-category-dos";
 import Product_list from "./components/products/physical/product-list";
+import ListarProductos from "./components/products/physical/ListarProductos";
+import ListarFacturas from "./components/products/physical/ListarFacturas";
+import ListarAnuncios from "./components/products/physical/ListarAnuncios";
 import Add_product from "./components/products/physical/add-product";
 import Product_detail from "./components/products/physical/product-detail";
 
@@ -31,6 +34,9 @@ import Digital_add_pro from "./components/products/digital/digital-add-pro";
 //Sales
 import Orders from "./components/sales/orders";
 import Transactions_sales from "./components/sales/transactions-sales";
+import ValidateThird from "./components/sales/ValidateThird";
+import CreateInvoice from "./components/sales/CreateInvoice";
+
 //Coupons
 import ListCoupons from "./components/coupons/list-coupons";
 import Create_coupons from "./components/coupons/create-coupons";
@@ -43,8 +49,13 @@ import List_menu from "./components/menus/list-menu";
 import Create_menu from "./components/menus/create-menu";
 import List_user from "./components/users/list-user";
 import Create_user from "./components/users/create-user";
+
+//Clientes
 import List_customers from "./components/customers/list-customers";
-import Create_customers from "./components/customers/create-customers";
+import Interlocutor from "./components/customers/Interlocutor";
+import CreateClientSiigo from "./components/customers/CreateClientSiigo";
+import CreateInterlocutor from "./components/customers/CreateInterlocutor";
+
 import Translations from "./components/localization/translations";
 import Rates from "./components/localization/rates";
 import Taxes from "./components/localization/taxes";
@@ -134,6 +145,18 @@ const Root = () => {
 							component={Product_list}
 						/>
 						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/ListarProductos`}
+							component={ListarProductos}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/ListarFacturas`}
+							component={ListarFacturas}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/physical/ListarAnuncios`}
+							component={ListarAnuncios}
+						/>
+						<Route
 							path={`${process.env.PUBLIC_URL}/products/physical/product-detail`}
 							component={Product_detail}
 						/>
@@ -141,7 +164,6 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/products/physical/add-product`}
 							component={Add_product}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/products/digital/digital-category`}
 							component={Digital_category}
@@ -158,7 +180,6 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/products/digital/digital-add-product`}
 							component={Digital_add_pro}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/sales/orders`}
 							component={Orders}
@@ -167,7 +188,14 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/sales/transactions`}
 							component={Transactions_sales}
 						/>
-
+						<Route
+							path={`${process.env.PUBLIC_URL}/sales/CreateInvoice`}
+							component={CreateInvoice}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/sales/ValidateThird`}
+							component={ValidateThird}
+						/>
 						<Route
 							path={`${process.env.PUBLIC_URL}/coupons/list-coupons`}
 							component={ListCoupons}
@@ -176,7 +204,6 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/coupons/create-coupons`}
 							component={Create_coupons}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/pages/list-page`}
 							component={ListPages}
@@ -185,7 +212,6 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/pages/create-page`}
 							component={Create_page}
 						/>
-
 						<Route path={`${process.env.PUBLIC_URL}/media`} component={Media} />
 
 						<Route
@@ -196,7 +222,6 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/menus/create-menu`}
 							component={Create_menu}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/users/list-user`}
 							component={List_user}
@@ -205,16 +230,22 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/users/create-user`}
 							component={Create_user}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/customers/list-customers`}
 							component={List_customers}
 						/>
 						<Route
-							path={`${process.env.PUBLIC_URL}/customers/create-customers`}
-							component={Create_customers}
+							path={`${process.env.PUBLIC_URL}/customers/Interlocutor`}
+							component={Interlocutor}
 						/>
-
+						<Route
+							path={`${process.env.PUBLIC_URL}/customers/CreateClientSiigo`}
+							component={CreateClientSiigo}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/customers/CreateInterlocutor`}
+							component={CreateInterlocutor}
+						/>
 						<Route
 							path={`${process.env.PUBLIC_URL}/localization/transactions`}
 							component={Translations}
@@ -227,22 +258,18 @@ const Root = () => {
 							path={`${process.env.PUBLIC_URL}/localization/taxes`}
 							component={Taxes}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/reports/report`}
 							component={Reports}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/settings/profile`}
 							component={Profile}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/invoice`}
 							component={Invoice}
 						/>
-
 						<Route
 							path={`${process.env.PUBLIC_URL}/data-table`}
 							component={Datatable}

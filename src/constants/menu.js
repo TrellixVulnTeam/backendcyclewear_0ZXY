@@ -25,7 +25,9 @@ export const MENUITEMS = [
                     { path: '/products/physical/sub-category', title: 'Sub Categorias', type: 'link' },
                     { path: '/products/physical/sub-category-dos', title: 'Sub Categorias Dos', type: 'link' },
                     { path: '/products/physical/productvariables', title: 'Variables Productos', type: 'link' },
-                    { path: '/products/physical/product-list', title: 'Listar Productos', type: 'link' },
+                    { path: '/products/physical/ListarProductos', title: 'Listar Productos', type: 'link' },
+                    { path: '/products/physical/ListarFacturas', title: 'Listar Facturas', type: 'link' },
+                    { path: '/products/physical/ListarAnuncios', title: 'Listar Anuncios', type: 'link' },
                     { path: '/products/physical/product-detail', title: 'Detalle Productos', type: 'link' },
                     { path: '/products/physical/add-product', title: 'Crear Productos', type: 'link' },
                 ]
@@ -44,12 +46,16 @@ export const MENUITEMS = [
         title: 'Ventas', icon: DollarSign, type: 'sub', active: false, children: [
             { path: '/sales/orders', title: 'Pedidos', type: 'link' },
             { path: '/sales/transactions', title: 'Facturación', type: 'link' },
+            { path: '/sales/ValidateThird', title: 'Validar Terceros', type: 'link' },
+            { path: '/sales/CreateInvoice', title: 'Crear Pedidos', type: 'link' },
         ]
     },
     {
         title: 'Clientes', icon: Users, type: 'sub', active: false, children: [
             { path: '/customers/list-customers', title: 'Listar Clientes', type: 'link' },
-            { path: '/customers/create-customers', title: 'Crear Clientes', type: 'link' },
+            { path: '/customers/Interlocutor', title: 'Crear Clientes', type: 'link' },
+            { path: '/customers/CreateClientSiigo', title: 'Crear Terceros Siigo', type: 'link' },
+            { path: '/customers/CreateInterlocutor', title: 'Crear Interlocutor', type: 'link' },
         ]
     },
     {

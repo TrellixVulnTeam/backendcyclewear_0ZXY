@@ -1,8 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Tabs, TabList, TabPanel, Tab } from "react-tabs";
 import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 
 const TabsetUser = () => {
+	const [listTiposTerceros, setListTiposTerceros] = useState([]);
+
+	const handleChangeTipoTercero = (selectedOptions) => {
+		//setTipoTercero(selectedOptions)
+	};
+
 	return (
 		<Fragment>
 			<Tabs>
@@ -12,7 +18,48 @@ const TabsetUser = () => {
 				</TabList>
 				<TabPanel>
 					<Form className="needs-validation user-add" noValidate="">
-						<h4>Detalle de la Cuenta</h4>
+						<h4>Crear Interlocutor</h4>
+						<FormGroup>
+							<Label className="col-xl-2 col-sm-4 mb-0">
+								Tipo tercero :
+							</Label>
+							<div className="col-xl-4 col-sm-7">
+								<select
+									//disabled="disabled"
+									className="form-control digits "
+								>
+									<option
+										selected
+										className="select-fontsize ps-form__label"
+										onClick={(e) =>
+											handleChangeTipoTercero(
+												e.target
+													.value
+											)
+										}
+									>
+										Seleccione Proveedor
+									</option>
+									{listTiposTerceros &&
+										listTiposTerceros.map(
+											(
+												itemselect
+											) => {
+												return (
+													<option
+														value={
+															itemselect.value
+														}>
+														{
+															itemselect.label
+														}
+													</option>
+												);
+											}
+										)}
+								</select>
+							</div>
+						</FormGroup>
 						<FormGroup className="row">
 							<Label className="col-xl-3 col-md-4">
 								<span>*</span> Primer nombre

@@ -3,7 +3,6 @@ import Breadcrumb from "../../common/breadcrumb";
 import Slider from "react-slick";
 import "../../../assets/scss/slick.scss";
 import "../../../assets/scss/slick-theme.scss";
-
 import Rating from "react-simple-star-rating";
 
 // image import

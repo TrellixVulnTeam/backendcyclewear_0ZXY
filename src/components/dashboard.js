@@ -39,32 +39,14 @@ import {
 
 const Dashboard = () => {
 	const [itemsDatosEntorno, setItemsDatosEntorno] = useState([]);
+	
 	const leedatosentorno = useSelector(
 		(state) => state.datosentorno.datosentorno
 	);
-	console.log("CONDICION PRODUCTO : ", leedatosentorno)
-/*
-	const leetiposclientes = useSelector(
-		(state) => state.datosentorno.datosentorno.vgl_tiposcliente
-	);
-	console.log("CONDICION TIPO CLIENTE : ", leetiposclientes)
 
-	const leeproveedores = useSelector(
-		(state) => state.datosentorno.datosentorno.vgl_proveedores
-	);
-	console.log("CONDICION PROVEEDORES : ", leeproveedores)
-
-	const leesexo = useSelector(
-		(state) => state.datosentorno.datosentorno.vgl_sexo
-	);
-	console.log("CONDICION SEXO : ", leesexo)*/
+	//console.log("CONDICION PRODUCTO : ", leedatosentorno)
 
 	useEffect(() => {
-	/*	localStorage.setItem('condicionproducto', JSON.stringify(leecondicionproducto));
-		localStorage.setItem('tiposdeclientes', JSON.stringify(leecondicionproducto));
-		localStorage.setItem('proveedores', JSON.stringify(leecondicionproducto));
-		localStorage.setItem('sexo', JSON.stringify(leecondicionproducto));
-	*/
 		localStorage.setItem('datosentorno', JSON.stringify(leedatosentorno));
 	}, [leedatosentorno]);
 
