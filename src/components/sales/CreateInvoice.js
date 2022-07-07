@@ -171,6 +171,7 @@ function CreateInvoice(props) {
 
     useEffect(() => {
         if (leeFacturas) {
+            //alert("ENTRE")   
             console.log("NUMERO DE PEDIDOS : ", lisPedidos.length);
             console.log("PEDIDOS : ", lisPedidos);
             
@@ -239,7 +240,7 @@ function CreateInvoice(props) {
 
     const readPedidos = () => {
         setLeePedidos(true);
-        //setLeeFacturas(true);
+        setLeeFacturas(true);
     }
 
     const crearFacturas = () => {
