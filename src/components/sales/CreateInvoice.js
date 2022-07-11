@@ -18,23 +18,6 @@ import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
 import Loading from '../elements/Loading/Loading';
 import ListarProductos from '../products/physical/ListarProductos';
 
-/*import imagen2 from "../../../assets/images/imagenes/bolsa.jpg";
-import imagen3 from "../../../assets/images/imagenes/camisetas.jpg";
-import imagen4 from "../../../assets/images/imagenes/camisetas1.jpg";
-import imagen5 from "../../../assets/images/imagenes/caramañola.jpg";
-import imagen6 from "../../../assets/images/imagenes/caramañola1.jpg";
-import imagen7 from "../../../assets/images/imagenes/caramañola2.jpg";
-import imagen8 from "../../../assets/images/imagenes/casco1.jpg";
-import imagen9 from "../../../assets/images/imagenes/sillin.jpg";
-import imagen10 from "../../../assets/images/imagenes/sillin1.jpg";
-import imagen11 from "../../../assets/images/imagenes/sillin3.jpg";
-import imagen12 from "../../../assets/images/imagenes/zapatillas.jpg";
-import imagen13 from "../../../assets/images/imagenes/zapatillas1.jpg";
-import imagen14 from "../../../assets/images/imagenes/zapatillas2.jpg";
-import imagen15 from "../../../assets/images/imagenes/zapatillas3.jpg";
-import imagen16 from "../../../assets/images/imagenes/casco.jpg";
-import { CommentSharp } from '@material-ui/icons';*/
-
 function CreateInvoice(props) {
     const [lisPedidos, setListPedidos] = useState([]);
     const [lisProductosSiigo, setListProductosSiigo] = useState([]);
@@ -50,6 +33,8 @@ function CreateInvoice(props) {
     const dispatch = useDispatch();
     const [leeFacturas, setLeeFacturas] = useState(false);
     const [leePedidos, setLeePedidos] = useState(false);
+    const [actualizaBD, setActualizaBD] = useState(false);
+    const [validarDatos, setValidarDatos] = useState(false);
 
     //console.log("IMAGEN : ", imagen1)
 
@@ -57,126 +42,93 @@ function CreateInvoice(props) {
         if (leePedidos) {
             const newDet = [];
             setLeePedidos(false);
-            let contador = 0;
+            let contador = 94;
             let contadordos = 0;
 
             const consultaFacturas = async () => {
-                setLoading(false);
-                const params = {
-                    pagina: pagina
-                }
-                //console.log("FECHA ", params);
-                await axios({
-                    method: 'post',
-                    url: 'https://sitbusiness.co/cyclewear/api/201', params
-                }).then(res => {
-                    console.log("DATOS RETORNA : ", res.data.data);
-                    //return;
+                setLoading(true);
+                for (var i = 89; i < 96; i++) {
+                    const params = {
+                        pagina: i
+                    }
+                    if (i == 95) {
+                        //setLoading(false);
+                        setLeeFacturas(true);
+                        break;
+                    }
+                    contadordos = i;
+                    //console.log("FECHA ", params);
+                    await axios({
+                        method: 'post',
+                        url: 'https://sitbusiness.co/cyclewear/api/201', params
+                    }).then(res => {
+                        console.log("DATOS RETORNA : ", res.data.data);
+                        //return;
 
-                    res.data.data && res.data.data.map((row, index) => {
-                        //console.log("ID FACTURAS LEIDAS : ", row);
-                        let date = new Date(row.attributes.created_at);
-                        let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
-                        //console.log("FECHA : ", fecha);
-                        let item = {
-                            id_fact: row.id,
-                            id_siigo: 0,
-                            comprobante: 0,
-                            prefijo: 0,
-                            facturasiigo: 0,
-                            fechafactura: fecha,
-                            idcliente: 0,
-                            valorfactura: row.attributes.subtotal,
-                            descuento: row.attributes.discount,
-                            cost_center: 235,
-                            seller: row.attributes.seller_id,
-                            valorimpuesto: row.attributes.tax_total,
-                            porcentajeimpto: 0,
-                            Observaciones: ""
-                        };
+                        res.data.data && res.data.data.map((row, index) => {
+                            //console.log("ID FACTURAS LEIDAS : ", row);
+                            let date = new Date(row.attributes.created_at);
+                            let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
+                            //console.log("FECHA : ", fecha);
+                            let item = {
+                                id_fact: row.id,
+                                id_siigo: 0,
+                                comprobante: 0,
+                                prefijo: 0,
+                                facturasiigo: 0,
+                                fechafactura: fecha,
+                                idcliente: 0,
+                                valorfactura: row.attributes.subtotal,
+                                descuento: row.attributes.discount,
+                                cost_center: 235,
+                                seller: row.attributes.seller_id,
+                                valorimpuesto: row.attributes.tax_total,
+                                porcentajeimpto: 0,
+                                Observaciones: ""
+                            };
 
-                        newDet.push(item);
-                    })
-
-                    setListPedidos(newDet);
-                    contador = newDet.length;
-                    setLoading(true);
-
-                    newDet && newDet.map((params, index) => {
-                        console.log("PEDIDOS LEIDOS : ", params);
-                        
-                        const grabarpedidos = async () => {
-                            await axios({
-                                method: 'post',
-                                url: 'https://sitbusiness.co/cyclewear/api/206', params
-                            }).then(res => {
-                                contadordos = contadordos + 1;
-                                if (contadordos === contador) {
-                                    //setListIdentificacion(newDetId[0]);
-                                    setLoading(false);
-                                    console.log("LONGITUD : ", contador, "CONTADOR : ", contadordos)
-                                    setLeeFacturas(true);
-                                }
-                            }
-                            ).catch(function (error) {
-                                console.log("ERROR LEYENDO FACTURAS");
-                            })
-                        }
-                        grabarpedidos()
-                    })
-                    /*
-                        await axios({
-                            method: 'post',
-                            url: 'https://sitbusiness.co/cyclewear/api/709', params
-                        }).then(res => {
-                            newDetId(res.data);
-                            if (contadordos ===  contador) {
-                                console.log("NUEVO ARREGLO  : ", newDetId);
-                                //setListIdentificacion(newDetId[0]);
-                                setLoading(false);
-                                //console.log("LONGITUD : ", contador, "CONTADOR : ", contadordos, newDetId)
-                            }
-                        }
-                        ).catch(function (error) {
-                            console.log("ERROR LEYENDO FACTURAS");
+                            newDet.push(item);
                         })
-               
-          */
+
+                        setListPedidos(newDet);
+
+                        newDet && newDet.map((params, index) => {
+                            //console.log("PEDIDOS LEIDOS : ", params);
+
+                            const grabarpedidos = async () => {
+                                await axios({
+                                    method: 'post',
+                                    url: 'https://sitbusiness.co/cyclewear/api/206', params
+                                }).then(res => {
+                                    //console.log("VALOR CONTADOR DOS : ", contadordos);
+                                    //setListIdentificacion(newDetId[0]);
+                                }
+                                ).catch(function (error) {
+                                    console.log("ERROR LEYENDO FACTURAS");
+                                })
+                            }
+                            grabarpedidos()
+                        })
+                    }
+                    ).catch(function (error) {
+                        console.log("ERROR LEYENDO FACTURAS");
+                    })
                 }
-                ).catch(function (error) {
-                    console.log("ERROR LEYENDO FACTURAS");
-                })
             }
             consultaFacturas();
-
-            /*
-            setLoading(true);
-            const leeProductosSiigo = async () => {
-                await axios({
-                    method: 'post',
-                    url: 'https://sitbusiness.co/cyclewear/api/27'
-                }).then(res => {
-                    setLoading(false);
-                    setListProductosSiigo(res.data);
-                    //setLeeFacturas(true);
-                }
-                ).catch(function (error) {
-                    console.log("ERROR LEYENDO FACTURAS");
-                })
-            }
-            leeProductosSiigo();
-            */
         }
     }, [leePedidos])
 
     useEffect(() => {
         if (leeFacturas) {
-            //alert("ENTRE")   
-            console.log("NUMERO DE PEDIDOS : ", lisPedidos.length);
-            console.log("PEDIDOS : ", lisPedidos);
-            
+            //console.log("NUMERO DE PEDIDOS : ", lisPedidos.length);
+            //console.log("PEDIDOS : ", lisPedidos);
             setLoading(true);
             const newDetPed = [];
+
+            let control = 0;
+            let numeropedidos = lisPedidos.length;
+
             lisPedidos && lisPedidos.map((facturas, index) => {
                 const leer = async () => {
                     const params = {
@@ -192,16 +144,22 @@ function CreateInvoice(props) {
                         let posicion = tamaño - 1;
                         let direccion = res.data.included[posicion].attributes.address;
                         //console.log("DETALLE PEDIDOD : ", res.data.included[posicion].attributes.address, "TAMAÑO : ", tamaño);
-//return
+                        //return
                         res.data.included && res.data.included.map((itempedido, index) => {
                             //console.log("ITEM PEDIDOS : ", itempedido);
                             let codigoproducto;
+                            /*
                             lisProductosSiigo && lisProductosSiigo.forEach((producto) => {
                                 if (itempedido.attributes.variant_sku === producto.sku) {
                                     codigoproducto = producto.codigo;
                                 }
                             })
+                            */
+
+                            //console.log("TIPO PEDIDOD : ", itempedido.type);
+
                             if (itempedido.type == 'line_items') {
+                                //console.log("GRABANDO PEDIDOD : ", params);
                                 let item = {
                                     itempedido: itempedido.id,
                                     pedido: itempedido.attributes.invoice_id,
@@ -217,11 +175,11 @@ function CreateInvoice(props) {
                                     variant_barcode: itempedido.attributes.variant_barcode,
                                     variant_name: itempedido.attributes.variant_name,
                                     variant_sku: itempedido.attributes.variant_sku,
-                                    codigoproductosiigo: codigoproducto,
+                                    codigoproductosiigo: 0, //codigoproducto,
                                     direccion: direccion,
-                                    Observaciones: ""
+                                    observaciones: ""
                                 };
-                                //console.log("ITEM PEDIDO : ", res.data)
+                                //console.log("ITEM PEDIDO : ", item)
                                 newDetPed.push(item);
                             }
                         })
@@ -229,86 +187,36 @@ function CreateInvoice(props) {
                     ).catch(function (error) {
                         console.log("ERROR LEYENDO FACTURAS");
                     })
+
+                    control = control + 1;
+                    //console.log("VALOR CONTROL : ", control);
+                    if (control === numeropedidos) {
+                        console.log("LOADING EN FALSE");
+                        setLoading(false);
+                        actualizarDatosBD();
+                    }
                 }
                 leer();
+
+
             })
-            setLoading(false);
+
             setListDetalleFacturas(newDetPed);
             setLeeFacturas(false);
         }
-    }, [leeFacturas])
+    }, [leeFacturas]);
 
     const readPedidos = () => {
         setLeePedidos(true);
-        setLeeFacturas(true);
-    }
-
-    const crearFacturas = () => {
-        //console.log("Productos  : ", lisProductosSiigo);
-        //    listDetalleFacturas && listDetalleFacturas.forEach((row) => {
-        //setLoading(true);
-        console.log("IDENTIFICACION  : ", listIdentificacion);
-        return
-
-        lisPedidos && lisPedidos.map((facturas, index) => {
-            if (facturas.id_fact == 105536) {
-
-                //var fecha = new Date();
-                let date = new Date(facturas.fechafactura);
-                let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
-                //contador = contador + 1;
-
-                listDetalleFacturas && listDetalleFacturas.map((items, row) => {
-
-                    if (items.pedido == facturas.id_fact) {
-                        if (items.itempedido == 129302) {
-                            let valor = items.price / 1.19;
-                            let valoritem = valor.toFixed(4);
-
-                            const leer = async () => {
-                                let params = {
-                                    id: 37799,
-                                    date: fecha,
-                                    identification: 1015446893,
-                                    cost_center: 1440,
-                                    seller: 769,
-                                    code: items.codigoproductosiigo,
-                                    description: "Shimano Descarrilador FD-4700-F TIAGRA 10V",
-                                    quantity: 1,
-                                    discount: 0,
-                                    price: valoritem,
-                                    value: 120000,
-                                    idpayments: 7500,
-                                    due_date: fecha,
-                                    idtaxes: 745,
-                                };
-
-                                await axios({
-                                    method: 'get',
-                                    url: 'https://sitbusiness.co/cyclewear/api/729', params
-                                }).then(res => {
-                                    setLoading(false);
-                                    console.log("DATOS RESPONSE : ", res)
-                                }
-                                ).catch(function (error) {
-                                    console.log("ERROR LEYENDO FACTURAS");
-                                })
-                            }
-                            leer();
-                        }
-                    }
-                })
-            }
-        })
+        //setLeeFacturas(true);
     }
 
     const sleep = () => (
         setTimeout(() => { console.log("Esperando!") }, 100)
     );
 
-    //const leerDatosFacturas = async () => {
-    const actualizarDatosBD = () => {
-        setLoading(true);
+    useEffect(() => {
+        //setLoading(true);
         //console.log("TERCEROS CREADOS : ", listaTercerosCreados);
         //console.log("FACTURAS LEIDAS : ", datosClientesFacturas);
 
@@ -317,46 +225,7 @@ function CreateInvoice(props) {
 
         let longitud = lisPedidos.length;
         let contador = 0;
-/*
-        lisPedidos && lisPedidos.forEach((row) => {
-            const leerPedidos = async () => {
-                contador = contador + 1;
-                //let anno = row.fechafactura.getFullYear();
-                //let mes = row.fechafactura.getMonth();
-                //let dia = row.fechafactura. getDate();
-                //console.log("VALOR FECHA : ", Moment.format("YYYY/MM/DD", row.fechafactura));
-                const params = {
-                    id_fact: row.id_fact,
-                    id_siigo: row.id_siigo,
-                    comprobante: row.comprobante,
-                    prefijo: row.prefijo,
-                    facturasiigo: row.facturasiigo,
-                    fechafactura: "2022-06-17", //row.fechafactura,
-                    idcliente: row.idcliente,
-                    valorfactura: row.valorfactura,
-                    descuento: row.descuento,
-                    cost_center: row.cost_center,
-                    seller: row.seller,
-                    valorimpuesto: row.valorimpuesto,
-                    porcentajeimpto: row.porcentajeimpto,
-                    Observaciones: ""
-                }
-                await axios({
-                    method: 'post',
-                    url: 'https://sitbusiness.co/cyclewear/api/206', params
-                }).then(res => {
-                    if (contador === longitud) {
-                        console.log("VALOR RESPONSE : ", res)
-                        setLoading(false);
-                    }
-                }
-                ).catch(function (error) {
-                    console.log("ERROR LEYENDO FACTURAS");
-                })
-            }
-            leerPedidos()
-        });
-*/
+
         contador = 0;
         longitud = listDetalleFacturas.length;
         console.log("NUMERO ITEMS PEDIDOS : ", longitud)
@@ -387,7 +256,7 @@ function CreateInvoice(props) {
                     variant_sku: row.variant_sku,
                     codigoproductosiigo: row.codigoproductosiigo,
                     direccion: row.direccion,
-                    observaciones: "Items pedido # "+row.pedido
+                    observaciones: "Items pedido # " + row.pedido
                 }
                 await axios({
                     method: 'post',
@@ -404,15 +273,105 @@ function CreateInvoice(props) {
             }
             leerItems()
         });
-        
+    }, [actualizaBD]);
+
+    //const leerDatosFacturas = async () => {
+    const actualizarDatosBD = () => {
+        setActualizaBD(true);
     }
 
     const handleChangePagina = async (selectedOptions) => {
         setPagina(selectedOptions)
     }
 
-    const handleChangeTipoTercero = async (selectedOptions) => {
-        setTipoTercero(selectedOptions)
+    const leerProductoSiigo = async () => {
+        setLoading(true);
+        const newDetPed = [];
+
+        const leeProductosSiigo = async () => {
+
+            for (var i = 1; i < 11; i++) {
+                const params = {
+                    pagina: i
+                }
+
+                if (i == 10) {
+                    setLoading(false);
+                    setListProductosSiigo(newDetPed);
+                    break;
+                }
+
+                await axios({
+                    method: 'post',
+                    url: 'https://sitbusiness.co/cyclewear/api/715', params
+                }).then(res => {
+                    console.log("PAGINA : ", params);
+                    res.data && res.data.map((row, index) => {
+                        //console.log("ID FACTURAS LEIDAS : ", row);
+                        let item = {
+                            code: row.code,
+                            id: row.id,
+                            name: row.name,
+                            cantidad: row.cantidad,
+                            impuestos: row.impuestos
+                        };
+                        newDetPed.push(item);
+                    })
+                    //setLeeFacturas(true);
+                }
+                ).catch(function (error) {
+                    console.log("ERROR LEYENDO FACTURAS");
+                })
+            }
+        }
+        leeProductosSiigo();
+    }
+
+    useEffect(() => {
+        if (validarDatos) {
+            const productos = async () => {
+                await axios({
+                    method: 'post',
+                    url: 'https://sitbusiness.co/cyclewear/api/27'
+                }).then(res => {
+                    console.log("PRODUCTOS : ", res)
+                }
+                ).catch(function (error) {
+                    console.log("ERROR LEYENDO PRODUCTOS");
+                })
+            }
+            productos();
+
+            const pedidos = async () => {
+                await axios({
+                    method: 'post',
+                    url: 'https://sitbusiness.co/cyclewear/api/210'
+                }).then(res => {
+                    console.log("PEDIDOS : ", res)
+                }
+                ).catch(function (error) {
+                    console.log("ERROR LEYENDO PEDIDOS");
+                })
+            }
+            pedidos();
+
+            const itemspedidos = async () => {
+                await axios({
+                    method: 'post',
+                    url: 'https://sitbusiness.co/cyclewear/api/211'
+                }).then(res => {
+                    console.log("ITEMS PEDIDOS : ", res)
+                }
+                ).catch(function (error) {
+                    console.log("ERROR LEYENDO PEDIDOS");
+                })
+            }
+            itemspedidos();
+        }
+    }, [validarDatos]);
+
+    const itemspedidos = async () => {
+        setValidarDatos(true);
     }
 
     return (
@@ -470,46 +429,38 @@ function CreateInvoice(props) {
                     </button>
                 </Col>
                 <Col xl={3} lg={3} md={3} xs={3}>
-                    <button className='botoncrearcliente' color="primary" onClick={crearFacturas}>
-                        Crear Facturas
+                    <button className='botoncrearcliente' color="primary" onClick={leerProductoSiigo}>
+                        Leer Productos
                     </button>
                 </Col>
-
+                <Col xl={3} lg={3} md={3} xs={3}>
+                    <button className='botoncrearcliente' color="primary" onClick={itemspedidos}>
+                        Validar Datos
+                    </button>
+                </Col>
             </Row>
             <hr />
             {
-
                 <table id="ubicacionesequipos" className="table">
                     <thead>
                         <tr>
-                            <th>IDENTIFICACION</th>
-                            <th>PEDIDO</th>
-                            <th>FECHA</th>
-                            <th>NOMBRE</th>
-                            <th>APELLIDO</th>
-                            <th>EMAIL</th>
-                            <th>CIUDAD</th>
-                            <th>TELEFONO</th>
-                            <th>DIRECCION</th>
-                            <th>ESTADO</th>
-                            <th>TOTAL</th>
+                            <th>Code</th>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Cantidad</th>
+                            <th>Impuestos</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            datosClientesFacturas && datosClientesFacturas.map((facturas, index) => {
+                            lisProductosSiigo && lisProductosSiigo.map((facturas, index) => {
                                 return (
                                     <tr>
-                                        <td>{facturas.identification}</td>
-                                        <td>{facturas.pedido}</td>
-                                        <td>{facturas.fecha}</td>
-                                        <td>{facturas.apellido}</td>
-                                        <td>{facturas.email}</td>
-                                        <td>{facturas.ciudad}</td>
-                                        <td>{facturas.telefono}</td>
-                                        <td>{facturas.direccion}</td>
-                                        <td>{facturas.estado}</td>
-                                        <td>{facturas.valor}</td>
+                                        <td>{facturas.code}</td>
+                                        <td>{facturas.id}</td>
+                                        <td>{facturas.name}</td>
+                                        <td>{facturas.cantidad}</td>
+                                        <td>{facturas.impuestos}</td>
                                     </tr>
                                 )
                             })
