@@ -36,6 +36,10 @@ function CreateInvoice(props) {
     const [actualizaBD, setActualizaBD] = useState(false);
     const [validarDatos, setValidarDatos] = useState(false);
 
+    const [datapedidos, setDatapedidos] = useState([]);
+    const [dataitemspedidos, setDataitemspedidos] = useState([]);
+    const [dataproductos, setDataproductos] = useState([]);
+
     //console.log("IMAGEN : ", imagen1)
 
     useEffect(() => {
@@ -290,7 +294,7 @@ function CreateInvoice(props) {
 
         const leeProductosSiigo = async () => {
 
-            for (var i = 1; i < 11; i++) {
+            for (var i = 1; i < 12; i++) {
                 const params = {
                     pagina: i
                 }
@@ -312,6 +316,7 @@ function CreateInvoice(props) {
                             code: row.code,
                             id: row.id,
                             name: row.name,
+                            sku: row.sku,
                             cantidad: row.cantidad,
                             impuestos: row.impuestos
                         };
@@ -329,12 +334,15 @@ function CreateInvoice(props) {
 
     useEffect(() => {
         if (validarDatos) {
+            setLoading(true);
+
             const productos = async () => {
                 await axios({
                     method: 'post',
                     url: 'https://sitbusiness.co/cyclewear/api/27'
                 }).then(res => {
-                    console.log("PRODUCTOS : ", res)
+                    //console.log("Productos : ", res.data);
+                    setDataproductos(res.data);
                 }
                 ).catch(function (error) {
                     console.log("ERROR LEYENDO PRODUCTOS");
@@ -347,7 +355,7 @@ function CreateInvoice(props) {
                     method: 'post',
                     url: 'https://sitbusiness.co/cyclewear/api/210'
                 }).then(res => {
-                    console.log("PEDIDOS : ", res)
+                    setDatapedidos(res.data);
                 }
                 ).catch(function (error) {
                     console.log("ERROR LEYENDO PEDIDOS");
@@ -360,18 +368,80 @@ function CreateInvoice(props) {
                     method: 'post',
                     url: 'https://sitbusiness.co/cyclewear/api/211'
                 }).then(res => {
-                    console.log("ITEMS PEDIDOS : ", res)
+                    setDataitemspedidos(res.data);
+                    setLoading(false);
                 }
                 ).catch(function (error) {
                     console.log("ERROR LEYENDO PEDIDOS");
                 })
             }
             itemspedidos();
+
+            //console.log("Items pedidos : ", dbitemspedidos);
+            //console.log("Productos : ", dbproductos);
+            //console.log("Pedidos : ", dbpedidos);
+            setValidarDatos(false);
         }
     }, [validarDatos]);
 
     const itemspedidos = async () => {
         setValidarDatos(true);
+    }
+
+    const prueba = async () => {
+        console.log("Items pedidos : ", dataitemspedidos);
+        console.log("Productos : ", dataproductos);
+        console.log("Pedidos : ", datapedidos);
+    
+        const newItemPed = [];
+        dataitemspedidos && dataitemspedidos.map((items, index) => {
+            let row = {
+                pedido: items.pedido,
+                itempedido: items.itempedido,
+                sku: items.variant_sku
+            }
+            newItemPed.push(row);
+        });
+
+        const newProd = [];
+        dataproductos && dataproductos.map((items, index) => {
+            newProd.push(items.sku);
+        });
+
+        //console.log("Items pedidos : ", newItemPed);
+        //console.log("Productos : ", newProd);
+
+        const newItems = [];
+        let valida;
+        newItemPed && newItemPed.map((items, index) => {
+            valida = newProd.includes(items.sku)
+            if (!valida) {
+                newItems.push(items);
+            }
+        });
+
+       //console.log("NEW ITEMS : ", newItems)
+       
+       newItems && newItems.map((items, index) => {
+            console.log("ITEMS PEDIDOS : ", items)
+            const actualiza = async () => {
+                const params = {
+                    estado: 0,
+                    itempedido: items.itempedido
+                }
+                await axios({
+                    method: 'post',
+                    url: 'https://sitbusiness.co/cyclewear/api/717', params
+                }).then(res => {
+                    console.log("Actualizando");
+                    setLoading(false);
+                }
+                ).catch(function (error) {
+                    console.log("ERROR Actualizando");
+                })
+            }
+            actualiza();
+        });
     }
 
     return (
@@ -424,7 +494,7 @@ function CreateInvoice(props) {
                     </button>
                 </Col>
                 <Col xl={3} lg={3} md={3} xs={3}>
-                    <button className='botoncrearcliente' color="primary" onClick={actualizarDatosBD}>
+                    <button className='botoncrearcliente' color="primary" onClick={prueba}>
                         Actualizar BD
                     </button>
                 </Col>
@@ -446,6 +516,7 @@ function CreateInvoice(props) {
                         <tr>
                             <th>Code</th>
                             <th>Id</th>
+                            <th>Sku</th>
                             <th>Name</th>
                             <th>Cantidad</th>
                             <th>Impuestos</th>
@@ -458,6 +529,7 @@ function CreateInvoice(props) {
                                     <tr>
                                         <td>{facturas.code}</td>
                                         <td>{facturas.id}</td>
+                                        <td>{facturas.sku}</td>
                                         <td>{facturas.name}</td>
                                         <td>{facturas.cantidad}</td>
                                         <td>{facturas.impuestos}</td>
