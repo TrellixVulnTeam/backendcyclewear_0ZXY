@@ -36,7 +36,7 @@ const Orders = () => {
 				method: 'get',
 				url: 'https://sitbusiness.co/cyclewear/api/210', params
 			}).then(res => {
-				//console.log("PEDIDOS : ", res.data)
+				console.log("PEDIDOS : ", res.data)
 				setListPedidos(res.data);
 			}
 			).catch(function (error) {
@@ -61,7 +61,7 @@ const Orders = () => {
 				method: 'get',
 				url: 'https://sitbusiness.co/cyclewear/api/211', params
 			}).then(res => {
-				//console.log("PEDIDOS : ", res.data)
+				console.log("items PEDIDOS : ", res.data)
 				setLisItemsPedidos(res.data);
 			}
 			).catch(function (error) {
@@ -150,12 +150,7 @@ const Orders = () => {
 		{
 			title: 'Descuento',
 			field: 'descuento'
-		},
-		{
-			title: 'Observacion',
-			field: 'observaciones'
-		},
-
+		}
 	]
 
 	const itemspedidos = [
@@ -226,12 +221,12 @@ const Orders = () => {
 						}
 					]}
 					options={{
-						actionsColumnIndex: 11,
-						headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
-						rowStyle: {
-							fontSize: 14,
-						}
-					}}
+                        actionsColumnIndex: 11,
+                        headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+                        rowStyle: rowData => ({
+                            backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
+                        })
+                    }}
 				/>
 				<Modal className="modalitemspedidos" isOpen={modalVariantes} toggle={abrirCerrarModalVariantes}>
 					<ModalHeader
@@ -262,10 +257,10 @@ const Orders = () => {
 							}}
 							options={{
 								actionsColumnIndex: 11,
-								headerStyle: { backgroundColor: '#015CAB', fontSize: 14, color: 'white' },
-								rowStyle: {
-									fontSize: 13,
-								}
+								headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+								rowStyle: rowData => ({
+									backgroundColor: (0 == rowData.sincodigosiigo) ? '#6699D0' : '#FFF'
+								})
 							}}
 						/>
 					</ModalBody>
