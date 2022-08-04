@@ -31,6 +31,10 @@ import Digital_sub_category from "./components/products/digital/digital-sub-cate
 import Digital_pro_list from "./components/products/digital/digital-pro-list";
 import Digital_add_pro from "./components/products/digital/digital-add-pro";
 
+//Product Siigo
+import AddProductSiigo from "./components/products/siigo/add-product-siigo";
+import AddClientSiigo from "./components/products/siigo/add-client-siigo";
+
 //Sales
 import Orders from "./components/sales/orders";
 import Transactions_sales from "./components/sales/transactions-sales";
@@ -159,6 +163,14 @@ const Root = () => {
 						<Route
 							path={`${process.env.PUBLIC_URL}/products/physical/product-detail`}
 							component={Product_detail}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/siigo/add-product-siigo`}
+							component={AddProductSiigo}
+						/>
+						<Route
+							path={`${process.env.PUBLIC_URL}/products/siigo/add-client-siigo`}
+							component={AddClientSiigo}
 						/>
 						<Route
 							path={`${process.env.PUBLIC_URL}/products/physical/add-product`}

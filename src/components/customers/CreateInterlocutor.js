@@ -73,7 +73,7 @@ const CreateInterlocutor = () => {
 				type = row.nombresiigo;
 			}
 		});
-		
+
 		listTipoCliente && listTipoCliente.forEach((row) => {
 			if (Number.parseInt(row.id) === Number.parseInt(tipoTercero)) {
 				persontype = row.nombresiigo;
@@ -90,7 +90,7 @@ const CreateInterlocutor = () => {
 
 		listTipoRegimen && listTipoRegimen.forEach((row) => {
 			if (Number.parseInt(row.id) === Number.parseInt(tipoRegimen)) {
-			    typeregime = row.datosiigo;
+				typeregime = row.datosiigo;
 			}
 		});
 
@@ -121,9 +121,9 @@ const CreateInterlocutor = () => {
 		formdata.append("codigopostalfacturacion", formData.codigopostalfacturacion);
 		formdata.append("usuarioasignado", 0);
 		formdata.append("observacion", "");
-		formdata.append("fechacreacion",fechaactual);
-		formdata.append("fechamodificacion",fechaactual);
-		
+		formdata.append("fechacreacion", fechaactual);
+		formdata.append("fechamodificacion", fechaactual);
+
 		//console.log("DATOS FORMDATA : ", formdata);
 
 		fetch("https://sitbusiness.co/cyclewear/api/110", {
@@ -152,7 +152,7 @@ const CreateInterlocutor = () => {
 				console.log("RESPONSE GRABAR Interlocutor : ", response);
 			}
 		});
-		
+
 
 		const params = {
 			type: type,
@@ -168,7 +168,7 @@ const CreateInterlocutor = () => {
 			code: "R-99-PN",
 			address: formData.direccion,
 			country_code: "Co",
-			state_code : codigodpto,
+			state_code: codigodpto,
 			city_code: codigocity,
 			postal_code: formData.codigopostalfacturacion,
 			indicative: formData.indicativo,
@@ -181,14 +181,14 @@ const CreateInterlocutor = () => {
 			number: formData.telefonofacturacion,
 			extension: formData.extension
 		};
- 
+
 		//console.log("DATOS FORMDATA : ", params);
 		//return;
 		const creaInt = async () => {
-		await axios({
-			method: 'post',
-			url: 'https://sitbusiness.co/cyclewear/api/101', params
-		}).then((res) => {
+			await axios({
+				method: 'post',
+				url: 'https://sitbusiness.co/cyclewear/api/101', params
+			}).then((res) => {
 				console.log("RESPONSE : ", res)
 
 				if (res.data.type === 1) {
@@ -206,21 +206,21 @@ const CreateInterlocutor = () => {
 						{ button: "Aceptar" }
 					);
 				}
-		}).catch(function (error) {
-			console.log("ERROR LEYENDO CONSECUTIVO");
-		})
-	}
+			}).catch(function (error) {
+				console.log("ERROR LEYENDO CONSECUTIVO");
+			})
+		}
 		creaInt();
 
 	}
 
 	const validaIdentificacion = (identificacion) => {
-        console.log("DATO IDENTIFICACION : ", formData.identificacion);
+		console.log("DATO IDENTIFICACION : ", formData.identificacion);
 
-        let errors = {};
-        let formOk = true;
+		let errors = {};
+		let formOk = true;
 
-        if (formData.identificacion) {
+		if (formData.identificacion) {
 			if (!formData.identificacion) {
 				swal(
 					"CYCLE WEAR",
@@ -228,62 +228,62 @@ const CreateInterlocutor = () => {
 					"error",
 					{ button: "Aceptar" }
 				);
-               
-                formOk = false;
-                return;
-            }
 
-            if (
-                formData.identificacion.length < 6 ||
-                formData.identificacion.length > 10
-            ) {
+				formOk = false;
+				return;
+			}
+
+			if (
+				formData.identificacion.length < 6 ||
+				formData.identificacion.length > 10
+			) {
 				swal(
 					"CYCLE WEAR",
 					"La identificación debe contener solo números, longitud minima de 6 y maximo de 10",
 					"warning",
 					{ button: "Aceptar" }
 				);
-               
-                formOk = false;
-                return;
-            }
 
-            let validaidentificacion = formData.identificacion.substr(0, 20);
+				formOk = false;
+				return;
+			}
 
-            let validarid;
-            let haycaracterid = false;
-            for (var i = 0; i < validaidentificacion.length; i++) {
-                validarid = validaidentificacion.substr(i, 1);
-                if (
-                    validarid != 0 &&
-                    validarid != 1 &&
-                    validarid != 2 &&
-                    validarid != 3 &&
-                    validarid != 4 &&
-                    validarid != 5 &&
-                    validarid != 6 &&
-                    validarid != 7 &&
-                    validarid != 8 &&
-                    validarid != 9
-                ) {
-                    haycaracterid = true;
-                    console.log("CARACTER", i, validarid);
-                } else console.log("ES UN NUMERO ", i, validarid);
-            }
+			let validaidentificacion = formData.identificacion.substr(0, 20);
 
-            if (haycaracterid) {
+			let validarid;
+			let haycaracterid = false;
+			for (var i = 0; i < validaidentificacion.length; i++) {
+				validarid = validaidentificacion.substr(i, 1);
+				if (
+					validarid != 0 &&
+					validarid != 1 &&
+					validarid != 2 &&
+					validarid != 3 &&
+					validarid != 4 &&
+					validarid != 5 &&
+					validarid != 6 &&
+					validarid != 7 &&
+					validarid != 8 &&
+					validarid != 9
+				) {
+					haycaracterid = true;
+					console.log("CARACTER", i, validarid);
+				} else console.log("ES UN NUMERO ", i, validarid);
+			}
+
+			if (haycaracterid) {
 				swal(
 					"CYCLE WEAR",
 					"Recuerda, La identificación solo debe contener números!",
 					"warning",
 					{ button: "Aceptar" }
 				);
-               
-                formOk = false;
-                return;
-            }
+
+				formOk = false;
+				return;
+			}
 		}
-    };
+	};
 
 	return (
 		<Fragment>
@@ -422,7 +422,7 @@ const CreateInterlocutor = () => {
 										type="numeric"
 										name="identificacion"
 										onBlur={(
-											e	
+											e
 										) =>
 											validaIdentificacion(
 												e

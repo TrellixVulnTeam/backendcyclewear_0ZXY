@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Breadcrumb from "./common/breadcrumb";
+import { Link } from "react-router-dom";
 import {
 	Navigation,
 	Box,
@@ -20,7 +21,8 @@ import {
 	employeeData,
 	employeeOptions,
 } from "../constants/chartData";
-// image impoer
+import "./dashboard.css";
+
 import user2 from "../assets/images/dashboard/user2.jpg";
 import user1 from "../assets/images/dashboard/user1.jpg";
 import man from "../assets/images/dashboard/man.png";
@@ -35,11 +37,13 @@ import {
 	Media,
 	Row,
 	Table,
+	Button
 } from "reactstrap";
+import CreateInvoice from "./sales/CreateInvoice";
 
 const Dashboard = () => {
 	const [itemsDatosEntorno, setItemsDatosEntorno] = useState([]);
-	
+
 	const leedatosentorno = useSelector(
 		(state) => state.datosentorno.datosentorno
 	);
@@ -194,6 +198,20 @@ const Dashboard = () => {
 		<Fragment>
 			<Breadcrumb title="Tablero de Control" parent="Dashboard" />
 			<Container fluid={true}>
+				<Row className="mb-10">
+					<Col xl="4" lg="4" md="4" sd="4">
+					</Col>
+					<Col xl="4" lg="4" md="4" sd="4">
+						<Button className="botondatos">
+							<Link to="/sales/CreateInvoice" >
+								<h4 className="colorenlace">
+									Actualizar datos
+								</h4>
+								
+							</Link>
+						</Button>
+					</Col>
+				</Row>
 				<Row>
 					<Col xl="3 xl-50" md="6">
 						<Card className=" o-hidden widget-cards">
@@ -877,7 +895,7 @@ const Dashboard = () => {
 					</Col>
 				</Row>
 			</Container>
-		</Fragment>
+		</Fragment >
 	);
 };
 

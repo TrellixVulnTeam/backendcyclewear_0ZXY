@@ -40,6 +40,12 @@ export const MENUITEMS = [
                     { path: '/products/digital/digital-add-product', title: 'Crear Producto', type: 'link' },
                 ]
             },
+            {
+                title: 'Siigo', type: 'sub', active: false, children: [
+                    { path: '/products/siigo/add-product-siigo', title: 'Crear Producto', type: 'link' },
+                    { path: '/products/siigo/add-client-siigo', title: 'Crear Cliente', type: 'link' },
+                ]
+            },
         ]
     },
     {

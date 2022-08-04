@@ -1,0 +1,15 @@
+.botondatos {
+    width: 400px !important;
+    height: 45px !important;
+    background-color: #005CA9 !important;
+    border-radius: 20px !important;
+}
+
+.colorenlace {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+.mb-10{
+    margin-bottom: 20px !important;
+}

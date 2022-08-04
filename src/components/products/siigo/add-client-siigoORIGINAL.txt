@@ -1,0 +1,518 @@
+import React, { Fragment, useEffect, useState } from "react";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import MaterialTable from "material-table";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import CancelIcon from "@material-ui/icons/Cancel";
+import EditAttributesIcon from "@material-ui/icons/EditAttributes";
+import Moment from "moment";
+import swal from "sweetalert";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Button,
+  Modal,
+  ModalFooter,
+  ModalHeader,
+  ModalBody,
+} from "reactstrap";
+//import Loading from "../../../components/elements/Loading";
+import EditIcon from "@material-ui/icons/Edit";
+//import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
+import Loading from "../../elements/Loading/Loading";
+
+function AddClientSiigo(props) {
+
+  const [pagina, setPagina] = useState(false);
+  const [tipoTercero, setTipoTercero] = useState("");
+  const [loading, setLoading] = useState(false);
+  const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
+  //const fechaactual = Moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+  const [datos, setDatos] = useState([]);
+  const dispatch = useDispatch();
+  const [itemsCrear, setitemsCrear] = useState(false);
+  const [leePedidos, setLeePedidos] = useState(false);
+  const [actualizaBD, setActualizaBD] = useState(false);
+  const [contraSiigo, setContraSiigo] = useState(false);
+  const [validarCedula, setValidarCedula] = useState(false);
+
+  const [datapedidos, setDatapedidos] = useState([]);
+  const [dataitemspedidos, setDataitemspedidos] = useState([]);
+  const [dataproductos, setDataproductos] = useState([]);
+  const [codigoscategorias, setCodigosCategorias] = useState([]);
+
+  //console.log("IMAGEN : ", imagen1)
+
+  const readPedidos = () => {
+    setLeePedidos(true);
+    //setLeeFacturas(true);
+  };
+
+  //const leerDatosFacturas = async () => {
+  const actualizarDatosBD = () => {
+    setActualizaBD(true);
+  };
+
+  const handleChangePagina = async (selectedOptions) => {
+    setPagina(selectedOptions);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    const pedidos = async () => {
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/210",
+      })
+        .then((res) => {
+          setDatapedidos(res.data);
+        })
+        .catch(function (error) {
+          console.log("ERROR LEYENDO PEDIDOS");
+        });
+    };
+    pedidos();
+
+    const itemspedidos = async () => {
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/211",
+      })
+        .then((res) => {
+          setDataitemspedidos(res.data);
+          //validaContraSiigo();
+        })
+        .catch(function (error) {
+          console.log("ERROR LEYENDO PEDIDOS");
+        });
+    };
+    itemspedidos();
+
+    const consecutivoscategorias = async () => {
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/31",
+      })
+        .then((res) => {
+          setCodigosCategorias(res.data);
+          //console.log("DATOS Categorias : ", res.data);
+          setLoading(false);
+        })
+        .catch(function (error) {
+          console.log("ERROR LEYENDO CATEGORIAS");
+        });
+    };
+    consecutivoscategorias();
+
+    /*
+ const leeConsecutivo = async () => {
+                        const params = {
+                          tipoproducto: categoriauno,
+                          categoriauno: categoriados,
+                          categoriados: categoriatres,
+                          categoriatres: categoriacuatro
+                          //categoriacuatro:
+                        };
+
+                        await axios({
+                          method: "post",
+                          url: "https://sitbusiness.co/cyclewear/api/28",
+                          params,
+                        })
+                          .then((res) => {
+                            console.log("CONSECUTIVO : ", res.data[0].codigo);
+                            codigoconsecutivo = res.data[0].codigo;
+                            //setListIdentificacion(newDetId[0]);
+                          })
+                          .catch(function (error) {
+                            console.log("ERROR LEYENDO FACTURAS");
+                          });
+                      };
+                      leeConsecutivo();
+      */
+
+    //console.log("Items pedidos : ", dbitemspedidos);
+    //console.log("Productos : ", dbproductos);
+    //console.log("Pedidos : ", dbpedidos);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (contraSiigo) {
+      console.log("Items pedidos : ", dataitemspedidos);
+      console.log("Pedidos : ", datapedidos);
+      console.log("Codigos Categorias : ", codigoscategorias);
+
+      setLoading(true);
+
+      const newItemPed = [];
+      dataitemspedidos &&
+        dataitemspedidos.map((items, index) => {
+          if (items.sincodigosiigo == 0) {
+            codigoscategorias &&
+              codigoscategorias.map((categoria, index) => {
+                console.log("Codigos Categorias : ", categoria);
+                if (
+                  items.categoriauno === categoria.nombretipoproducto &&
+                  items.categoriados === categoria.nombrecategoriauno &&
+                  items.categoriatres === categoria.nombrecategoriados &&
+                  items.categoriacuatro === categoria.nombrecategoriatres
+                ) {
+                  let row = {
+                    itempedido: items.itempedido,
+                    pedido: items.pedido,
+                    advert_name: items.advert_name,
+                    advert_code: items.advert_code,
+                    brand_name: items.brand_name,
+                    price: items.price,
+                    precio1: items.price,
+                    precio2: items.price,
+                    quantity: items.quantity,
+                    sincodigosiigo: items.sincodigosiigo,
+                    codigoconsecutivo: items.codigoconsecutivo,
+                    subtotal: items.subtotal,
+                    tax_total: items.tax_total,
+                    taxon_name: items.taxon_name,
+                    total: items.total,
+                    variant_barcode: items.variant_barcode,
+                    variant_name: items.variant_name,
+                    variant_sku: items.variant_sku,
+                    codigoproductosiigo: items.codigoproductosiigo,
+                    direccion: items.direccion,
+                    observaciones: items.observaciones,
+                    categoriauno: items.categoriauno,
+                    categoriados: items.categoriados,
+                    categoriatres: items.categoriatres,
+                    categoriacuatro: items.categoriacuatro,
+                    codigoconsecutivo: categoria.codigo,
+                    siguiente: categoria.siguiente,
+                    consecutivo: categoria.consecutivo,
+                  };
+                  newItemPed.push(row);
+                }
+              });
+          }
+        });
+      console.log("ITEMS CREAR : ", newItemPed);
+      setitemsCrear(newItemPed);
+      let contar = 0;
+      const newCreaPrd = [];
+
+      newItemPed &&
+        newItemPed.map((items, index) => {
+          contar = contar + 1;
+          let newcod = items.codigoconsecutivo + "000001";
+          const params = {
+            code: newcod,
+            name: items.advert_name,
+            reference: items.variant_sku,
+            description: items.taxon_name,
+            barcode: items.variant_barcode,
+            brand: items.brand_name,
+            tariff: "19",
+            model: "Prueba",
+            price: items.price,
+            precio1: items.price,
+            precio2: items.price,
+          };
+
+          console.log("NEW CREA PRODUCTO : ", params);
+
+          if (items.codigoconsecutivo == "COFJU") {
+            const creaproducto = async () => {
+              await axios({
+                method: "post",
+                url: "https://sitbusiness.co/cyclewear/api/711",
+                params,
+              })
+                .then((res) => {
+                  console.log("RETORNA API :", res);
+
+                  setLoading(false);
+                })
+                .catch(function (error) {
+                  console.log("ERROR Actualizando");
+                });
+
+              if (contar > 0) return;
+            };
+            creaproducto();
+          }
+        });
+      //setLoading(false);
+
+      setContraSiigo(false);
+    }
+  }, [contraSiigo]);
+
+  const validaContraSiigo = async () => {
+    setContraSiigo(true);
+  };
+
+  useEffect(() => {
+    if (validarCedula) {
+      console.log("Items pedidos - CEDULA : ", dataitemspedidos);
+      console.log("Pedidos - CEDULA : ", datapedidos);
+      console.log("Categorias - CEDULA: ", codigoscategorias);
+
+      setLoading(true);
+      let contador = 0;
+
+      const newItem = [];
+      datapedidos &&
+        datapedidos.map((items, index) => {
+          if (items.estadocliente == 0) {
+            contador = contador + 1;
+
+            if (contador == 1) {
+              let params = {
+                type: "Customer",
+                person_type: "Person",
+                id_type: "13",
+                identification: 792061111, //items.idcliente,
+                check_digit: "4",
+                nombre: "William",
+                apellido: "Castro",
+                commercial_name: "Cyclewear",
+                branch_office: 0,
+                active: "true",
+                vat_responsible: "false",
+                code: "R-99-PN",
+                address: "Cra 30 # 72 sur 02",
+                country_code: "Co",
+                state_code: "19",
+                city_code: "19001",
+                postal_code: "110911",
+                indicative: "57",
+                number: "3155337803",
+                extension: "132",
+                first_name: "William",
+                last_name: "Castro",
+                email: "williamcastrov@gmail.com",
+                indicative: "57",
+                number: "3155337803",
+                extension: "132",
+                comments: "Prueba",
+                seller_id: "809",
+                collector_id: "809"
+              };
+              newItem.push(params);
+              console.log("PEDIDO : ", params);
+
+              const creaInt = async () => {
+                await axios({
+                  method: 'post',
+                  url: 'https://sitbusiness.co/cyclewear/api/101', params
+                }).then((res) => {
+                  console.log("RESPONSE : ", res)
+
+                  if (res.data.type === 1) {
+                    swal(
+                      "CYCLE WEAR",
+                      "Registro interlocutor SIIGO de forma correcta!",
+                      "success",
+                      { button: "Aceptar" }
+                    );
+                  } else {
+                    swal(
+                      "CYCLE WEAR",
+                      "Error al grabar el interlocutor en SIIGO, Intenta nuevamente!",
+                      "warning",
+                      { button: "Aceptar" }
+                    );
+                  }
+                }).catch(function (error) {
+                  console.log("ERROR LEYENDO CONSECUTIVO");
+                })
+              }
+              creaInt();
+            }
+          }
+        });
+      setLoading(false);
+
+      setValidarCedula(false);
+    }
+  }, [validarCedula]);
+
+  const validaTercero = async () => {
+    setValidarCedula(true);
+  };
+
+  const leeIdentificacion = async () => {
+    setLoading(true);
+
+    let contador = datapedidos.length;
+    //console.log("NUMERO PEDIDOS : ", contador);
+
+    let contadordos = 0;
+
+    const newItems = [];
+
+    datapedidos &&
+      datapedidos.map((pedido, index) => {
+        const identificacion = async () => {
+          const params = {
+            factura: pedido.id_fact,
+          };
+
+          await axios({
+            method: "post",
+            url: "https://sitbusiness.co/cyclewear/api/709",
+            params,
+          })
+            .then((res) => {
+              contadordos = contadordos + 1;
+              console.log("Contador : ", contadordos);
+
+              let items = {
+                pedido: pedido.id_fact,
+                cedula: res.data.DocumentID,
+              };
+              newItems.push(items);
+
+              if (contadordos == contador) {
+                let long = newItems.length;
+                let cont = 0;
+
+                newItems.map((items, index) => {
+                  console.log("INFORMACION PEDIDOS : ", items);
+                  const actualizaId = async () => {
+                    const params = {
+                      cedula: items.cedula,
+                      pedido: items.pedido,
+                    };
+
+                    await axios({
+                      method: "post",
+                      url: "https://sitbusiness.co/cyclewear/api/212",
+                      params,
+                    })
+                      .then((res) => {
+                        cont = cont + 1;
+                        console.log("Actualizando Pedido : ", items.pedido);
+
+                        if (cont == long) {
+                          setLoading(false);
+                        }
+                      })
+                      .catch(function (error) {
+                        cont = cont + 1;
+                        if (cont == long) {
+                          setLoading(false);
+                        }
+                        console.log("ERROR Actualizando");
+                      });
+                  };
+                  actualizaId();
+                });
+              }
+            })
+            .catch(function (error) {
+              contadordos = contadordos + 1;
+              console.log("ERROR Actualizando");
+            });
+        };
+        identificacion();
+      });
+  };
+
+  return (
+    <div>
+      {loading ? <Loading /> : null}
+      <br />
+      <Row>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button className="botoncrearcliente" color="primary">
+            <ReactHTMLTableToExcel
+              table="ubicacionesequipos"
+              filename="DatosClientesCWR"
+              sheet="Sheet"
+              buttonText="Exportar a Excel"
+            />
+          </button>
+        </Col>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={readPedidos}
+          >
+            Lee Pedidos BE
+          </button>
+        </Col>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={validaContraSiigo}
+          >
+            Crear Producto
+          </button>
+        </Col>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={validaTercero}
+          >
+            Crear Tercero
+          </button>
+        </Col>
+      </Row>
+      <hr />
+      {
+        <table id="ubicacionesequipos" className="table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Pedido</th>
+              <th>Sku</th>
+              <th>Name</th>
+              <th>Precio</th>
+              <th>Tipo Producto</th>
+              <th>Categoria Uno</th>
+              <th>Categoria Dos</th>
+              <th>Categoria Tres</th>
+              <th>Categoria Cuatro</th>
+              <th>codigoconsecutivo</th>
+              <th>siguiente</th>
+              <th>consecutivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {itemsCrear &&
+              itemsCrear.map((facturas, index) => {
+                return (
+                  <tr>
+                    <td>{facturas.codigoconsecutivo}</td>
+                    <td>{facturas.pedido}</td>
+                    <td>{facturas.variant_sku}</td>
+                    <td>{facturas.advert_name}</td>
+                    <td>{facturas.price}</td>
+                    <td>{facturas.categoriauno}</td>
+                    <td>{facturas.categoriados}</td>
+                    <td>{facturas.categoriatres}</td>
+                    <td>{facturas.categoriacuatro}</td>
+                    <td>{facturas.codigoconsecutivo}</td>
+                    <td>{facturas.siguiente}</td>
+                    <td>{facturas.consecutivo}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      }
+    </div>
+  );
+}
+
+export default AddClientSiigo;

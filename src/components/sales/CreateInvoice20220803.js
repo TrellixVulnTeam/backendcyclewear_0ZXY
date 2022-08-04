@@ -45,7 +45,7 @@ function CreateInvoice(props) {
   const [datos, setDatos] = useState([]);
   const dispatch = useDispatch();
   const [leeFacturas, setLeeFacturas] = useState(false);
-  const [leePedidos, setLeePedidos] = useState(true);
+  const [leePedidos, setLeePedidos] = useState(false);
   const [actualizaBD, setActualizaBD] = useState(false);
   const [validarDatos, setValidarDatos] = useState(false);
   const [contraSiigo, setContraSiigo] = useState(false);
@@ -55,25 +55,24 @@ function CreateInvoice(props) {
   const [dataproductos, setDataproductos] = useState([]);
   const [codigoscategorias, setCodigosCategorias] = useState([]);
 
-  setInterval('location.reload()',3600000);
+  //console.log("IMAGEN : ", imagen1)
 
   useEffect(() => {
-    if (leePedidos) { 
+    if (leePedidos) {
       const newDet = [];
       setLeePedidos(false);
-      let contador = 100;
+      let contador = 107;
       let contadordos = 0;
 
       const consultaFacturas = async () => {
         setLoading(true);
-        for (var i = 91; i < 101; i++) {
+        for (var i = 89; i < 110; i++) {
           const params = {
             pagina: i,
           };
-          if (i == 98) {
+          if (i == 108) {
             //setLoading(false);
             setLeeFacturas(true);
-            setLoading(false);
             break;
           }
           contadordos = i;
@@ -137,14 +136,14 @@ function CreateInvoice(props) {
                         //setListIdentificacion(newDetId[0]);
                       })
                       .catch(function (error) {
-                        console.log("ERROR LEYENDO PEDIDOS");
+                        console.log("ERROR LEYENDO FACTURAS");
                       });
                   };
                   grabarpedidos();
                 });
             })
             .catch(function (error) {
-              console.log("ERROR LEYENDO PEDIDOS");
+              console.log("ERROR LEYENDO FACTURAS");
             });
         }
       };
@@ -192,7 +191,16 @@ function CreateInvoice(props) {
                   res.data.included.map((itempedido, index) => {
                     //console.log("ITEM PEDIDOS : ", itempedido);
                     let codigoproducto;
-                
+                    /*
+                            lisProductosSiigo && lisProductosSiigo.forEach((producto) => {
+                                if (itempedido.attributes.variant_sku === producto.sku) {
+                                    codigoproducto = producto.codigo;
+                                }
+                            })
+                            */
+
+                    //console.log("TIPO PEDIDOD : ", itempedido.type);
+
                     if (itempedido.type == "line_items") {
                       //console.log("GRABANDO PEDIDOD : ", params);
                       let categorias = itempedido.attributes.taxon_name;
@@ -277,7 +285,7 @@ function CreateInvoice(props) {
             //console.log("VALOR CONTROL : ", control);
             if (control === numeropedidos) {
               console.log("LOADING EN FALSE");
-              //setLoading(false);
+              setLoading(false);
               actualizarDatosBD();
             }
           };
@@ -286,8 +294,6 @@ function CreateInvoice(props) {
 
       setListDetalleFacturas(newDetPed);
       setLeeFacturas(false);
-      //setContraSiigo(true);
-      //setInterval(setContraSiigo(true),14000);
     }
   }, [leeFacturas]);
 
@@ -297,10 +303,10 @@ function CreateInvoice(props) {
   };
 
   useEffect(() => {
+    //setLoading(true);
     //console.log("TERCEROS CREADOS : ", listaTercerosCreados);
     //console.log("FACTURAS LEIDAS : ", datosClientesFacturas);
     if (actualizaBD) {
-      setLoading(true);
       console.log("ENCABEZADO PEDIDOS : ", lisPedidos);
       console.log("DETALLE PEDIDOS : ", listDetalleFacturas);
 
@@ -352,7 +358,7 @@ function CreateInvoice(props) {
                 if (contador === longitud) {
                   console.log("VALOR RESPONSE : ", res);
                   leerProductoSiigo(true);
-                  //setLoading(false);
+                  setLoading(false);
                 }
               })
               .catch(function (error) {
@@ -485,7 +491,7 @@ function CreateInvoice(props) {
           .then((res) => {
             setCodigosCategorias(res.data);
             //validaContraSiigo();
-            //setLoading(false);
+            setLoading(false);
           })
           .catch(function (error) {
             console.log("ERROR LEYENDO PEDIDOS");
@@ -523,10 +529,6 @@ function CreateInvoice(props) {
       //console.log("Items pedidos : ", dbitemspedidos);
       //console.log("Productos : ", dbproductos);
       //console.log("Pedidos : ", dbpedidos);
-      setTimeout(() => {
-        setContraSiigo(true);
-      }, 60000);
-      
       setLoading(false);
       setValidarDatos(false);
     }
@@ -594,6 +596,8 @@ function CreateInvoice(props) {
                 if (cantidad == contar) {
                   leeIdentificacion();
                 }
+
+                setLoading(false);
               })
               .catch(function (error) {
                 contar = contar + 1;
@@ -605,10 +609,7 @@ function CreateInvoice(props) {
           };
           actualiza();
         });
-        setLoading(false);
-        setContraSiigo(false);
-      //setInterval(setLoading(false),100000);
-      
+      setContraSiigo(false);
     }
   }, [contraSiigo]);
 
@@ -703,16 +704,12 @@ function CreateInvoice(props) {
 
                         if (cont == long) {
                           setLoading(false);
-                          setLeePedidos(false)
-                          alert("DATOS ACTUALIZADOS");
                         }
                       })
                       .catch(function (error) {
                         cont = cont + 1;
                         if (cont == long) {
                           setLoading(false);
-                          setLeePedidos(false);
-                          alert("DATOS ACTUALIZADOS");
                         }
                         console.log("ERROR Actualizando");
                       });
@@ -736,17 +733,27 @@ function CreateInvoice(props) {
       <br />
       <div className="mb-30 ml-10">
         <Row>
-          <Col xl={5} lg={5} md={5} xs={5} className="mlmenos50 mtmenos5">
-          </Col>
           <Col xl={3} lg={3} md={3} xs={3}>
-            <div className="tamañofuentetercero">Actualizando Datos</div>
+            <div className="tamañofuentetercero">Pagina inicial:</div>
           </Col>
-         
+          <Col xl={3} lg={3} md={3} xs={3} className="mlmenos50 mtmenos5">
+            <div className="form-horizontal auth-form">
+              <div>
+                <input
+                  name="pagina"
+                  type="numeric"
+                  className="form-control"
+                  placeholder="Ingresé página inicial"
+                  id="exampleInputEmail12"
+                  onChange={(e) => handleChangePagina(e.target.value)}
+                />
+              </div>
+            </div>
+          </Col>
         </Row>
       </div>
       <hr />
       <Row>
-         {/* 
         <Col xl={3} lg={3} md={3} xs={3}>
           <button className="botoncrearcliente" color="primary">
             <ReactHTMLTableToExcel
@@ -757,8 +764,6 @@ function CreateInvoice(props) {
             />
           </button>
         </Col>
-       
-
         <Col xl={3} lg={3} md={3} xs={3}>
           <button
             className="botoncrearcliente"
@@ -777,10 +782,53 @@ function CreateInvoice(props) {
             Validar Datos
           </button>
         </Col>
-         */}
       </Row>
       <hr />
-
+      {
+        <table id="ubicacionesequipos" className="table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Id</th>
+              <th>Sku</th>
+              <th>Name</th>
+              <th>Cantidad</th>
+              <th>IDGrp</th>
+              <th>Nombre Grp</th>
+              <th>Codigobarra</th>
+              <th>Marca</th>
+              <th>Bodega</th>
+              <th>Nombre Bodega</th>
+              <th>valor</th>
+              <th>Impuestos</th>
+              <th>Fecha de Creación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lisProductosSiigo &&
+              lisProductosSiigo.map((facturas, index) => {
+                return (
+                  <tr>
+                    <td>{facturas.code}</td>
+                    <td>{facturas.id}</td>
+                    <td>{facturas.sku}</td>
+                    <td>{facturas.name}</td>
+                    <td>{facturas.cantidad}</td>
+                    <td>{facturas.idgrupo}</td>
+                    <td>{facturas.nombregrupo}</td>
+                    <td>{facturas.codigobarra}</td>
+                    <td>{facturas.marca}</td>
+                    <td>{facturas.bodega}</td>
+                    <td>{facturas.nombre}</td>
+                    <td>{facturas.valor}</td>
+                    <td>{facturas.impuestos}</td>
+                    <td>{facturas.fechacreacion}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      }
     </div>
   );
 }
