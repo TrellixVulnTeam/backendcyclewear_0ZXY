@@ -54,6 +54,7 @@ export const MENUITEMS = [
             { path: '/sales/transactions', title: 'Facturación', type: 'link' },
             { path: '/sales/ValidateThird', title: 'Validar Terceros', type: 'link' },
             { path: '/sales/CreateInvoice', title: 'Crear Pedidos', type: 'link' },
+            { path: '/sales/UpdateCodigosPrd', title: 'Actualiza Items', type: 'link' },
         ]
     },
     {

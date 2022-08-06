@@ -1,0 +1,206 @@
+import React, { Fragment, useEffect, useState } from "react";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
+import Breadcrumb from "../common/breadcrumb";
+import MaterialTable from "material-table";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import CancelIcon from "@material-ui/icons/Cancel";
+import EditAttributesIcon from "@material-ui/icons/EditAttributes";
+import Moment from "moment";
+import swal from "sweetalert";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Container,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Button,
+  Modal,
+  ModalFooter,
+  ModalHeader,
+  ModalBody,
+} from "reactstrap";
+//import Loading from "../../../components/elements/Loading";
+import EditIcon from "@material-ui/icons/Edit";
+import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
+import Loading from "../elements/Loading/Loading";
+import ListarProductos from "../products/physical/ListarProductos";
+
+function CreateInvoice(props) {
+  const [lisPedidos, setListPedidos] = useState([]);
+  const [lisProductosSiigo, setListProductosSiigo] = useState([]);
+  const [pagina, setPagina] = useState(false);
+  const [tipoTercero, setTipoTercero] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [leeFacturas, setLeeFacturas] = useState(false);
+  const [leePedidos, setLeePedidos] = useState(true);
+
+
+  setInterval('location.reload()', 3600000);
+
+  useEffect(() => {
+    if (leePedidos) {
+      const newDet = [];
+      setLeePedidos(false);
+      let contador = 100;
+      let contadordos = 0;
+
+      const consultaFacturas = async () => {
+        setLoading(true);
+        for (var i = 90; i < 101; i++) {
+          const params = {
+            pagina: i,
+          };
+          if (i == 98) {
+            //setLoading(false);
+            setLeeFacturas(true);
+            setLoading(false);
+            break;
+          }
+          contadordos = i;
+          //console.log("FECHA ", params);
+          await axios({
+            method: "post",
+            url: "https://sitbusiness.co/cyclewear/api/201",
+            params,
+          })
+            .then((res) => {
+              //console.log("DATOSXXXXX : ", res.data.data);
+              res.data.data &&
+                res.data.data.map((row, index) => {
+
+                  const leer = async () => {
+                    const params = {
+                      factura: row.id,
+                    };
+                    //console.log("LISTADO PEDIDOS : ", params)
+
+                    await axios({
+                      method: "get",
+                      url: "https://sitbusiness.co/cyclewear/api/202",
+                      params,
+                    })
+                      .then((res) => {
+                        let tamaño = res.data.included.length;
+                        let posicion = tamaño - 1;
+                        /*
+                        let direccion = res.data.included[posicion].attributes.address;
+                        let first_name = res.data.included[posicion].attributes.first_name;
+                        let surname = res.data.included[posicion].attributes.surname;
+                        let email_address = res.data.included[posicion].attributes.email_address;
+                        let city = res.data.included[posicion].attributes.city;
+                        let state = res.data.included[posicion].attributes.state;
+                        let postcode = res.data.included[posicion].attributes.postcode;
+*/if(res.data.id == 107651)
+                        console.log("DETALLE PEDIDOD : ", res.data);
+                        return
+                      })
+                      .catch(function (error) {
+                        console.log("ERROR LEYENDO FACTURAS");
+                      });
+                  }
+                  leer();
+
+
+
+                  let item = {
+                    pedido: row.id, //row.ttributes,
+                    estado: row.attributes.status,
+                    estadoDos: row.attributes.delivery_type
+                  }
+                  newDet.push(item);
+                });
+              console.log("DATOS RETORNA : ", newDet);
+              setListPedidos(newDet);
+            });
+        }
+      };
+      consultaFacturas();
+    }
+  }, []);
+
+
+  return (
+    <div>
+      {loading ? <Loading /> : null}
+      <br />
+      <div className="mb-30 ml-10">
+        <Row>
+          <Col xl={5} lg={5} md={5} xs={5} className="mlmenos50 mtmenos5">
+          </Col>
+          <Col xl={3} lg={3} md={3} xs={3}>
+            <div className="tamañofuentetercero">Actualizando Datos</div>
+          </Col>
+
+        </Row>
+      </div>
+      <hr />
+      <Row>
+
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button className="botoncrearcliente" color="primary">
+            <ReactHTMLTableToExcel
+              table="ubicacionesequipos"
+              filename="DatosClientesCWR"
+              sheet="Sheet"
+              buttonText="Exportar a Excel"
+            />
+          </button>
+        </Col>
+
+        <table id="ubicacionesequipos" className="table">
+          <thead>
+            <tr>
+              <th>Pedido</th>
+              <th>Estado</th>
+              <th>EstadoDos</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lisPedidos &&
+              lisPedidos.map((facturas, index) => {
+                return (
+                  <tr>
+                    <td>{facturas.pedido}</td>
+                    <td>{facturas.estado}</td>
+                    <td>{facturas.estadoDos}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+
+        {/* 
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={readPedidos}
+          >
+            Lee Pedidos BE
+          </button>
+        </Col>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={validaContraSiigo}
+          >
+            Validar Datos
+          </button>
+        </Col>
+         */}
+      </Row>
+      <hr />
+
+    </div>
+  );
+}
+
+export default CreateInvoice;

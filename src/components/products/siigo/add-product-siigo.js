@@ -44,7 +44,7 @@ function AddProductSiigo(props) {
   const [actualizaBD, setActualizaBD] = useState(false);
   const [contraSiigo, setContraSiigo] = useState(false);
   const [validarCedula, setValidarCedula] = useState(false);
-
+  const [itemUpdate, setItemUpdate] = useState([]);
   const [datapedidos, setDatapedidos] = useState([]);
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
   const [pendienteCrear, setPendienteCrear] = useState([]);
@@ -102,6 +102,7 @@ function AddProductSiigo(props) {
                   categoriauno: items.categoriauno,
                   categoriados: items.categoriados,
                   categoriatres: items.categoriatres,
+                  categoriacuatro: items.categoriacuatro,
                 }
                 newProdPend.push(row);
               }
@@ -130,151 +131,193 @@ function AddProductSiigo(props) {
         });
     };
     consecutivoscategorias();
-
-    /*
- const leeConsecutivo = async () => {
-                        const params = {
-                          tipoproducto: categoriauno,
-                          categoriauno: categoriados,
-                          categoriados: categoriatres,
-                          categoriatres: categoriacuatro
-                          //categoriacuatro:
-                        };
-
-                        await axios({
-                          method: "post",
-                          url: "https://sitbusiness.co/cyclewear/api/28",
-                          params,
-                        })
-                          .then((res) => {
-                            console.log("CONSECUTIVO : ", res.data[0].codigo);
-                            codigoconsecutivo = res.data[0].codigo;
-                            //setListIdentificacion(newDetId[0]);
-                          })
-                          .catch(function (error) {
-                            console.log("ERROR LEYENDO FACTURAS");
-                          });
-                      };
-                      leeConsecutivo();
-      */
-
     //console.log("Items pedidos : ", dbitemspedidos);
     //console.log("Productos : ", dbproductos);
     //console.log("Pedidos : ", dbpedidos);
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    if (contraSiigo) {
-      console.log("Items pedidos : ", dataitemspedidos);
-      console.log("Pedidos : ", datapedidos);
-      console.log("Codigos Categorias : ", codigoscategorias);
+  const validaContraSiigo = async () => {
+    setContraSiigo(true);
+  };
 
-      setLoading(true);
+  const seleccionarPedido = (pedido) => {
 
-      const newItemPed = [];
-      dataitemspedidos &&
-        dataitemspedidos.map((items, index) => {
-          if (items.sincodigosiigo == 0) {
-            codigoscategorias &&
-              codigoscategorias.map((categoria, index) => {
-                console.log("Codigos Categorias : ", categoria);
-                if (
-                  items.categoriauno === categoria.nombretipoproducto &&
-                  items.categoriados === categoria.nombrecategoriauno &&
-                  items.categoriatres === categoria.nombrecategoriados &&
-                  items.categoriacuatro === categoria.nombrecategoriatres
-                ) {
-                  let row = {
-                    itempedido: items.itempedido,
-                    pedido: items.pedido,
-                    advert_name: items.advert_name,
-                    advert_code: items.advert_code,
-                    brand_name: items.brand_name,
-                    price: items.price,
-                    precio1: items.price,
-                    precio2: items.price,
-                    quantity: items.quantity,
-                    sincodigosiigo: items.sincodigosiigo,
-                    codigoconsecutivo: items.codigoconsecutivo,
-                    subtotal: items.subtotal,
-                    tax_total: items.tax_total,
-                    taxon_name: items.taxon_name,
-                    total: items.total,
-                    variant_barcode: items.variant_barcode,
-                    variant_name: items.variant_name,
-                    variant_sku: items.variant_sku,
-                    codigoproductosiigo: items.codigoproductosiigo,
-                    direccion: items.direccion,
-                    observaciones: items.observaciones,
-                    categoriauno: items.categoriauno,
-                    categoriados: items.categoriados,
-                    categoriatres: items.categoriatres,
-                    categoriacuatro: items.categoriacuatro,
-                    codigoconsecutivo: categoria.codigo,
-                    siguiente: categoria.siguiente,
-                    consecutivo: categoria.consecutivo,
-                  };
-                  newItemPed.push(row);
-                }
-              });
-          }
-        });
-      console.log("ITEMS CREAR : ", newItemPed);
-      setitemsCrear(newItemPed);
-      let contar = 0;
-      const newCreaPrd = [];
+  }
 
-      newItemPed &&
-        newItemPed.map((items, index) => {
-          contar = contar + 1;
-          let newcod = items.codigoconsecutivo + "000001";
-          const params = {
-            code: newcod,
-            name: items.advert_name,
-            reference: items.variant_sku,
-            description: items.taxon_name,
-            barcode: items.variant_barcode,
-            brand: items.brand_name,
+  const grabarDatos = (datos) => {
+    console.log("DATOS ITEM PEDIDO : ", datos);
+
+    let prefijo;
+    let contador;
+    let consecutivo;
+    let resultado;
+    let params;
+
+    const leeConsecutivo = async () => {
+      params = {
+        tipoproducto: datos.categoriauno,
+        categoriauno: datos.categoriados,
+        categoriados: datos.categoriatres,
+        categoriatres: datos.categoriacuatro
+      };
+
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/28",
+        params,
+      })
+        .then((res) => {
+          //console.log("CONSECUTIVO : ", res.data[0].codigo);
+          prefijo = res.data[0].codigo;
+          contador =res.data[0].consecutivo + 1;
+          consecutivo = String(contador);
+          resultado = prefijo + consecutivo.padStart(6, '000000');
+          //console.log("CONSECUTIVO : ", resultado);
+          //setListIdentificacion(newDetId[0]);
+
+            params = {
+            code: resultado,
+            name: datos.advert_name,
+            reference: datos.variant_sku,
+            description: datos.taxon_name,
+            barcode: datos.variant_barcode,
+            marca: datos.brand_name,
             tariff: "19",
             model: "Prueba",
-            price: items.price,
-            precio1: items.price,
-            precio2: items.price,
+            price: datos.price,
+            precio1: datos.price,
+            precio2: datos.price,
           };
 
           console.log("NEW CREA PRODUCTO : ", params);
 
-          if (items.codigoconsecutivo == "COFJU") {
             const creaproducto = async () => {
               await axios({
                 method: "post",
                 url: "https://sitbusiness.co/cyclewear/api/711",
                 params,
               })
-                .then((res) => {
-                  console.log("RETORNA API :", res);
-
+                .then((rest) => {
+                  console.log("RETORNA API :", rest);
+                  if (rest.status === 200) {
+                    swal(
+                      "CYCLE WEAR",
+                      "Producto registrado en SIIGO de forma correcta!",
+                      "success",
+                      { button: "Aceptar" }
+                    );
+                    const actualizaPrefijo = async () => {
+                      //alert("ENTRE")
+                      params = {
+                        consecutivo: contador,
+                        prefijo: prefijo
+                      }
+                      await axios({
+                        method: "post",
+                        url: "https://sitbusiness.co/cyclewear/api/19",
+                        params
+                      })
+                        .then((result) => {
+                          if (result.status === 200) {
+                            swal(
+                              "CYCLE WEAR",
+                              "Consecutivo prefijo actualizado de forma correcta!",
+                              "success",
+                              { button: "Aceptar" }
+                            );
+                            const actualiza = async () => {
+                              params = {
+                                estado: 2,
+                                itempedido: datos.itempedido,
+                                codigosiigo: resultado
+                              };
+              
+                              await axios({
+                                method: "post",
+                                url: "https://sitbusiness.co/cyclewear/api/718",
+                                params,
+                              })
+                                .then((res) => {
+                                  console.log("Actualizando : ", params);
+                                  
+                                })
+                                .catch(function (error) {
+                                  console.log("ERROR Actualizando");
+                                });
+                            };
+                            actualiza();
+                          } else {
+                            swal(
+                              "CYCLE WEAR",
+                              "Error al actualizar conseutivo prefijo, Intenta nuevamente!",
+                              "warning",
+                              { button: "Aceptar" }
+                            );
+                          }
+                        })
+                        .catch(function (error) {
+                          console.log("ERROR ACTUALIZANDO PREFIJOS");
+                        });
+                    };
+                    actualizaPrefijo();
+                  } else {
+                    swal(
+                      "CYCLE WEAR",
+                      "Error al grabar el producto en SIIGO, Intenta nuevamente!",
+                      "warning",
+                      { button: "Aceptar" }
+                    );
+                  }
                   setLoading(false);
                 })
                 .catch(function (error) {
                   console.log("ERROR Actualizando");
                 });
-
-              if (contar > 0) return;
             };
             creaproducto();
-          }
+          
+        })
+        .catch(function (error) {
+          console.log("ERROR LEYENDO FACTURAS");
         });
-      //setLoading(false);
+    };
+    leeConsecutivo();
 
-      setContraSiigo(false);
-    }
-  }, [contraSiigo]);
+  }
 
-  const validaContraSiigo = async () => {
-    setContraSiigo(true);
-  };
+  const columnas = [
+    {
+      field: 'codigoconsecutivo',
+      title: 'Codigo',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'pedido',
+      title: 'Pedido',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'variant_sku',
+      title: 'Sku',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'price',
+      title: 'Precio',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'categoriauno',
+      title: 'Tipo de producto',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'categoriados',
+      title: 'Categoría',
+      cellStyle: { minWidth: 50 }
+    },
+  ]
 
   return (
     <div>
@@ -314,39 +357,33 @@ function AddProductSiigo(props) {
           </Button>
         </Col>
       </Row>
-      <hr />
-      {
-        <table id="ubicacionesequipos" className="table">
-          <thead>
-            <tr>
-              <th>Codigo Siigo</th>
-              <th>Pedido</th>
-              <th>Sku</th>
-              <th>Name</th>
-              <th>Precio</th>
-              <th>Tipo Producto</th>
-              <th>Categoria Uno</th>
+      <MaterialTable
+        title="PEDIDOS CYCLE WEAR"
+        columns={columnas}
+        data={pendienteCrear}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const dataUpdate = [...pendienteCrear];
+                const index = oldData.tableData.id;
+                dataUpdate[index] = newData;
+                setPendienteCrear([...dataUpdate]);
+                setItemUpdate(newData);
+                grabarDatos(newData);
+                resolve();
+              }, 1000)
+            }),
 
-            </tr>
-          </thead>
-          <tbody>
-            {pendienteCrear &&
-              pendienteCrear.map((productos, index) => {
-                return (
-                  <tr>
-                    <td>{productos.codigoconsecutivo}</td>
-                    <td>{productos.pedido}</td>
-                    <td>{productos.variant_sku}</td>
-                    <td>{productos.advert_name}</td>
-                    <td>{productos.price}</td>
-                    <td>{productos.categoriauno}</td>
-                    <td>{productos.categoriados}</td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-      }
+        }}
+        options={{
+          actionsColumnIndex: 11,
+          headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+          rowStyle: rowData => ({
+            backgroundColor: (0 == rowData.sincodigosiigo) ? '#6699D0' : '#FFF'
+          })
+        }}
+      />
     </div>
   );
 }

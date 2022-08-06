@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import CancelIcon from "@material-ui/icons/Cancel";
 import EditAttributesIcon from "@material-ui/icons/EditAttributes";
+import SaveIcon from '@material-ui/icons/Save';
+
 import Moment from "moment";
 import swal from "sweetalert";
 import {
@@ -30,30 +32,15 @@ import EditIcon from "@material-ui/icons/Edit";
 import Loading from "../../elements/Loading/Loading";
 
 function AddClientSiigo(props) {
-
-  const [pagina, setPagina] = useState(false);
-  const [tipoTercero, setTipoTercero] = useState("");
   const [loading, setLoading] = useState(false);
-  const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
-  //const fechaactual = Moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-  const [datos, setDatos] = useState([]);
-  const dispatch = useDispatch();
-  const [itemsCrear, setitemsCrear] = useState(false);
-  const [leePedidos, setLeePedidos] = useState(false);
   const [pendienteCrear, setPendienteCrear] = useState([]);
   const [contraSiigo, setContraSiigo] = useState(false);
   const [validarCedula, setValidarCedula] = useState(false);
-
+  const [actualizar, setActualizar] = useState(false);
+  const [itemUpdate, setItemUpdate] = useState([]);
   const [datapedidos, setDatapedidos] = useState([]);
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
   const [codigoscategorias, setCodigosCategorias] = useState([]);
-
-  //console.log("IMAGEN : ", imagen1)
-
-  const readPedidos = () => {
-    setLeePedidos(true);
-    //setLeeFacturas(true);
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -64,8 +51,7 @@ function AddClientSiigo(props) {
       })
         .then((res) => {
           setDatapedidos(res.data);
-
-          console.log("PEDIDOS : ", res.data);
+          //console.log("PEDIDOS : ", res.data);
           const newPedCli = [];
           res.data &&
             res.data.map((items, index) => {
@@ -78,14 +64,13 @@ function AddClientSiigo(props) {
                   ciudad: items.ciudad,
                   direccion: items.direccion,
                   email: items.email,
+                  pedido: items.id_fact
                 }
                 newPedCli.push(row);
               }
             });
-          console.log("ITEMS CREAR : ", newPedCli);
+          //console.log("ITEMS CREAR : ", newPedCli);
           setPendienteCrear(newPedCli);
-
-
         })
         .catch(function (error) {
           console.log("ERROR LEYENDO PEDIDOS");
@@ -100,7 +85,6 @@ function AddClientSiigo(props) {
       })
         .then((res) => {
           setDataitemspedidos(res.data);
-          //validaContraSiigo();
         })
         .catch(function (error) {
           console.log("ERROR LEYENDO PEDIDOS");
@@ -123,319 +107,151 @@ function AddClientSiigo(props) {
         });
     };
     consecutivoscategorias();
-
-    /*
- const leeConsecutivo = async () => {
-                        const params = {
-                          tipoproducto: categoriauno,
-                          categoriauno: categoriados,
-                          categoriados: categoriatres,
-                          categoriatres: categoriacuatro
-                          //categoriacuatro:
-                        };
-
-                        await axios({
-                          method: "post",
-                          url: "https://sitbusiness.co/cyclewear/api/28",
-                          params,
-                        })
-                          .then((res) => {
-                            console.log("CONSECUTIVO : ", res.data[0].codigo);
-                            codigoconsecutivo = res.data[0].codigo;
-                            //setListIdentificacion(newDetId[0]);
-                          })
-                          .catch(function (error) {
-                            console.log("ERROR LEYENDO FACTURAS");
-                          });
-                      };
-                      leeConsecutivo();
-      */
-
-    //console.log("Items pedidos : ", dbitemspedidos);
-    //console.log("Productos : ", dbproductos);
-    //console.log("Pedidos : ", dbpedidos);
     setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (contraSiigo) {
-      console.log("Items pedidos : ", dataitemspedidos);
-      console.log("Pedidos : ", datapedidos);
-      console.log("Codigos Categorias : ", codigoscategorias);
-
-      setLoading(true);
-
-      const newItemPed = [];
-      dataitemspedidos &&
-        dataitemspedidos.map((items, index) => {
-          if (items.sincodigosiigo == 0) {
-            codigoscategorias &&
-              codigoscategorias.map((categoria, index) => {
-                console.log("Codigos Categorias : ", categoria);
-                if (
-                  items.categoriauno === categoria.nombretipoproducto &&
-                  items.categoriados === categoria.nombrecategoriauno &&
-                  items.categoriatres === categoria.nombrecategoriados &&
-                  items.categoriacuatro === categoria.nombrecategoriatres
-                ) {
-                  let row = {
-                    itempedido: items.itempedido,
-                    pedido: items.pedido,
-                    advert_name: items.advert_name,
-                    advert_code: items.advert_code,
-                    brand_name: items.brand_name,
-                    direccion: items.direccion,
-                    precio1: items.price,
-                    precio2: items.price,
-                    quantity: items.quantity,
-                    sincodigosiigo: items.sincodigosiigo,
-                    codigoconsecutivo: items.codigoconsecutivo,
-                    subtotal: items.subtotal,
-                    tax_total: items.tax_total,
-                    taxon_name: items.taxon_name,
-                    total: items.total,
-                    variant_barcode: items.variant_barcode,
-                    variant_name: items.variant_name,
-                    variant_sku: items.variant_sku,
-                    codigoproductosiigo: items.codigoproductosiigo,
-                    direccion: items.direccion,
-                    observaciones: items.observaciones,
-                    categoriauno: items.categoriauno,
-                    categoriados: items.categoriados,
-                    categoriatres: items.categoriatres,
-                    categoriacuatro: items.categoriacuatro,
-                    codigoconsecutivo: categoria.codigo,
-                    siguiente: categoria.siguiente,
-                    consecutivo: categoria.consecutivo,
-                  };
-                  newItemPed.push(row);
-                }
-              });
-          }
-        });
-      console.log("ITEMS CREAR : ", newItemPed);
-      setitemsCrear(newItemPed);
-      let contar = 0;
-      const newCreaPrd = [];
-
-      newItemPed &&
-        newItemPed.map((items, index) => {
-          contar = contar + 1;
-          let newcod = items.codigoconsecutivo + "000001";
-          const params = {
-            code: newcod,
-            name: items.advert_name,
-            reference: items.variant_sku,
-            description: items.taxon_name,
-            barcode: items.variant_barcode,
-            brand: items.brand_name,
-            tariff: "19",
-            model: "Prueba",
-            price: items.price,
-            precio1: items.price,
-            precio2: items.price,
-          };
-
-          console.log("NEW CREA PRODUCTO : ", params);
-
-          if (items.codigoconsecutivo == "COFJU") {
-            const creaproducto = async () => {
-              await axios({
-                method: "post",
-                url: "https://sitbusiness.co/cyclewear/api/711",
-                params,
-              })
-                .then((res) => {
-                  console.log("RETORNA API :", res);
-
-                  setLoading(false);
-                })
-                .catch(function (error) {
-                  console.log("ERROR Actualizando");
-                });
-
-              if (contar > 0) return;
-            };
-            creaproducto();
-          }
-        });
-      //setLoading(false);
-
-      setContraSiigo(false);
-    }
-  }, [contraSiigo]);
+  }, [actualizar]);
 
   const validaContraSiigo = async () => {
-    setContraSiigo(true);
-  };
-
-  useEffect(() => {
-    if (validarCedula) {
-      console.log("Items pedidos - CEDULA : ", dataitemspedidos);
-      console.log("Pedidos - CEDULA : ", datapedidos);
-      console.log("Categorias - CEDULA: ", codigoscategorias);
-
-      setLoading(true);
-      let contador = 0;
-
-      const newItem = [];
-      datapedidos &&
-        datapedidos.map((items, index) => {
-          if (items.estadocliente == 0) {
-            contador = contador + 1;
-
-            if (contador == 1) {
-              let params = {
-                type: "Customer",
-                person_type: "Person",
-                id_type: "13",
-                identification: 792061111, //items.idcliente,
-                check_digit: "4",
-                nombre: "William",
-                apellido: "Castro",
-                commercial_name: "Cyclewear",
-                branch_office: 0,
-                active: "true",
-                vat_responsible: "false",
-                code: "R-99-PN",
-                address: "Cra 30 # 72 sur 02",
-                country_code: "Co",
-                state_code: "19",
-                city_code: "19001",
-                postal_code: "110911",
-                indicative: "57",
-                number: "3155337803",
-                extension: "132",
-                first_name: "William",
-                last_name: "Castro",
-                email: "williamcastrov@gmail.com",
-                indicative: "57",
-                number: "3155337803",
-                extension: "132",
-                comments: "Prueba",
-                seller_id: "809",
-                collector_id: "809"
-              };
-              newItem.push(params);
-              console.log("PEDIDO : ", params);
-
-              const creaInt = async () => {
-                await axios({
-                  method: 'post',
-                  url: 'https://sitbusiness.co/cyclewear/api/101', params
-                }).then((res) => {
-                  console.log("RESPONSE : ", res)
-
-                  if (res.data.type === 1) {
-                    swal(
-                      "CYCLE WEAR",
-                      "Registro interlocutor SIIGO de forma correcta!",
-                      "success",
-                      { button: "Aceptar" }
-                    );
-                  } else {
-                    swal(
-                      "CYCLE WEAR",
-                      "Error al grabar el interlocutor en SIIGO, Intenta nuevamente!",
-                      "warning",
-                      { button: "Aceptar" }
-                    );
-                  }
-                }).catch(function (error) {
-                  console.log("ERROR LEYENDO CONSECUTIVO");
-                })
-              }
-              creaInt();
-            }
-          }
-        });
-      setLoading(false);
-
-      setValidarCedula(false);
-    }
-  }, [validarCedula]);
-
-  const validaTercero = async () => {
     setValidarCedula(true);
   };
 
-  const leeIdentificacion = async () => {
+  const seleccionarPedido = (pedido) => {
+    console.log("Items pedidos - CEDULA : ", pedido);
+    
     setLoading(true);
+    let contador = 0;
 
-    let contador = datapedidos.length;
-    //console.log("NUMERO PEDIDOS : ", contador);
+    let params = {
+      type: "Customer",
+      person_type: "Person",
+      id_type: "13",
+      identification: pedido.cedula, //items.idcliente,
+      check_digit: "4",
+      nombre: pedido.nombre,
+      apellido: pedido.apellido,
+      commercial_name: "Cyclewear",
+      branch_office: 0,
+      active: "true",
+      vat_responsible: "false",
+      code: "R-99-PN",
+      address: pedido.direccion,
+      country_code: "Co",
+      state_code: "19",
+      city_code: "19001",
+      postal_code: "110911",
+      indicative: "57",
+      number: "3155337803",
+      extension: "132",
+      first_name: pedido.nombre,
+      last_name: pedido.apellido,
+      email: pedido.email,
+      indicative: "57",
+      number: "3155337803",
+      extension: "132",
+      comments: "Prueba",
+      seller_id: "809",
+      collector_id: "809"
+    };
 
-    let contadordos = 0;
+    console.log("PEDIDO : ", params);
 
-    const newItems = [];
+    const creaInt = async () => {
+      await axios({
+        method: 'post',
+        url: 'https://sitbusiness.co/cyclewear/api/101', params
+      }).then((res) => {
+        console.log("RESPONSE : ", res)
 
-    datapedidos &&
-      datapedidos.map((pedido, index) => {
-        const identificacion = async () => {
-          const params = {
-            factura: pedido.id_fact,
-          };
+        if (res.status === 200) {
+          swal(
+            "CYCLE WEAR",
+            "Registro interlocutor SIIGO de forma correcta!",
+            "success",
+            { button: "Aceptar" }
+          );
+        } else {
+          swal(
+            "CYCLE WEAR",
+            "Error al grabar el interlocutor en SIIGO, Intenta nuevamente!",
+            "warning",
+            { button: "Aceptar" }
+          );
+        }
+      }).catch(function (error) {
+        console.log("ERROR LEYENDO CONSECUTIVO");
+      })
+    }
+    creaInt();
 
-          await axios({
-            method: "post",
-            url: "https://sitbusiness.co/cyclewear/api/709",
-            params,
-          })
-            .then((res) => {
-              contadordos = contadordos + 1;
-              console.log("Contador : ", contadordos);
+    setLoading(false);
+    //setValidarCedula(false);
+  }
 
-              let items = {
-                pedido: pedido.id_fact,
-                cedula: res.data.DocumentID,
-              };
-              newItems.push(items);
+  const grabarDatos = (datos) => {
+    const params = {
+      apellido: datos.apellido,
+      ciudad: datos.ciudad,
+      departamento: datos.departamento,
+      direccion: datos.direccion,
+      email: datos.email,
+      cedula: datos.idcliente,
+      nombre: datos.nombre,
+      pedido: datos.pedido
+    };
 
-              if (contadordos == contador) {
-                let long = newItems.length;
-                let cont = 0;
+    const datosped = async () => {
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/214",
+        params,
+      })
+        .then((res) => {
+          console.log("DATOS PEDIDO : ", datos.idcliente);
+          seleccionarPedido(params);
+        })
+        .catch(function (error) {
+          console.log("ERROR EN DATOS PEDIDO");
+        });
+    };
+    datosped();
+  }
 
-                newItems.map((items, index) => {
-                  console.log("INFORMACION PEDIDOS : ", items);
-                  const actualizaId = async () => {
-                    const params = {
-                      cedula: items.cedula,
-                      pedido: items.pedido,
-                    };
-
-                    await axios({
-                      method: "post",
-                      url: "https://sitbusiness.co/cyclewear/api/212",
-                      params,
-                    })
-                      .then((res) => {
-                        cont = cont + 1;
-                        console.log("Actualizando Pedido : ", items.pedido);
-
-                        if (cont == long) {
-                          setLoading(false);
-                        }
-                      })
-                      .catch(function (error) {
-                        cont = cont + 1;
-                        if (cont == long) {
-                          setLoading(false);
-                        }
-                        console.log("ERROR Actualizando");
-                      });
-                  };
-                  actualizaId();
-                });
-              }
-            })
-            .catch(function (error) {
-              contadordos = contadordos + 1;
-              console.log("ERROR Actualizando");
-            });
-        };
-        identificacion();
-      });
-  };
+  const columnas = [
+    {
+      field: 'idcliente',
+      title: 'Cedula',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'nombre',
+      title: 'Nombre',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'apellido',
+      title: 'Apellido',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'departamento',
+      title: 'Departamento',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'ciudad',
+      title: 'Ciudad',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'direccion',
+      title: 'direccion',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'email',
+      title: 'Correo',
+      cellStyle: { minWidth: 50 }
+    }
+  ]
 
   return (
     <div>
@@ -454,17 +270,6 @@ function AddClientSiigo(props) {
           />
 
         </Col>
-        {/*
-        <Col xl={3} lg={3} md={3} xs={3}>
-          <Button
-            className="botonestercero"
-            color="primary"
-            onClick={validaContraSiigo}
-          >
-            Por Crear en SIIGO
-          </Button>
-        </Col>
-        */}
         <Col xl={3} lg={3} md={3} xs={3}>
           <Button
             className="botonestercero"
@@ -475,38 +280,34 @@ function AddClientSiigo(props) {
           </Button>
         </Col>
       </Row>
-      <hr />
-      {
-        <table id="ubicacionesequipos" className="table">
-          <thead>
-            <tr>
-              <th>Cedula</th>
-              <th>Nombres</th>
-              <th>Apellido</th>
-              <th>departamento</th>
-              <th>Ciudad</th>
-              <th>Dirección</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pendienteCrear &&
-              pendienteCrear.map((facturas, index) => {
-                return (
-                  <tr>
-                    <td>{facturas.idcliente}</td>
-                    <td>{facturas.nombre}</td>
-                    <td>{facturas.apellido}</td>
-                    <td>{facturas.departamento}</td>
-                    <td>{facturas.ciudad}</td>
-                    <td>{facturas.direccion}</td>
-                    <td>{facturas.email}</td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
-      }
+
+      <MaterialTable
+        title="PEDIDOS CYCLE WEAR"
+        columns={columnas}
+        data={pendienteCrear}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const dataUpdate = [...pendienteCrear];
+                const index = oldData.tableData.id;
+                dataUpdate[index] = newData;
+                setPendienteCrear([...dataUpdate]);
+                setItemUpdate(newData);
+                grabarDatos(newData);
+                resolve();
+              }, 1000)
+            }),
+
+        }}
+        options={{
+          actionsColumnIndex: 11,
+          headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+          rowStyle: rowData => ({
+            backgroundColor: (0 == rowData.sincodigosiigo) ? '#6699D0' : '#FFF'
+          })
+        }}
+      />
     </div>
   );
 }
