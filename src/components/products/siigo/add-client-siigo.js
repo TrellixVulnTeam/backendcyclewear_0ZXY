@@ -34,13 +34,17 @@ import Loading from "../../elements/Loading/Loading";
 function AddClientSiigo(props) {
   const [loading, setLoading] = useState(false);
   const [pendienteCrear, setPendienteCrear] = useState([]);
-  const [contraSiigo, setContraSiigo] = useState(false);
   const [validarCedula, setValidarCedula] = useState(false);
   const [actualizar, setActualizar] = useState(false);
   const [itemUpdate, setItemUpdate] = useState([]);
   const [datapedidos, setDatapedidos] = useState([]);
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
   const [codigoscategorias, setCodigosCategorias] = useState([]);
+  const fechaactual = Moment("2020-01-01").format("YYYY-MM-DD");
+  const [listaTercerosCreados, setListaTercerosCreados] = useState([]);
+  const [validarDatos, setValidarDatos] = useState(true);
+
+  console.log("FECHA ACTUAL : ", fechaactual)
 
   useEffect(() => {
     setLoading(true);
@@ -77,6 +81,46 @@ function AddClientSiigo(props) {
         });
     };
     pedidos();
+
+    const newDetCedula = [];
+    const leeTercerosSiigo = async () => {
+
+      for (var i = 1; i < 10; i++) {
+        const params = {
+          pagina: i,
+        };
+
+        if (i == 9) {
+          setLoading(false);
+          setListaTercerosCreados(newDetCedula);
+          console.log("CEDULAS SIIGO : ", newDetCedula);
+          break;
+        }
+
+        await axios({
+          method: 'post',
+          url: 'https://sitbusiness.co/cyclewear/api/100', params
+        }).then(rest => {
+          if (rest) {
+            //console.log("RETORNA : ", rest.data.results);
+            rest.data.results &&
+              rest.data.results.map((row, index) => {
+                //console.log("ID FACTURAS LEIDAS : ", row);
+                let item = {
+                  identification: row.identification,
+                  name: row.name[0],
+                  person_type: row.person_type
+                };
+                newDetCedula.push(item);
+              });
+          }
+        }
+        ).catch(function (error) {
+          console.log("ERROR LEYENDO FACTURAS");
+        })
+      }
+    }
+    leeTercerosSiigo();
 
     const itemspedidos = async () => {
       await axios({
@@ -115,72 +159,121 @@ function AddClientSiigo(props) {
   };
 
   const seleccionarPedido = (pedido) => {
-    console.log("Items pedidos - CEDULA : ", pedido);
-    
-    setLoading(true);
-    let contador = 0;
-
-    let params = {
-      type: "Customer",
-      person_type: "Person",
-      id_type: "13",
-      identification: pedido.cedula, //items.idcliente,
-      check_digit: "4",
-      nombre: pedido.nombre,
-      apellido: pedido.apellido,
-      commercial_name: "Cyclewear",
-      branch_office: 0,
-      active: "true",
-      vat_responsible: "false",
-      code: "R-99-PN",
-      address: pedido.direccion,
-      country_code: "Co",
-      state_code: "19",
-      city_code: "19001",
-      postal_code: "110911",
-      indicative: "57",
-      number: "3155337803",
-      extension: "132",
-      first_name: pedido.nombre,
-      last_name: pedido.apellido,
-      email: pedido.email,
-      indicative: "57",
-      number: "3155337803",
-      extension: "132",
-      comments: "Prueba",
-      seller_id: "809",
-      collector_id: "809"
-    };
-
-    console.log("PEDIDO : ", params);
-
-    const creaInt = async () => {
-      await axios({
-        method: 'post',
-        url: 'https://sitbusiness.co/cyclewear/api/101', params
-      }).then((res) => {
-        console.log("RESPONSE : ", res)
-
-        if (res.status === 200) {
-          swal(
-            "CYCLE WEAR",
-            "Registro interlocutor SIIGO de forma correcta!",
-            "success",
-            { button: "Aceptar" }
-          );
-        } else {
-          swal(
-            "CYCLE WEAR",
-            "Error al grabar el interlocutor en SIIGO, Intenta nuevamente!",
-            "warning",
-            { button: "Aceptar" }
-          );
-        }
-      }).catch(function (error) {
-        console.log("ERROR LEYENDO CONSECUTIVO");
-      })
+    let valida = true;
+    if (pedido.cedula == "") {
+      swal(
+        "CYCLE WEAR",
+        "Pedido no registra cedula cliente!",
+        "success",
+        { button: "Aceptar" }
+      );
+      return
     }
-    creaInt();
+    console.log("Items pedidos - CEDULA : ", listaTercerosCreados);
+
+    if (listaTercerosCreados.length > 0) {
+      valida = true;
+      setValidarDatos(true);
+    }
+    else {
+      valida = false;
+      setValidarDatos(false);
+    }
+
+    if (!valida) {
+      swal(
+        "CYCLE WEAR",
+        "Autorización SIIGO vencida, debe renovar!",
+        "success",
+        { button: "Aceptar" }
+      );
+      return
+    }
+
+    listaTercerosCreados &&
+      listaTercerosCreados.map((items, index) => {
+        if (items.identification == pedido.cedula) {
+          setValidarDatos(false)
+          valida = false;
+        }
+      });
+
+    if (!valida) {
+      swal(
+        "CYCLE WEAR",
+        "Cedula ya existe en SIIGO, revisar!",
+        "success",
+        { button: "Aceptar" }
+      );
+      return
+    }
+
+    if (valida) {
+      setLoading(true);
+      let contador = 0;
+
+      let params = {
+        type: "Customer",
+        person_type: "Person",
+        id_type: "13",
+        identification: pedido.cedula, //items.idcliente,
+        check_digit: "4",
+        nombre: pedido.nombre,
+        apellido: pedido.apellido,
+        commercial_name: "Cyclewear",
+        branch_office: 0,
+        active: "true",
+        vat_responsible: "false",
+        code: "R-99-PN",
+        address: pedido.direccion,
+        country_code: "Co",
+        state_code: "19",
+        city_code: "19001",
+        postal_code: "110911",
+        indicative: "57",
+        number: "3155337803",
+        extension: "132",
+        first_name: pedido.nombre,
+        last_name: pedido.apellido,
+        email: pedido.email,
+        indicative: "57",
+        number: "3155337803",
+        extension: "132",
+        comments: "Prueba",
+        seller_id: "809",
+        collector_id: "809"
+      };
+
+      console.log("PEDIDO : ", params);
+
+      const creaInt = async () => {
+        await axios({
+          method: 'post',
+          url: 'https://sitbusiness.co/cyclewear/api/101', params
+        }).then((res) => {
+          console.log("RESPONSE : ", res)
+
+          if (res.status === 200) {
+            swal(
+              "CYCLE WEAR",
+              "Registro interlocutor SIIGO de forma correcta!",
+              "success",
+              { button: "Aceptar" }
+            );
+          } else {
+            swal(
+              "CYCLE WEAR",
+              "Error al grabar el interlocutor en SIIGO, Intenta nuevamente!",
+              "warning",
+              { button: "Aceptar" }
+            );
+          }
+        }).catch(function (error) {
+          console.log("ERROR LEYENDO CONSECUTIVO");
+        })
+      }
+      creaInt();
+    }
 
     setLoading(false);
     //setValidarCedula(false);
@@ -219,6 +312,11 @@ function AddClientSiigo(props) {
     {
       field: 'idcliente',
       title: 'Cedula',
+      cellStyle: { minWidth: 50 }
+    },
+    {
+      field: 'pedido',
+      title: 'Pedido',
       cellStyle: { minWidth: 50 }
     },
     {

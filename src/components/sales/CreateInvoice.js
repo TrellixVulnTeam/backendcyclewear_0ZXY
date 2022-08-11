@@ -45,7 +45,7 @@ function CreateInvoice(props) {
   const [datos, setDatos] = useState([]);
   const dispatch = useDispatch();
   const [leeFacturas, setLeeFacturas] = useState(false);
-  const [leePedidos, setLeePedidos] = useState(false);
+  const [leePedidos, setLeePedidos] = useState(true);
   const [actualizaBD, setActualizaBD] = useState(false);
   const [validarDatos, setValidarDatos] = useState(false);
   const [contraSiigo, setContraSiigo] = useState(false);
@@ -96,7 +96,7 @@ function CreateInvoice(props) {
             params,
           })
             .then((res) => {
-              //console.log("DATOS RETORNA : ", res.data.data);
+              console.log("DATOS RETORNA : ", res.data.data);
               res.data.data &&
                 res.data.data.map((row, index) => {
                   //console.log("ID FACTURAS LEIDAS : ", row);
@@ -124,6 +124,8 @@ function CreateInvoice(props) {
                     seller: row.attributes.seller_id,
                     valorimpuesto: row.attributes.tax_total,
                     porcentajeimpto: 0,
+                    delivery_type: row.attributes.delivery_type,
+                    status: row.attributes.status,
                     Observaciones: "",
                   };
 
@@ -195,12 +197,13 @@ function CreateInvoice(props) {
                 let city = res.data.included[posicion].attributes.city;
                 let state = res.data.included[posicion].attributes.state;
                 let postcode = res.data.included[posicion].attributes.postcode;
+                //let status = res.data.included[posicion].attributes.status;
 
-                //console.log("DETALLE PEDIDOD : ", res.data.included[posicion].attributes.address, "TAMAÑO : ", tamaño);
+                console.log("DETALLE PEDIDOD : ", res.data.included[posicion].attributes);
                 //return
                 res.data.included &&
                   res.data.included.map((itempedido, index) => {
-                    //console.log("ITEM PEDIDOS : ", itempedido);
+                    console.log("ITEM PEDIDOS : ", itempedido);
                     let codigoproducto;
                 
                     if (itempedido.type == "line_items") {
@@ -259,6 +262,7 @@ function CreateInvoice(props) {
                         variant_barcode: itempedido.attributes.variant_barcode,
                         variant_name: itempedido.attributes.variant_name,
                         variant_sku: itempedido.attributes.variant_sku,
+                        status: itempedido.attributes.status,
                         nombre: first_name,
                         apellido: surname,
                         email: email_address,
@@ -344,6 +348,7 @@ function CreateInvoice(props) {
               variant_barcode: row.variant_barcode,
               variant_name: row.variant_name,
               variant_sku: row.variant_sku,
+              status: row.status,
               codigoproductosiigo: row.codigoproductosiigo,
               direccion: row.direccion,
               observaciones: "Items pedido # " + row.pedido,
@@ -503,36 +508,6 @@ function CreateInvoice(props) {
       };
       consecutivoscategorias();
 
-      /*
- const leeConsecutivo = async () => {
-                        const params = {
-                          tipoproducto: categoriauno,
-                          categoriauno: categoriados,
-                          categoriados: categoriatres,
-                          categoriatres: categoriacuatro
-                          //categoriacuatro:
-                        };
-
-                        await axios({
-                          method: "post",
-                          url: "https://sitbusiness.co/cyclewear/api/28",
-                          params,
-                        })
-                          .then((res) => {
-                            console.log("CONSECUTIVO : ", res.data[0].codigo);
-                            codigoconsecutivo = res.data[0].codigo;
-                            //setListIdentificacion(newDetId[0]);
-                          })
-                          .catch(function (error) {
-                            console.log("ERROR LEYENDO FACTURAS");
-                          });
-                      };
-                      leeConsecutivo();
-      */
-
-      //console.log("Items pedidos : ", dbitemspedidos);
-      //console.log("Productos : ", dbproductos);
-      //console.log("Pedidos : ", dbpedidos);
       setTimeout(() => {
         setContraSiigo(true);
       }, 60000);
@@ -587,7 +562,7 @@ function CreateInvoice(props) {
 
       newItems &&
         newItems.map((items, index) => {
-          console.log("ITEMS PEDIDOS : ", items);
+          //console.log("ITEMS PEDIDOS : ", items);
           const actualiza = async () => {
             const params = {
               estado: 0,
@@ -676,15 +651,17 @@ function CreateInvoice(props) {
           await axios({
             method: "post",
             url: "https://sitbusiness.co/cyclewear/api/709",
-            params,
+            params
           })
             .then((res) => {
+
+              //console.log("CEDULAS : ", res.data);
               contadordos = contadordos + 1;
               console.log("Contador : ", contadordos);
 
               let items = {
                 pedido: pedido.id_fact,
-                cedula: res.data.DocumentID,
+                cedula: res.data[0].document
               };
               newItems.push(items);
 
@@ -705,7 +682,7 @@ function CreateInvoice(props) {
                     await axios({
                       method: "post",
                       url: "https://sitbusiness.co/cyclewear/api/212",
-                      params,
+                      params
                     })
                       .then((res) => {
                         cont = cont + 1;
@@ -756,6 +733,15 @@ function CreateInvoice(props) {
       </div>
       <hr />
       <Row>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <button
+            className="botoncrearcliente"
+            color="primary"
+            onClick={leeIdentificacion}
+          >
+            Leer Identificacion
+          </button>
+        </Col> 
       </Row>
       <hr />
 

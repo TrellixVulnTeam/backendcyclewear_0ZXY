@@ -13,9 +13,12 @@ import swal from "sweetalert";
 import Loading from '../elements/Loading/Loading';
 import EditIcon from '@material-ui/icons/Edit';
 import EditAttributesIcon from '@material-ui/icons/EditAttributes';
+import "./ordenes.css";
 
 const Orders = () => {
 	const [lisPedidos, setListPedidos] = useState([]);
+	const [lisTodosPedidos, setListTodosPedidos] = useState([]);
+
 	const [pedidoSeleccionado, setPedidoSeleccionado] = useState([]);
 	const [lisItemsPedidos, setLisItemsPedidos] = useState([]);
 	const [listItemsPedidoSeleccionado, setListItemsPedidoSeleccionado] = useState([]);
@@ -38,6 +41,54 @@ const Orders = () => {
 			}).then(res => {
 				console.log("PEDIDOS : ", res.data)
 				setListPedidos(res.data);
+				setListTodosPedidos(res.data);
+
+				const newDet = [];
+				let longitud = res.data.length;
+				let contador = 0;
+
+				{
+					res.data && res.data.map((row, index) => {
+						{
+							contador = contador + 1;
+
+							if (row.status == "partially_sent" || row.status == "paid") {
+								let item = {
+									id_fact: row.id_fact,
+									id_siigo: row.id_siigo,
+									comprobante: row.comprobante,
+									prefijo: row.prefijo,
+									facturasiigo: row.facturasiigo,
+									fechafactura: row.fechafactura,
+									idcliente: row.idcliente,
+									estadocliente: row.estadocliente,
+									direccion: row.direccion,
+									nombre: row.nombre,
+									apellido: row.apellido,
+									email: row.email,
+									ciudad: row.ciudad,
+									departamento: row.departamento,
+									codigopostal: row.codigopostal,
+									valorfactura: row.valorfactura,
+									descuento: row.descuento,
+									cost_center: row.cost_center,
+									seller: row.seller,
+									status: row.status,
+									delivery_type: row.delivery_type,
+									valorimpuesto: row.valorimpuesto,
+									porcentajeimpto: row.porcentajeimpto,
+									observaciones: row.observaciones
+								};
+								newDet.push(item);
+							}
+
+							if (contador == longitud) {
+								setListPedidos(newDet);
+							}
+
+						}
+					})
+				}
 			}
 			).catch(function (error) {
 				console.log("ERROR LEYENDO PEDIDOS");
@@ -70,7 +121,6 @@ const Orders = () => {
 		}
 		leeItemsPedidos();
 	}, []);
-
 
 	const seleccionarPedido = (pedido, caso) => {
 		console.log("PEDIDO : ", pedido);
@@ -113,6 +163,149 @@ const Orders = () => {
 		(caso === "Pedido") ? abrirCerrarModalVariantes() : abrirCerrarModalVariantes()
 	}
 
+	const pendiente = () => {
+		const newDet = [];
+		let longitud = lisPedidos.length;
+		let contador = 0;
+
+		{
+			lisTodosPedidos && lisTodosPedidos.map((row, index) => {
+				{
+					contador = contador + 1;
+
+					if (row.status == "partially_sent" || row.status == "paid") {
+						let item = {
+							id_fact: row.id_fact,
+							id_siigo: row.id_siigo,
+							comprobante: row.comprobante,
+							prefijo: row.prefijo,
+							facturasiigo: row.facturasiigo,
+							fechafactura: row.fechafactura,
+							idcliente: row.idcliente,
+							estadocliente: row.estadocliente,
+							direccion: row.direccion,
+							nombre: row.nombre,
+							apellido: row.apellido,
+							email: row.email,
+							ciudad: row.ciudad,
+							departamento: row.departamento,
+							codigopostal: row.codigopostal,
+							valorfactura: row.valorfactura,
+							descuento: row.descuento,
+							cost_center: row.cost_center,
+							seller: row.seller,
+							status: row.status,
+							delivery_type: row.delivery_type,
+							valorimpuesto: row.valorimpuesto,
+							porcentajeimpto: row.porcentajeimpto,
+							observaciones: row.observaciones
+						};
+						newDet.push(item);
+					}
+
+					if (contador == longitud) {
+						setListPedidos(newDet);
+					}
+
+				}
+			})
+		}
+	}
+
+	const leidos = () => {
+		const newDet = [];
+		let longitud = lisPedidos.length;
+		let contador = 0;
+
+		{
+			lisTodosPedidos && lisTodosPedidos.map((row, index) => {
+				{
+					contador = contador + 1;
+
+					if (row.status == "ready") {
+						let item = {
+							id_fact: row.id_fact,
+							id_siigo: row.id_siigo,
+							comprobante: row.comprobante,
+							prefijo: row.prefijo,
+							facturasiigo: row.facturasiigo,
+							fechafactura: row.fechafactura,
+							idcliente: row.idcliente,
+							estadocliente: row.estadocliente,
+							direccion: row.direccion,
+							nombre: row.nombre,
+							apellido: row.apellido,
+							email: row.email,
+							ciudad: row.ciudad,
+							departamento: row.departamento,
+							codigopostal: row.codigopostal,
+							valorfactura: row.valorfactura,
+							descuento: row.descuento,
+							cost_center: row.cost_center,
+							seller: row.seller,
+							status: row.status,
+							delivery_type: row.delivery_type,
+							valorimpuesto: row.valorimpuesto,
+							porcentajeimpto: row.porcentajeimpto,
+							observaciones: row.observaciones
+						};
+						newDet.push(item);
+					}
+
+					if (contador == longitud) {
+						setListPedidos(newDet);
+					}
+
+				}
+			})
+		}
+	}
+
+	const todos = () => {
+		const newDet = [];
+		let longitud = lisPedidos.length;
+		let contador = 0;
+
+		{
+			lisTodosPedidos && lisTodosPedidos.map((row, index) => {
+				{
+					contador = contador + 1;
+					let item = {
+						id_fact: row.id_fact,
+						id_siigo: row.id_siigo,
+						comprobante: row.comprobante,
+						prefijo: row.prefijo,
+						facturasiigo: row.facturasiigo,
+						fechafactura: row.fechafactura,
+						idcliente: row.idcliente,
+						estadocliente: row.estadocliente,
+						direccion: row.direccion,
+						nombre: row.nombre,
+						apellido: row.apellido,
+						email: row.email,
+						ciudad: row.ciudad,
+						departamento: row.departamento,
+						codigopostal: row.codigopostal,
+						valorfactura: row.valorfactura,
+						descuento: row.descuento,
+						cost_center: row.cost_center,
+						seller: row.seller,
+						status: row.status,
+						delivery_type: row.delivery_type,
+						valorimpuesto: row.valorimpuesto,
+						porcentajeimpto: row.porcentajeimpto,
+						observaciones: row.observaciones
+					}
+					newDet.push(item);
+
+					if (contador == longitud) {
+						setListPedidos(newDet);
+					}
+				}
+			})
+		}
+	}
+
 	const abrirCerrarModalVariantes = () => {
 		setModalVariantes(!modalVariantes);
 	}
@@ -127,6 +320,16 @@ const Orders = () => {
 			title: 'Id Pedido',
 			field: 'id_fact'
 		},
+
+		{
+			title: 'Delivery',
+			field: 'delivery_type'
+		},
+		{
+			title: 'Status',
+			field: 'status'
+		},
+
 		{
 			title: 'Id Siigo',
 			field: 'id_siigo'
@@ -204,6 +407,35 @@ const Orders = () => {
 		<Fragment>
 			<Breadcrumb title="Pedidos Bike Exchange" parent="Sales" />
 			<Container fluid={true}>
+				<hr />
+				<Row>
+					<Col xl={2} lg={2} md={2} xs={2}>
+					</Col>
+					<Col xl={3} lg={3} md={3} xs={3}>
+						<button
+							className="botones"
+							onClick={pendiente}
+						>
+							Consultar Pendientes
+						</button>
+					</Col>
+					<Col xl={3} lg={3} md={3} xs={3}>
+						<button
+							className="botones"
+							onClick={leidos}
+						>
+							Consultar Leidos
+						</button>
+					</Col>
+					<Col xl={3} lg={3} md={3} xs={3}>
+						<button
+							className="botones"
+							onClick={todos}
+						>
+							Consultar Todos
+						</button>
+					</Col>
+				</Row>
 				<MaterialTable
 					title="Pedidos Cycle Wear"
 					columns={columnas}
@@ -221,12 +453,12 @@ const Orders = () => {
 						}
 					]}
 					options={{
-                        actionsColumnIndex: 11,
-                        headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
-                        rowStyle: rowData => ({
-                            backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
-                        })
-                    }}
+						actionsColumnIndex: 11,
+						headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+						rowStyle: rowData => ({
+							backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
+						})
+					}}
 				/>
 				<Modal className="modalitemspedidos" isOpen={modalVariantes} toggle={abrirCerrarModalVariantes}>
 					<ModalHeader
