@@ -401,27 +401,37 @@ function AddProductSiigo(props) {
     {
       field: 'codigoconsecutivo',
       title: 'Codigo',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'pedido',
       title: 'Pedido',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'variant_sku',
       title: 'Sku',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'price',
       title: 'Precio',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
+    },
+    {
+      field: 'advert_name',
+      title: 'Descripción',
+      cellStyle: { minWidth: 200 }
     },
     {
       field: 'categoriauno',
       title: 'Tipo de producto',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 50 },
+      cellStyle: { maxWidth: 50 }
     },
     {
       field: 'categoriados',

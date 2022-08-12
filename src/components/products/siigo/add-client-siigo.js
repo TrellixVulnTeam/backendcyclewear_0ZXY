@@ -55,7 +55,7 @@ function AddClientSiigo(props) {
       })
         .then((res) => {
           setDatapedidos(res.data);
-          //console.log("PEDIDOS : ", res.data);
+          console.log("PEDIDOS : ", res.data);
           const newPedCli = [];
           res.data &&
             res.data.map((items, index) => {
@@ -68,7 +68,8 @@ function AddClientSiigo(props) {
                   ciudad: items.ciudad,
                   direccion: items.direccion,
                   email: items.email,
-                  pedido: items.id_fact
+                  pedido: items.id_fact,
+                  telefono: items.phone
                 }
                 newPedCli.push(row);
               }
@@ -159,6 +160,8 @@ function AddClientSiigo(props) {
   };
 
   const seleccionarPedido = (pedido) => {
+    //console.log("DATOS CLIENTES : ",pedido)
+    
     let valida = true;
     if (pedido.cedula == "") {
       swal(
@@ -220,7 +223,7 @@ function AddClientSiigo(props) {
         check_digit: "4",
         nombre: pedido.nombre,
         apellido: pedido.apellido,
-        commercial_name: "Cyclewear",
+        commercial_name: "",
         branch_office: 0,
         active: "true",
         vat_responsible: "false",
@@ -231,15 +234,15 @@ function AddClientSiigo(props) {
         city_code: "19001",
         postal_code: "110911",
         indicative: "57",
-        number: "3155337803",
+        number: pedido.telefono,
         extension: "132",
         first_name: pedido.nombre,
         last_name: pedido.apellido,
         email: pedido.email,
         indicative: "57",
-        number: "3155337803",
+        number: pedido.telefono,
         extension: "132",
-        comments: "Prueba",
+        comments: "",
         seller_id: "809",
         collector_id: "809"
       };
@@ -280,6 +283,7 @@ function AddClientSiigo(props) {
   }
 
   const grabarDatos = (datos) => {
+    //console.log("DATOS : ", datos)
     const params = {
       apellido: datos.apellido,
       ciudad: datos.ciudad,
@@ -288,7 +292,8 @@ function AddClientSiigo(props) {
       email: datos.email,
       cedula: datos.idcliente,
       nombre: datos.nombre,
-      pedido: datos.pedido
+      pedido: datos.pedido,
+      telefono: datos.telefono
     };
 
     const datosped = async () => {

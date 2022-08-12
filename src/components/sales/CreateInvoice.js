@@ -197,6 +197,7 @@ function CreateInvoice(props) {
                 let city = res.data.included[posicion].attributes.city;
                 let state = res.data.included[posicion].attributes.state;
                 let postcode = res.data.included[posicion].attributes.postcode;
+                let phone = res.data.included[posicion].attributes.phone;
                 //let status = res.data.included[posicion].attributes.status;
 
                 console.log("DETALLE PEDIDOD : ", res.data.included[posicion].attributes);
@@ -269,6 +270,7 @@ function CreateInvoice(props) {
                         ciudad: city,
                         departamento: state,
                         codigopostal: postcode,
+                        phone: phone,
                         codigoproductosiigo: 0, //codigoproducto,
                         direccion: direccion,
                         observaciones: "",
@@ -633,7 +635,8 @@ function CreateInvoice(props) {
           codigopostal: items.codigopostal,
           direccion: items.direccion,
           status: estado,
-          delivery_type: delivery
+          delivery_type: delivery,
+          phone: items.phone
         };
 
         const datosped = async () => {
