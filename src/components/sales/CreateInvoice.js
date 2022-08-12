@@ -609,6 +609,20 @@ function CreateInvoice(props) {
 
     listDetalleFacturas &&
       listDetalleFacturas.map((items, index) => {
+
+        let estado;
+        let delivery;
+
+        lisPedidos &&
+        lisPedidos.map((facturas, index) => {
+
+          if(facturas.id_fact == items.pedido){
+            estado = facturas.status;
+            delivery = facturas.delivery_type;
+          }
+
+        });
+
         const params = {
           pedido: items.pedido,
           nombre: items.nombre,
@@ -617,7 +631,9 @@ function CreateInvoice(props) {
           ciudad: items.ciudad,
           departamento: items.departamento,
           codigopostal: items.codigopostal,
-          direccion: items.direccion
+          direccion: items.direccion,
+          status: estado,
+          delivery_type: delivery
         };
 
         const datosped = async () => {
@@ -627,7 +643,7 @@ function CreateInvoice(props) {
             params,
           })
             .then((res) => {
-              console.log("DATOS PEDIDO : ", items.pedido);
+              console.log("DATOS PEDIDO : ", params);
             })
             .catch(function (error) {
               console.log("ERROR EN DATOS PEDIDO");
@@ -732,19 +748,6 @@ function CreateInvoice(props) {
         </Row>
       </div>
       <hr />
-      <Row>
-        <Col xl={3} lg={3} md={3} xs={3}>
-          <button
-            className="botoncrearcliente"
-            color="primary"
-            onClick={leeIdentificacion}
-          >
-            Leer Identificacion
-          </button>
-        </Col> 
-      </Row>
-      <hr />
-
     </div>
   );
 }

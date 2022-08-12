@@ -202,6 +202,7 @@ function AddProductSiigo(props) {
     let params;
     let valida = true;
     let codigosiigo;
+    let grupo;
 
     if (lisProductosSiigo.length > 0)
       setValidarDatos(true)
@@ -259,7 +260,7 @@ function AddProductSiigo(props) {
       actualiza();
       return
     }
-return
+
     if (valida) {
       const leeConsecutivo = async () => {
         params = {
@@ -280,6 +281,7 @@ return
             contador = res.data[0].consecutivo + 1;
             consecutivo = String(contador);
             resultado = prefijo + consecutivo.padStart(6, '000000');
+            grupo = res.data[0].grupoinventario;
             //console.log("CONSECUTIVO : ", resultado);
             //setListIdentificacion(newDetId[0]);
 
@@ -291,10 +293,11 @@ return
               barcode: datos.variant_barcode,
               marca: datos.brand_name,
               tariff: "19",
-              model: "Prueba",
+              model: "",
               price: datos.price,
               precio1: datos.price,
               precio2: datos.price,
+              account_group: grupo
             };
 
             console.log("NEW CREA PRODUCTO : ", params);
