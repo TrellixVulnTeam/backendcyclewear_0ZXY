@@ -41,6 +41,8 @@ function AddProductSiigo(props) {
   const [itemUpdate, setItemUpdate] = useState([]);
   const [datapedidos, setDatapedidos] = useState([]);
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
+  const [actualizar, setActualizar] = useState(false);
+  const [leerTodos, setLeerTodos] = useState(false);
   const [pendienteCrear, setPendienteCrear] = useState([]);
   const [codigoscategorias, setCodigosCategorias] = useState([]);
   const [lisProductosSiigo, setListProductosSiigo] = useState([]);
@@ -49,6 +51,8 @@ function AddProductSiigo(props) {
   //console.log("IMAGEN : ", imagen1)
 
   useEffect(() => {
+
+    let datospedidos;
     setLoading(true);
     const pedidos = async () => {
       await axios({
@@ -57,6 +61,7 @@ function AddProductSiigo(props) {
       })
         .then((res) => {
           setDatapedidos(res.data);
+          datospedidos = res.data;
         })
         .catch(function (error) {
           console.log("ERROR LEYENDO PEDIDOS");
@@ -73,35 +78,75 @@ function AddProductSiigo(props) {
           setDataitemspedidos(res.data);
           console.log("ITEMS PEDIDO : ", res.data);
           const newProdPend = [];
-          res.data &&
-            res.data.map((items, index) => {
-              if (items.sincodigosiigo == 0) {
-                let row = {
-                  itempedido: items.itempedido,
-                  pedido: items.pedido,
-                  advert_name: items.advert_name,
-                  advert_code: items.advert_code,
-                  brand_name: items.brand_name,
-                  price: items.price,
-                  quantity: items.quantity,
-                  subtotal: items.subtotal,
-                  tax_total: items.tax_total,
-                  taxon_name: items.taxon_name,
-                  total: items.total,
-                  variant_barcode: items.variant_barcode,
-                  variant_name: items.variant_name,
-                  variant_sku: items.variant_sku,
-                  codigoproductosiigo: items.codigoproductosiigo,
-                  direccion: items.direccion,
-                  observaciones: items.observaciones,
-                  categoriauno: items.categoriauno,
-                  categoriados: items.categoriados,
-                  categoriatres: items.categoriatres,
-                  categoriacuatro: items.categoriacuatro,
+
+          datospedidos &&
+            datospedidos.map((ped, index) => {
+              if (ped.status != "sent") {
+                if (!leerTodos) {
+                  res.data &&
+                    res.data.map((items, index) => {
+                      if (items.sincodigosiigo == 0 && items.pedido == ped.id_fact) {
+                        let row = {
+                          itempedido: items.itempedido,
+                          pedido: items.pedido,
+                          advert_name: items.advert_name,
+                          advert_code: items.advert_code,
+                          brand_name: items.brand_name,
+                          price: items.price,
+                          quantity: items.quantity,
+                          subtotal: items.subtotal,
+                          tax_total: items.tax_total,
+                          taxon_name: items.taxon_name,
+                          total: items.total,
+                          variant_barcode: items.variant_barcode,
+                          variant_name: items.variant_name,
+                          variant_sku: items.variant_sku,
+                          codigoproductosiigo: items.codigoproductosiigo,
+                          direccion: items.direccion,
+                          observaciones: items.observaciones,
+                          categoriauno: items.categoriauno,
+                          categoriados: items.categoriados,
+                          categoriatres: items.categoriatres,
+                          categoriacuatro: items.categoriacuatro,
+                        }
+                        newProdPend.push(row);
+                      }
+                    });
+                } else {
+                  res.data &&
+                    res.data.map((items, index) => {
+                      if (items.pedido == ped.id_fact) {
+                        let row = {
+                          itempedido: items.itempedido,
+                          pedido: items.pedido,
+                          advert_name: items.advert_name,
+                          advert_code: items.advert_code,
+                          brand_name: items.brand_name,
+                          price: items.price,
+                          quantity: items.quantity,
+                          subtotal: items.subtotal,
+                          tax_total: items.tax_total,
+                          taxon_name: items.taxon_name,
+                          total: items.total,
+                          variant_barcode: items.variant_barcode,
+                          variant_name: items.variant_name,
+                          variant_sku: items.variant_sku,
+                          codigoproductosiigo: items.codigoproductosiigo,
+                          direccion: items.direccion,
+                          observaciones: items.observaciones,
+                          categoriauno: items.categoriauno,
+                          categoriados: items.categoriados,
+                          categoriatres: items.categoriatres,
+                          categoriacuatro: items.categoriacuatro,
+                        }
+                        newProdPend.push(row);
+                      }
+                    });
                 }
-                newProdPend.push(row);
               }
             });
+
+
           console.log("ITEMS CREAR : ", newProdPend);
           setPendienteCrear(newProdPend);
         })
@@ -130,7 +175,18 @@ function AddProductSiigo(props) {
     //console.log("Productos : ", dbproductos);
     //console.log("Pedidos : ", dbpedidos);
     leerProductoSiigo();
-  }, []);
+    setActualizar(false);
+  }, [actualizar]);
+
+  const pendientesCrear = async () => {
+    setActualizar(true);
+    setLeerTodos(false);
+  };
+
+  const mostrarTodos = async () => {
+    setActualizar(true);
+    setLeerTodos(true);
+  };
 
   const leerProductoSiigo = async () => {
     setLoading(true);
@@ -259,7 +315,7 @@ function AddProductSiigo(props) {
       actualiza();
       return
     }
-return
+
     if (valida) {
       const leeConsecutivo = async () => {
         params = {
@@ -357,7 +413,7 @@ return
                           } else {
                             swal(
                               "CYCLE WEAR",
-                              "Error al actualizar conseutivo prefijo, Intenta nuevamente!",
+                              "Error al actualizar consecutivo prefijo, Intenta nuevamente!",
                               "warning",
                               { button: "Aceptar" }
                             );
@@ -444,24 +500,22 @@ return
           />
 
         </Col>
-        {/*
         <Col xl={3} lg={3} md={3} xs={3}>
           <Button
-            className="botones"
+            className="botonestercero"
             color="primary"
-            onClick={validaContraSiigo}
+            onClick={pendientesCrear}
           >
-            Por Crear en SIIGO
+            Sin Cedula
           </Button>
         </Col>
-        */}
         <Col xl={3} lg={3} md={3} xs={3}>
           <Button
-            className="botones"
+            className="botonestercero"
             color="primary"
-            onClick={validaContraSiigo}
+            onClick={mostrarTodos}
           >
-            Crear Producto
+            Mostrar Todos
           </Button>
         </Col>
       </Row>

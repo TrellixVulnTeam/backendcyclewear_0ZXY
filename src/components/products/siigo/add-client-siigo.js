@@ -34,8 +34,8 @@ import Loading from "../../elements/Loading/Loading";
 function AddClientSiigo(props) {
   const [loading, setLoading] = useState(false);
   const [pendienteCrear, setPendienteCrear] = useState([]);
-  const [validarCedula, setValidarCedula] = useState(false);
   const [actualizar, setActualizar] = useState(false);
+  const [leerTodos, setLeerTodos] = useState(false);
   const [itemUpdate, setItemUpdate] = useState([]);
   const [datapedidos, setDatapedidos] = useState([]);
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
@@ -57,23 +57,46 @@ function AddClientSiigo(props) {
           setDatapedidos(res.data);
           //console.log("PEDIDOS : ", res.data);
           const newPedCli = [];
-          res.data &&
-            res.data.map((items, index) => {
-              if (items.idcliente == 0) {
-                let row = {
-                  idcliente: items.idcliente,
-                  nombre: items.nombre,
-                  apellido: items.apellido,
-                  departamento: items.departamento,
-                  ciudad: items.ciudad,
-                  direccion: items.direccion,
-                  email: items.email,
-                  pedido: items.id_fact
+
+          if (!leerTodos) {
+            res.data &&
+              res.data.map((items, index) => {
+                if (items.idcliente == 0 && items.status != "sent") {
+
+                  let row = {
+                    idcliente: items.idcliente,
+                    nombre: items.nombre,
+                    apellido: items.apellido,
+                    departamento: items.departamento,
+                    ciudad: items.ciudad,
+                    direccion: items.direccion,
+                    email: items.email,
+                    pedido: items.id_fact
+                  }
+                  newPedCli.push(row);
+
                 }
-                newPedCli.push(row);
-              }
-            });
-          //console.log("ITEMS CREAR : ", newPedCli);
+              });
+            //console.log("ITEMS CREAR : ", newPedCli);
+          } else {
+            res.data &&
+              res.data.map((items, index) => {
+                if (items.status != "sent") {
+                  let row = {
+                    idcliente: items.idcliente,
+                    nombre: items.nombre,
+                    apellido: items.apellido,
+                    departamento: items.departamento,
+                    ciudad: items.ciudad,
+                    direccion: items.direccion,
+                    email: items.email,
+                    pedido: items.id_fact
+                  }
+
+                  newPedCli.push(row);
+                }
+              });
+          }
           setPendienteCrear(newPedCli);
         })
         .catch(function (error) {
@@ -152,10 +175,17 @@ function AddClientSiigo(props) {
     };
     consecutivoscategorias();
     setLoading(false);
+    setActualizar(false);
   }, [actualizar]);
 
-  const validaContraSiigo = async () => {
-    setValidarCedula(true);
+  const pendientesCrear = async () => {
+    setActualizar(true);
+    setLeerTodos(false);
+  };
+
+  const mostrarTodos = async () => {
+    setActualizar(true);
+    setLeerTodos(true);
   };
 
   const seleccionarPedido = (pedido) => {
@@ -276,7 +306,6 @@ function AddClientSiigo(props) {
     }
 
     setLoading(false);
-    //setValidarCedula(false);
   }
 
   const grabarDatos = (datos) => {
@@ -356,7 +385,7 @@ function AddClientSiigo(props) {
       {loading ? <Loading /> : null}
       <br />
       <Row>
-        <Col xl={3} lg={3} md={3} xs={3}>
+        <Col xl={2} lg={2} md={2} xs={2}>
         </Col>
         <Col xl={3} lg={3} md={3} xs={3}>
           <ReactHTMLTableToExcel
@@ -372,9 +401,18 @@ function AddClientSiigo(props) {
           <Button
             className="botonestercero"
             color="primary"
-            onClick={validaContraSiigo}
+            onClick={pendientesCrear}
           >
-            Crear tercero
+            Sin Cedula
+          </Button>
+        </Col>
+        <Col xl={3} lg={3} md={3} xs={3}>
+          <Button
+            className="botonestercero"
+            color="primary"
+            onClick={mostrarTodos}
+          >
+            Mostrar Todos
           </Button>
         </Col>
       </Row>
