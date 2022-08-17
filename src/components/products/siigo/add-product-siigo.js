@@ -258,6 +258,7 @@ function AddProductSiigo(props) {
     let params;
     let valida = true;
     let codigosiigo;
+    let grupo;
 
     if (lisProductosSiigo.length > 0)
       setValidarDatos(true)
@@ -336,6 +337,7 @@ function AddProductSiigo(props) {
             contador = res.data[0].consecutivo + 1;
             consecutivo = String(contador);
             resultado = prefijo + consecutivo.padStart(6, '000000');
+            grupo = res.data[0].grupoinventario;
             //console.log("CONSECUTIVO : ", resultado);
             //setListIdentificacion(newDetId[0]);
 
@@ -347,10 +349,11 @@ function AddProductSiigo(props) {
               barcode: datos.variant_barcode,
               marca: datos.brand_name,
               tariff: "19",
-              model: "Prueba",
+              model: "",
               price: datos.price,
               precio1: datos.price,
               precio2: datos.price,
+              account_group: grupo
             };
 
             console.log("NEW CREA PRODUCTO : ", params);
@@ -454,27 +457,37 @@ function AddProductSiigo(props) {
     {
       field: 'codigoconsecutivo',
       title: 'Codigo',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'pedido',
       title: 'Pedido',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'variant_sku',
       title: 'Sku',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
     },
     {
       field: 'price',
       title: 'Precio',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 10 },
+      cellStyle: { maxWidth: 10 }
+    },
+    {
+      field: 'advert_name',
+      title: 'Descripción',
+      cellStyle: { minWidth: 200 }
     },
     {
       field: 'categoriauno',
       title: 'Tipo de producto',
-      cellStyle: { minWidth: 50 }
+      cellStyle: { minWidth: 50 },
+      cellStyle: { maxWidth: 50 }
     },
     {
       field: 'categoriados',

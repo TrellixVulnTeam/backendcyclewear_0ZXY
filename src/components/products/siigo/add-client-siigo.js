@@ -55,8 +55,9 @@ function AddClientSiigo(props) {
       })
         .then((res) => {
           setDatapedidos(res.data);
-          //console.log("PEDIDOS : ", res.data);
+          console.log("PEDIDOS : ", res.data);
           const newPedCli = [];
+<<<<<<< HEAD
 
           if (!leerTodos) {
             res.data &&
@@ -75,6 +76,21 @@ function AddClientSiigo(props) {
                   }
                   newPedCli.push(row);
 
+=======
+          res.data &&
+            res.data.map((items, index) => {
+              if (items.idcliente == 0) {
+                let row = {
+                  idcliente: items.idcliente,
+                  nombre: items.nombre,
+                  apellido: items.apellido,
+                  departamento: items.departamento,
+                  ciudad: items.ciudad,
+                  direccion: items.direccion,
+                  email: items.email,
+                  pedido: items.id_fact,
+                  telefono: items.phone
+>>>>>>> ff56fbd909abc90326dde96a6ad1520dcadce6a5
                 }
               });
             //console.log("ITEMS CREAR : ", newPedCli);
@@ -189,6 +205,8 @@ function AddClientSiigo(props) {
   };
 
   const seleccionarPedido = (pedido) => {
+    //console.log("DATOS CLIENTES : ",pedido)
+    
     let valida = true;
     if (pedido.cedula == "") {
       swal(
@@ -250,7 +268,7 @@ function AddClientSiigo(props) {
         check_digit: "4",
         nombre: pedido.nombre,
         apellido: pedido.apellido,
-        commercial_name: "Cyclewear",
+        commercial_name: "",
         branch_office: 0,
         active: "true",
         vat_responsible: "false",
@@ -261,15 +279,15 @@ function AddClientSiigo(props) {
         city_code: "19001",
         postal_code: "110911",
         indicative: "57",
-        number: "3155337803",
+        number: pedido.telefono,
         extension: "132",
         first_name: pedido.nombre,
         last_name: pedido.apellido,
         email: pedido.email,
         indicative: "57",
-        number: "3155337803",
+        number: pedido.telefono,
         extension: "132",
-        comments: "Prueba",
+        comments: "",
         seller_id: "809",
         collector_id: "809"
       };
@@ -309,6 +327,7 @@ function AddClientSiigo(props) {
   }
 
   const grabarDatos = (datos) => {
+    //console.log("DATOS : ", datos)
     const params = {
       apellido: datos.apellido,
       ciudad: datos.ciudad,
@@ -317,7 +336,8 @@ function AddClientSiigo(props) {
       email: datos.email,
       cedula: datos.idcliente,
       nombre: datos.nombre,
-      pedido: datos.pedido
+      pedido: datos.pedido,
+      telefono: datos.telefono
     };
 
     const datosped = async () => {
