@@ -43,7 +43,7 @@ export const MENUITEMS = [
             {
                 title: 'Siigo', type: 'sub', active: false, children: [
                     { path: '/products/siigo/add-product-siigo', title: 'Crear Producto', type: 'link' },
-                    { path: '/products/siigo/add-client-siigo', title: 'Crear Cliente', type: 'link' },
+                    { path: '/products/siigo/add-cliente-siigo', title: 'Crear Cliente', type: 'link' },
                 ]
             },
         ]

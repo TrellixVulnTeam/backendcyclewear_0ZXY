@@ -33,7 +33,7 @@ import Digital_add_pro from "./components/products/digital/digital-add-pro";
 
 //Product Siigo
 import AddProductSiigo from "./components/products/siigo/add-product-siigo";
-import AddClientSiigo from "./components/products/siigo/add-client-siigo";
+import AddClientSiigo from "./components/products/siigo/add-cliente-siigo";
 
 //Sales
 import Orders from "./components/sales/orders";
@@ -170,7 +170,7 @@ const Root = () => {
 							component={AddProductSiigo}
 						/>
 						<Route
-							path={`${process.env.PUBLIC_URL}/products/siigo/add-client-siigo`}
+							path={`${process.env.PUBLIC_URL}/products/siigo/add-cliente-siigo`}
 							component={AddClientSiigo}
 						/>
 						<Route
