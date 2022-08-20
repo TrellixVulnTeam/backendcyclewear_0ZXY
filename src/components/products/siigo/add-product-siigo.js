@@ -193,54 +193,21 @@ function AddProductSiigo(props) {
     const newDetPed = [];
 
     const leeProductosSiigo = async () => {
-      for (var i = 1; i < 12; i++) {
-        const params = {
-          pagina: i,
-        };
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/27"
+      })
+        .then((res) => {
+          //console.log("PRODUCTOS SIIGO: ", res.data);
+          setListProductosSiigo(res.data);
 
-        if (i == 10) {
-          setLoading(false);
-          setListProductosSiigo(newDetPed);
-          console.log("PRODUCTOS SIIGO : ", newDetPed);
-          setValidarDatos(true);
-          break;
-        }
-
-        await axios({
-          method: "post",
-          url: "https://sitbusiness.co/cyclewear/api/715",
-          params,
+          //setLeeFacturas(true);
         })
-          .then((res) => {
-            console.log("PAGINA : ", params);
-            res.data &&
-              res.data.map((row, index) => {
-                //console.log("ID FACTURAS LEIDAS : ", row);
-                let item = {
-                  code: row.code,
-                  id: row.id,
-                  name: row.name,
-                  sku: row.sku,
-                  cantidad: row.cantidad,
-                  impuestos: row.impuestos,
-                  idgrupo: row.idgrupo,
-                  nombregrupo: row.nombregrupo,
-                  codigobarra: row.codigobarra,
-                  marca: row.marca,
-                  bodega: row.bodega,
-                  nombre: row.nombre,
-                  valor: row.valor,
-                  fechacreacion: row.fechacreacion,
-                };
-                newDetPed.push(item);
-              });
-            //setLeeFacturas(true);
-          })
-          .catch(function (error) {
-            console.log("ERROR LEYENDO FACTURAS");
-          });
-      }
-    };
+        .catch(function (error) {
+          console.log("ERROR LEYENDO FACTURAS");
+        });
+    }
+
     leeProductosSiigo();
   };
 
@@ -249,8 +216,8 @@ function AddProductSiigo(props) {
   };
 
   const grabarDatos = (datos) => {
-    //console.log("DATOS ITEM PEDIDO : ", datos);
-    //console.log("PRODU CTOS SIIGO : ", lisProductosSiigo);
+    console.log("DATOS ITEM PEDIDO : ", datos);
+    console.log("PRODUCTOS SIIGO : ", lisProductosSiigo);
     let prefijo;
     let contador;
     let consecutivo;
@@ -285,6 +252,7 @@ function AddProductSiigo(props) {
           codigosiigo = items.code;
         }
       });
+    console.log("VALOR VALIDA : ", valida)
 
     if (!valida) {
       swal(
@@ -293,6 +261,7 @@ function AddProductSiigo(props) {
         "warning",
         { button: "Aceptar" }
       );
+
       const actualiza = async () => {
         params = {
           estado: 2,
