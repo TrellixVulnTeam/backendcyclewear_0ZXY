@@ -519,7 +519,7 @@ function AddProductSiigo(props) {
             color="primary"
             onClick={pendientesCrear}
           >
-            Sin Cedula
+            Sin Codigo
           </Button>
         </Col>
         <Col xl={3} lg={3} md={3} xs={3}>

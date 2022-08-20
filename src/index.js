@@ -41,6 +41,7 @@ import Transactions_sales from "./components/sales/transactions-sales";
 import ValidateThird from "./components/sales/ValidateThird";
 import CreateInvoice from "./components/sales/CreateInvoice";
 import UpdateCodigosPrd from "./components/sales/UpdateCodigosPrd";
+import UpdateSinCodigoSiigo from "./components/sales/UpdateSinCodigoSiigo";
 
 //Coupons
 import ListCoupons from "./components/coupons/list-coupons";
@@ -208,6 +209,10 @@ const Root = () => {
 						<Route
 							path={`${process.env.PUBLIC_URL}/sales/UpdateCodigosPrd`}
 							component={UpdateCodigosPrd}
+						/>
+								<Route
+							path={`${process.env.PUBLIC_URL}/sales/UpdateSinCodigoSiigo`}
+							component={UpdateSinCodigoSiigo}
 						/>
 						<Route
 							path={`${process.env.PUBLIC_URL}/sales/ValidateThird`}

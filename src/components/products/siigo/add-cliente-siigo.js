@@ -62,7 +62,7 @@ function AddClientSiigo(props) {
             res.data &&
               res.data.map((items, index) => {
                 if (items.idcliente == 0 && items.status != "sent") {
-
+                  //console.log("DATOS ITEMS : ", items)
                   let row = {
                     idcliente: items.idcliente,
                     nombre: items.nombre,
@@ -71,7 +71,8 @@ function AddClientSiigo(props) {
                     ciudad: items.ciudad,
                     direccion: items.direccion,
                     email: items.email,
-                    pedido: items.id_fact
+                    pedido: items.id_fact,
+                    telefono: items.phone
                   }
                   newPedCli.push(row);
                 }
@@ -80,6 +81,7 @@ function AddClientSiigo(props) {
           } else {
             res.data &&
               res.data.map((items, index) => {
+                //console.log("DATOS ITEMS : ", items)
                 if (items.status != "sent") {
                   let row = {
                     idcliente: items.idcliente,
@@ -89,7 +91,8 @@ function AddClientSiigo(props) {
                     ciudad: items.ciudad,
                     direccion: items.direccion,
                     email: items.email,
-                    pedido: items.id_fact
+                    pedido: items.id_fact,
+                    telefono: items.phone
                   }
 
                   newPedCli.push(row);
@@ -189,7 +192,7 @@ function AddClientSiigo(props) {
 
   const seleccionarPedido = (pedido) => {
     //console.log("DATOS CLIENTES : ",pedido)
-    
+
     let valida = true;
     if (pedido.cedula == "") {
       swal(
