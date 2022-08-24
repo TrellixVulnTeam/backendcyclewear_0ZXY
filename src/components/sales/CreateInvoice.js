@@ -1,48 +1,22 @@
 import React, { Fragment, useEffect, useState } from "react";
-import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import Breadcrumb from "../common/breadcrumb";
-import MaterialTable from "material-table";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import CancelIcon from "@material-ui/icons/Cancel";
-import EditAttributesIcon from "@material-ui/icons/EditAttributes";
 import Moment from "moment";
-import swal from "sweetalert";
 import {
-  Card,
-  CardBody,
-  CardHeader,
   Col,
-  Container,
-  Form,
-  FormGroup,
-  Input,
-  Label,
   Row,
-  Button,
-  Modal,
-  ModalFooter,
-  ModalHeader,
-  ModalBody,
 } from "reactstrap";
 //import Loading from "../../../components/elements/Loading";
-import EditIcon from "@material-ui/icons/Edit";
-import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
 import Loading from "../elements/Loading/Loading";
-import ListarProductos from "../products/physical/ListarProductos";
 
 function CreateInvoice(props) {
   const [lisPedidos, setListPedidos] = useState([]);
   const [lisProductosSiigo, setListProductosSiigo] = useState([]);
-  const [listIdentificacion, setListIdentificacion] = useState([]);
   const [listDetalleFacturas, setListDetalleFacturas] = useState([]);
   const [pagina, setPagina] = useState(false);
-  const [tipoTercero, setTipoTercero] = useState("");
   const [loading, setLoading] = useState(false);
   const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
   //const fechaactual = Moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-  const [datosClientesFacturas, setDatosClientesFacturas] = useState([]);
-  const [datos, setDatos] = useState([]);
   const dispatch = useDispatch();
   const [leeFacturas, setLeeFacturas] = useState(false);
   const [leePedidos, setLeePedidos] = useState(true);
@@ -54,13 +28,6 @@ function CreateInvoice(props) {
   const [dataitemspedidos, setDataitemspedidos] = useState([]);
   const [dataproductos, setDataproductos] = useState([]);
   const [codigoscategorias, setCodigosCategorias] = useState([]);
-
-  const recargar = () => {
-    setLeePedidos(true);
-    //setLeeFacturas(true);
-  };
-
-  //setInterval(() => {setLeePedidos(true)},3600000);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -387,9 +354,6 @@ function CreateInvoice(props) {
     setActualizaBD(true);
   };
 
-  const handleChangePagina = async (selectedOptions) => {
-    setPagina(selectedOptions);
-  };
 
   const leerProductoSiigo = async () => {
     setLoading(true);
@@ -599,10 +563,6 @@ function CreateInvoice(props) {
     }
   }, [contraSiigo]);
 
-  const validaContraSiigo = async () => {
-    setContraSiigo(true);
-  };
-
   const leeIdentificacion = async () => {
     setLoading(true);
 
@@ -658,7 +618,6 @@ function CreateInvoice(props) {
     let contadordos = 0;
 
     const newItems = [];
-    const itemsPed = [];
 
     datapedidos &&
       datapedidos.map((pedido, index) => {

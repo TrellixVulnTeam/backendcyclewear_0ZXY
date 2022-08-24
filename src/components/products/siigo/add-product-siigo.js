@@ -260,7 +260,7 @@ function AddProductSiigo(props) {
         "Producto ya existe en SIIGO, revisar!",
         "warning",
         { button: "Aceptar" }
-      );
+      );  
 
       const actualiza = async () => {
         params = {
@@ -424,7 +424,7 @@ function AddProductSiigo(props) {
 
   const columnas = [
     {
-      field: 'codigoconsecutivo',
+      field: 'codigoproductosiigo',
       title: 'Codigo',
       cellStyle: { minWidth: 10 },
       cellStyle: { maxWidth: 10 }
