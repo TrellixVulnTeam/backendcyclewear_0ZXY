@@ -56,6 +56,7 @@ export const MENUITEMS = [
             { path: '/sales/CreateInvoice', title: 'Crear Pedidos', type: 'link' },
             { path: '/sales/UpdateCodigosPrd', title: 'Actualiza Items', type: 'link' },
             { path: '/sales/UpdateSinCodigoSiigo', title: 'Lee productos Siigo', type: 'link' },
+            { path: '/sales/SaveInvoiceSiigo', title: 'Crear facturas', type: 'link' },
         ]
     },
     {

@@ -171,12 +171,12 @@ function UpdateSinCodigoSiigo(props) {
   const readSiigo = () => {
     const leeProductosSiigo = async () => {
       const newDetPed = [];
-      for (var i = 1; i < 3; i++) {
+      for (var i = 1; i < 250; i++) {
         const params = {
           pagina: i,
         };
 
-        if (i == 2) {
+        if (i == 245) {
           setLoading(false);
           setListProductosSiigo(newDetPed);
           console.log("PRODUCTOS SIIGO : ", newDetPed);
@@ -207,6 +207,8 @@ function UpdateSinCodigoSiigo(props) {
                   bodega: row.bodega,
                   nombre: row.nombre,
                   valor: row.valor,
+                  idiva: row.idiva,
+                  porcentajeiva: row.porcentajeiva,
                   fechacreacion: row.fechacreacion,
                 };
                 newDetPed.push(item);
@@ -294,6 +296,7 @@ function UpdateSinCodigoSiigo(props) {
               <th>bodega</th>
               <th>nombre</th>
               <th>valor</th>
+              <th>idiva</th>
               <th>impuesto</th>
               <th>fechacreacion</th>
               <th>estado</th>
@@ -301,10 +304,10 @@ function UpdateSinCodigoSiigo(props) {
           </thead>
           <tbody>
             {
-              dataproductos && dataproductos.map((facturas, index) => {
+              lisProductosSiigo && lisProductosSiigo.map((facturas, index) => {
                 return (
                   <tr>
-                    <td>{facturas.codigo}</td>
+                    <td>{facturas.code}</td>
                     <td>{facturas.id}</td>
                     <td>{facturas.sku}</td>
                     <td>0</td>
@@ -316,8 +319,9 @@ function UpdateSinCodigoSiigo(props) {
                     <td>{facturas.bodega}</td>
                     <td>{facturas.nombre}</td>
                     <td>{facturas.valor}</td>
-                    <td>0</td>
-                    <td>2022-08-19</td>
+                    <td>{facturas.idiva}</td>
+                    <td>{facturas.porcentajeiva}</td>
+                    <td>2022-08-29</td>
                     <td>1</td>
                   </tr>
                 )
