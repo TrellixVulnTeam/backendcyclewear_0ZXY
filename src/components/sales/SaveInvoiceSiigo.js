@@ -3,12 +3,15 @@ import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Moment from "moment";
+import MaterialTable from "material-table";
 //import Loading from "../../../components/elements/Loading";
 import EditIcon from '@material-ui/icons/Edit';
+import EditAttributesIcon from '@material-ui/icons/EditAttributes';
 import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
 import Loading from '../elements/Loading/Loading';
 import ListarProductos from '../products/physical/ListarProductos';
 import { Col, Row } from "reactstrap";
+import "./ordenes.css";
 
 function SaveInvoiceSiigo(props) {
     const [lisPedidos, setListPedidos] = useState([]);
@@ -16,11 +19,8 @@ function SaveInvoiceSiigo(props) {
     const [listDetalleFacturas, setListDetalleFacturas] = useState([]);
     const [numeroPedido, setNumeroPedido] = useState(true);
     const [loading, setLoading] = useState(false);
-    const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
-    const [datos, setDatos] = useState([]);
-    const dispatch = useDispatch();
 
-    //console.log("IMAGEN : ", imagen1)
+    //console.log("IMAGEN : ", imagen1)setListPedidos,-
 
     useEffect(() => {
         const newDet = [];
@@ -31,7 +31,12 @@ function SaveInvoiceSiigo(props) {
                 method: 'get',
                 url: 'https://sitbusiness.co/cyclewear/api/210'
             }).then(res => {
-                setListPedidos(res.data);
+                res.data && res.data.map((facturas, index) => {
+                    if(facturas.status != "sent")
+                        newDet.push(facturas)
+                })
+                //console.log("FACTURAS : ", newDet);
+                setListPedidos(newDet);
             }
             ).catch(function (error) {
                 console.log("ERROR LEYENDO FACTURAS");
@@ -177,6 +182,54 @@ function SaveInvoiceSiigo(props) {
         setNumeroPedido(selectedOptions)
     }
 
+    const columnas = [
+		{
+			title: 'Ientificaión',
+			field: 'idcliente'
+		},
+
+		{
+			title: 'Pedido',
+			field: 'id_fact'
+		},
+		{
+			title: 'Fecha',
+			field: 'fechafactura'
+		},
+		{
+			title: 'Nombre',
+			field: 'nombre'
+		},
+		{
+			title: 'Apellido',
+			field: 'apellido'
+		},
+		{
+			title: 'Email',
+			field: 'email'
+		},
+		{
+			title: 'Ciudad',
+			field: 'ciudad'
+		},
+		{
+			title: 'Dirección',
+			field: 'direccion'
+		},
+		{
+			title: 'Total',
+			field: 'valorfactura'
+		},
+		{
+			title: 'Estado',
+			field: 'status'
+		}
+	]
+
+    const seleccionarPedido = (pedido, caso) => {
+		console.log("PEDIDO : ", pedido);
+    }
+
     return (
         <div>
             {loading ? <Loading /> : null}
@@ -211,67 +264,29 @@ function SaveInvoiceSiigo(props) {
 
             <hr />
             <Row>
-                <Col xl={3} lg={3} md={3} xs={3}>
-                    <button className='botoncrearcliente' color="primary" >
-                        <ReactHTMLTableToExcel
-                            table="ubicacionesequipos"
-                            filename="DatosClientesCWR"
-                            sheet="Sheet"
-                            buttonText="Exportar a Excel"
-                        />
-                    </button>
+                <Col xl={4} lg={4} md={4} xs={4}>
                 </Col>
 
                 <Col xl={3} lg={3} md={3} xs={3}>
-                    <button className='botoncrearcliente' color="primary" onClick={crearFacturas}>
+                    <button className='botonestercero' color="primary" onClick={crearFacturas}>
                         Crear Facturas
                     </button>
                 </Col>
 
             </Row>
             <hr />
-            {
-
-                <table id="ubicacionesequipos" className="table">
-                    <thead>
-                        <tr>
-                            <th>IDENTIFICACION</th>
-                            <th>PEDIDO</th>
-                            <th>FECHA</th>
-                            <th>NOMBRE</th>
-                            <th>APELLIDO</th>
-                            <th>EMAIL</th>
-                            <th>CIUDAD</th>
-                            <th>TELEFONO</th>
-                            <th>DIRECCION</th>
-                            <th>ESTADO</th>
-                            <th>TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            lisPedidos && lisPedidos.map((facturas, index) => {
-                                return (
-                                    <tr>
-                                        <td>{facturas.idcliente}</td>
-                                        <td>{facturas.id_fact}</td>
-                                        <td>{facturas.fecha}</td>
-                                        <td>{facturas.nombre}</td>
-                                        <td>{facturas.apellido}</td>
-                                        <td>{facturas.email}</td>
-                                        <td>{facturas.ciudad}</td>
-                                        <td>0</td>
-                                        <td>{facturas.direccion}</td>
-                                        <td>{facturas.status}</td>
-                                        <td>{facturas.valorfactura}</td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
-
-            }
+            <MaterialTable
+					title="Pedidos Cycle Wear"
+					columns={columnas}
+					data={lisPedidos}
+					options={{
+						actionsColumnIndex: 11,
+						headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+						rowStyle: rowData => ({
+							backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
+						})
+					}}
+				/>
         </div>
     );
 }
