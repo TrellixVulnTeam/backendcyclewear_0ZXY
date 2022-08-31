@@ -5,8 +5,8 @@ import axios from "axios";
 import Moment from "moment";
 import MaterialTable from "material-table";
 //import Loading from "../../../components/elements/Loading";
-import EditIcon from '@material-ui/icons/Edit';
-import EditAttributesIcon from '@material-ui/icons/EditAttributes';
+import swal from "sweetalert";
+import Swal from "sweetalert2";
 import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
 import Loading from '../elements/Loading/Loading';
 import ListarProductos from '../products/physical/ListarProductos';
@@ -19,6 +19,11 @@ function SaveInvoiceSiigo(props) {
     const [listDetalleFacturas, setListDetalleFacturas] = useState([]);
     const [numeroPedido, setNumeroPedido] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [showModalMensajes, setShowModalMensajes] = useState(false);
+    const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
+    const [tituloMensajes, setTituloMensajes] = useState(false);
+    const [textoMensajes, setTextoMensajes] = useState(false);
+
 
     //console.log("IMAGEN : ", imagen1)setListPedidos,-
 
@@ -32,11 +37,12 @@ function SaveInvoiceSiigo(props) {
                 url: 'https://sitbusiness.co/cyclewear/api/210'
             }).then(res => {
                 res.data && res.data.map((facturas, index) => {
-                    if(facturas.status != "sent")
+                    if (facturas.status != "sent" && facturas.status != "collected")
                         newDet.push(facturas)
                 })
                 //console.log("FACTURAS : ", newDet);
                 setListPedidos(newDet);
+                //setListPedidos(res.data);
             }
             ).catch(function (error) {
                 console.log("ERROR LEYENDO FACTURAS");
@@ -82,19 +88,21 @@ function SaveInvoiceSiigo(props) {
     }, [])
 
     const crearFacturas = () => {
-        console.log("Productos  : ", lisProductosSiigo);
+        //console.log("Productos  : ", lisProductosSiigo);
         console.log("Pedidos  : ", lisPedidos)
-        console.log("Items pedidos  : ", listDetalleFacturas)
+        //console.log("Items pedidos  : ", listDetalleFacturas)
+        let numfact = 0;
+
+        console.log("FECHA ACTUAL  : ", fechaactual);
 
         setLoading(true);
 
         lisPedidos && lisPedidos.map((facturas, index) => {
             let control = 0;
             if (facturas.id_fact == numeroPedido) {
-
                 //var fecha = new Date();
                 let date = new Date(facturas.fechafactura);
-                let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
+                //let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
                 //contador = contador + 1;
 
                 let valor = 0;
@@ -140,7 +148,7 @@ function SaveInvoiceSiigo(props) {
                 const leer = async () => {
                     let params = {
                         id: 1397,
-                        date: fecha,
+                        date: fechaactual,
                         identification: facturas.idcliente,
                         cost_center: facturas.cost_center,
                         seller: facturas.seller,
@@ -151,7 +159,7 @@ function SaveInvoiceSiigo(props) {
                         price: valoritem,
                         value: valorpayment,
                         idpayments: 7500,
-                        due_date: fecha,
+                        due_date: fechaactual,
                         idtaxes: idiva,
                         observations: comentario,
                         pedido: facturas.id_fact,
@@ -163,8 +171,17 @@ function SaveInvoiceSiigo(props) {
                         method: 'post',
                         url: 'https://sitbusiness.co/cyclewear/api/731', params
                     }).then(res => {
+                        let numfact = 0;
                         setLoading(false);
                         console.log("DATOS RESPONSE : ", res)
+                        if (res.status == 200) {
+                            swal({
+                                title: "CYCLEWEAR",
+                                text: "Factura Creada de forma correcta!",
+                                icon: "success",
+                                button: "Aceptar",
+                            });
+                        }
                     }
                     ).catch(function (error) {
                         console.log("ERROR LEYENDO FACTURAS");
@@ -183,51 +200,51 @@ function SaveInvoiceSiigo(props) {
     }
 
     const columnas = [
-		{
-			title: 'Ientificaión',
-			field: 'idcliente'
-		},
+        {
+            title: 'Ientificaión',
+            field: 'idcliente'
+        },
 
-		{
-			title: 'Pedido',
-			field: 'id_fact'
-		},
-		{
-			title: 'Fecha',
-			field: 'fechafactura'
-		},
-		{
-			title: 'Nombre',
-			field: 'nombre'
-		},
-		{
-			title: 'Apellido',
-			field: 'apellido'
-		},
-		{
-			title: 'Email',
-			field: 'email'
-		},
-		{
-			title: 'Ciudad',
-			field: 'ciudad'
-		},
-		{
-			title: 'Dirección',
-			field: 'direccion'
-		},
-		{
-			title: 'Total',
-			field: 'valorfactura'
-		},
-		{
-			title: 'Estado',
-			field: 'status'
-		}
-	]
+        {
+            title: 'Pedido',
+            field: 'id_fact'
+        },
+        {
+            title: 'Fecha',
+            field: 'fechafactura'
+        },
+        {
+            title: 'Nombre',
+            field: 'nombre'
+        },
+        {
+            title: 'Apellido',
+            field: 'apellido'
+        },
+        {
+            title: 'Email',
+            field: 'email'
+        },
+        {
+            title: 'Ciudad',
+            field: 'ciudad'
+        },
+        {
+            title: 'Dirección',
+            field: 'direccion'
+        },
+        {
+            title: 'Total',
+            field: 'valorfactura'
+        },
+        {
+            title: 'Estado',
+            field: 'status'
+        }
+    ]
 
     const seleccionarPedido = (pedido, caso) => {
-		console.log("PEDIDO : ", pedido);
+        console.log("PEDIDO : ", pedido);
     }
 
     return (
@@ -276,17 +293,17 @@ function SaveInvoiceSiigo(props) {
             </Row>
             <hr />
             <MaterialTable
-					title="Pedidos Cycle Wear"
-					columns={columnas}
-					data={lisPedidos}
-					options={{
-						actionsColumnIndex: 11,
-						headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
-						rowStyle: rowData => ({
-							backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
-						})
-					}}
-				/>
+                title="Pedidos Cycle Wear"
+                columns={columnas}
+                data={lisPedidos}
+                options={{
+                    actionsColumnIndex: 11,
+                    headerStyle: { backgroundColor: '#015CAB', fontSize: 16, color: 'white' },
+                    rowStyle: rowData => ({
+                        backgroundColor: (0 == rowData.idcliente) ? '#6699D0' : '#FFF'
+                    })
+                }}
+            />
         </div>
     );
 }
