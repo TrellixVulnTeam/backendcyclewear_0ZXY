@@ -42,7 +42,6 @@ function UpdateCodigoPrd(props) {
   useEffect(() => {
 
     //setLoading(true);
-
     const productos = async () => {
       await axios({
         method: "post",
@@ -106,8 +105,10 @@ function UpdateCodigoPrd(props) {
 
         dataproductos &&
           dataproductos.map((row, index) => {
-
             if (items.variant_sku == row.sku) {
+
+              console.log("COMPARA : ", items.variant_sku, " --", row.sku);
+
               const actualiza = async () => {
                 const params = {
                   estado: 2,
@@ -122,6 +123,7 @@ function UpdateCodigoPrd(props) {
                 })
                   .then((res) => {
                     console.log("Actualizando : ", params);
+                    console.log("RESPUESTA : ", res);
                     contar = contar + 1;
                   })
                   .catch(function (error) {

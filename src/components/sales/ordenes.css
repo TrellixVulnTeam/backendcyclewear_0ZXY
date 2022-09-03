@@ -6,7 +6,6 @@
     height: 45px !important;
 }
 
-
 .botonestercero{
     background-color: #6C757D !important;
     color: white !important;
@@ -15,5 +14,18 @@
     height: 45px !important;
 }
 
+.ubicarmodalmensajes{
+    margin-top: 20px !important;
+    border-radius: 20px !important;
+}
+
+.centratexto{
+    text-align: center !important;
+}
+
+.ubicarbotoncerrar {
+    width: 200px;
+    
+}
 
 

@@ -491,6 +491,42 @@ function CreateInvoice(props) {
       console.log("Codigos Categorias : ", codigoscategorias);
       setLoading(true);
 
+      // Actualiza codigo producto desde SIIGO a Base de datos intermedia
+
+      dataitemspedidos &&
+      dataitemspedidos.map((items, index) => {
+
+        dataproductos &&
+          dataproductos.map((row, index) => {
+            if (items.variant_sku == row.sku) {
+
+              const actualiza = async () => {
+                const params = {
+                  estado: 2,
+                  itempedido: items.itempedido,
+                  codigosiigo: row.codigo
+                };
+
+                await axios({
+                  method: "post",
+                  url: "https://sitbusiness.co/cyclewear/api/718",
+                  params,
+                })
+                  .then((res) => {
+                    console.log("Actualizando codigo item pedido: ", params);
+                    contar = contar + 1;
+                  })
+                  .catch(function (error) {
+                    contar = contar + 1;
+
+                    console.log("ERROR Actualizando");
+                  });
+              };
+              actualiza();
+            }
+          });
+      });
+
       const newItemPed = [];
       dataitemspedidos &&
         dataitemspedidos.map((items, index) => {

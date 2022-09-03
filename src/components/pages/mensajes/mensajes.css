@@ -1,4 +1,4 @@
-.modal-fondo {
+.modalfondo {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -23,4 +23,8 @@
 .redondearventamensajes {
     border-radius: 20px !important;
     align-items: center !important;
+}
+
+.divmodal {
+  background-color: white !important;
 }

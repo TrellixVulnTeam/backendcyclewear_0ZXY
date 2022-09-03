@@ -1,21 +1,12 @@
+.tamaño{
+    font-size: 40px !important;
+}
+
 .divPadre{
-    height: 100vh;
-    position: relative;
+    margin-left: 200px !important;
 }
 
-.divHijo{
-    margin: 0;
-    position: absolute;
-    top: 10%;
-    left:45%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50, -50%);
-}
-
-.spinnerReactstrap{
-    width: 100px !important;
-    height: 100px !important;
-
-    border: 10px solid currentColor !important;
-    border-right-color: transparent !important;
+.tamañocaja{
+    width: 300px;
+    height: 300px;
 }

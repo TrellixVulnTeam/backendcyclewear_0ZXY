@@ -1,19 +1,68 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
-import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Moment from "moment";
 import MaterialTable from "material-table";
 //import Loading from "../../../components/elements/Loading";
 import swal from "sweetalert";
-import Swal from "sweetalert2";
-import imagen1 from "../../assets/images/imagenes/bicicleta.jpg";
 import Loading from '../elements/Loading/Loading';
-import ListarProductos from '../products/physical/ListarProductos';
 import { Col, Row } from "reactstrap";
 import "./ordenes.css";
+import ModalMensajes from "../pages/mensajes/ModalMensajes";
+import { Modal, Button, TextField, Select, MenuItem, FormControl, InputLabel, Grid, ButtonGroup, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { green, blue, blueGrey, red } from '@material-ui/core/colors';
+
+const useStyles = makeStyles((theme) => ({
+    modal2: {
+        position: 'absolute',
+        width: 600,
+        height: 300,
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        borderRadius: '25px'
+    },
+    root: {
+        '& > *': {
+            margin: theme.spacing(1),
+        },
+    },
+    iconos: {
+        cursor: 'pointer'
+    },
+    inputMaterial: {
+        width: '100%'
+    },
+    formControl: {
+        margin: theme.spacing(0),
+        minWidth: 290,
+        maxWidth: 290,
+    },
+    typography: {
+        fontSize: 22,
+        color: "#ff3d00"
+    },
+    button: {
+        color: theme.palette.getContrastText(blueGrey[500]),
+        width: '200px',
+        height: '40px',
+        marginTop: '40px',
+        backgroundColor: green[700],
+        margin: theme.spacing(1),
+        fontSize: 14,
+        '&:hover': {
+            backgroundColor: blue[700],
+        },
+    }
+}));
 
 function SaveInvoiceSiigo(props) {
+    const styles = useStyles();
     const [lisPedidos, setListPedidos] = useState([]);
     const [lisProductosSiigo, setListProductosSiigo] = useState([]);
     const [listDetalleFacturas, setListDetalleFacturas] = useState([]);
@@ -22,10 +71,13 @@ function SaveInvoiceSiigo(props) {
     const [showModalMensajes, setShowModalMensajes] = useState(false);
     const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
     const [tituloMensajes, setTituloMensajes] = useState(false);
-    const [textoMensajes, setTextoMensajes] = useState(false);
+    const [numeroFactura, setNumeroFactura] = useState(0);
 
 
     //console.log("IMAGEN : ", imagen1)setListPedidos,-
+    const abrirCerrarModalMensajes = () => {
+        setShowModalMensajes(!showModalMensajes);
+    }
 
     useEffect(() => {
         const newDet = [];
@@ -92,14 +144,14 @@ function SaveInvoiceSiigo(props) {
         console.log("Pedidos  : ", lisPedidos)
         //console.log("Items pedidos  : ", listDetalleFacturas)
         let numfact = 0;
-
         console.log("FECHA ACTUAL  : ", fechaactual);
 
         setLoading(true);
-
+    
         lisPedidos && lisPedidos.map((facturas, index) => {
             let control = 0;
             if (facturas.id_fact == numeroPedido) {
+
                 //var fecha = new Date();
                 let date = new Date(facturas.fechafactura);
                 //let fecha = String(date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getDate()).padStart(2, '0');
@@ -172,16 +224,14 @@ function SaveInvoiceSiigo(props) {
                         url: 'https://sitbusiness.co/cyclewear/api/731', params
                     }).then(res => {
                         let numfact = 0;
-                        setLoading(false);
+
                         console.log("DATOS RESPONSE : ", res)
-                        if (res.status == 200) {
-                            swal({
-                                title: "CYCLEWEAR",
-                                text: "Factura Creada de forma correcta!",
-                                icon: "success",
-                                button: "Aceptar",
-                            });
+                        //console.log("RESPONSE DATA XXX : ", res.data)
+                        if (res.data.status == 200) {
+                            setNumeroFactura(res.data.id)
+                            abrirCerrarModalMensajes();
                         }
+                        setLoading(false);
                     }
                     ).catch(function (error) {
                         console.log("ERROR LEYENDO FACTURAS");
@@ -190,7 +240,6 @@ function SaveInvoiceSiigo(props) {
                 leer();
             }
         })
-        setLoading(false);
     }
 
     const handleChangePedido = async (selectedOptions) => {
@@ -247,11 +296,28 @@ function SaveInvoiceSiigo(props) {
         console.log("PEDIDO : ", pedido);
     }
 
+    const ordenInsertar = (
+        <div className="App" >
+            <div className={styles.modal2}>
+                <h3 className='centratexto'>Factura de venta - CWR</h3>
+                <hr />
+                <br />
+                <br />
+                <h3 className='centratexto'>Factura de venta N. : {numeroFactura} </h3>
+                <br />
+                <div align="right">
+                    <Button className={styles.button} onClick={() => abrirCerrarModalMensajes()} >Cerrar</Button>
+                </div>
+            </div>
+        </div>
+    )
+
     return (
         <div>
-            {loading ? <Loading /> : null}
+
             <br />
             <div className='mb-30 ml-10'>
+
                 <Row>
                     <Col xl={2} lg={2} md={2} xs={2}>
                         <div className='tamañofuentetercero'>
@@ -292,6 +358,14 @@ function SaveInvoiceSiigo(props) {
 
             </Row>
             <hr />
+            <Modal
+                className='ubicarmodalmensajes'
+                open={showModalMensajes}
+                onClose={abrirCerrarModalMensajes}
+            >
+                {ordenInsertar}
+            </Modal>
+            {loading ? <Loading /> : null}
             <MaterialTable
                 title="Pedidos Cycle Wear"
                 columns={columnas}
@@ -304,6 +378,10 @@ function SaveInvoiceSiigo(props) {
                     })
                 }}
             />
+            <br />
+            <br />
+            <br />
+
         </div>
     );
 }
