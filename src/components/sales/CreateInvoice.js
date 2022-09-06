@@ -485,48 +485,8 @@ function CreateInvoice(props) {
 
   useEffect(() => {
     if (contraSiigo) {
-      console.log("Items pedidos : ", dataitemspedidos);
-      console.log("Productos : ", dataproductos);
-      console.log("Pedidos : ", datapedidos);
-      console.log("Codigos Categorias : ", codigoscategorias);
       setLoading(true);
 
-      // Actualiza codigo producto desde SIIGO a Base de datos intermedia
-/*
-      dataitemspedidos &&
-      dataitemspedidos.map((items, index) => {
-
-        dataproductos &&
-          dataproductos.map((row, index) => {
-            if (items.variant_sku == row.sku) {
-
-              const actualiza = async () => {
-                const params = {
-                  estado: 2,
-                  itempedido: items.itempedido,
-                  codigosiigo: row.codigo
-                };
-
-                await axios({
-                  method: "post",
-                  url: "https://sitbusiness.co/cyclewear/api/718",
-                  params,
-                })
-                  .then((res) => {
-                    console.log("Actualizando codigo item pedido: ", params);
-                    contar = contar + 1;
-                  })
-                  .catch(function (error) {
-                    contar = contar + 1;
-
-                    console.log("ERROR Actualizando");
-                  });
-              };
-              actualiza();
-            }
-          });
-      });
-*/
       const newItemPed = [];
       dataitemspedidos &&
         dataitemspedidos.map((items, index) => {
@@ -605,54 +565,7 @@ function CreateInvoice(props) {
     let contador = datapedidos.length;
     console.log("LONGITUD DATA PEDIDOS : ", contador);
 
-    listDetalleFacturas &&
-      listDetalleFacturas.map((items, index) => {
-
-        let estado;
-        let delivery;
-
-        lisPedidos &&
-        lisPedidos.map((facturas, index) => {
-
-          if(facturas.id_fact == items.pedido){
-            estado = facturas.status;
-            delivery = facturas.delivery_type;
-          }
-
-        });
-
-        const params = {
-          pedido: items.pedido,
-          nombre: items.nombre,
-          apellido: items.apellido,
-          email: items.email,
-          ciudad: items.ciudad,
-          departamento: items.departamento,
-          codigopostal: items.codigopostal,
-          direccion: items.direccion,
-          status: estado,
-          delivery_type: delivery,
-          phone: items.phone
-        };
-
-        const datosped = async () => {
-          await axios({
-            method: "post",
-            url: "https://sitbusiness.co/cyclewear/api/213",
-            params,
-          })
-            .then((res) => {
-              console.log("DATOS PEDIDO : ", params);
-            })
-            .catch(function (error) {
-              console.log("ERROR EN DATOS PEDIDO");
-            });
-        };
-        datosped();
-      });
-
     let contadordos = 0;
-
     const newItems = [];
 
     datapedidos &&
@@ -703,17 +616,14 @@ function CreateInvoice(props) {
                         console.log("Actualizando Pedido : ", items.pedido);
 
                         if (cont == long) {
-                          setLoading(false);
-                          setLeePedidos(false)
-                          alert("DATOS ACTUALIZADOS");
+                           setLeePedidos(false)
+                           actualizaItemsPedidos();
                         }
                       })
                       .catch(function (error) {
                         cont = cont + 1;
                         if (cont == long) {
-                          setLoading(false);
-                          setLeePedidos(false);
-                          alert("DATOS ACTUALIZADOS");
+                          actualizaItemsPedidos();
                         }
                         console.log("ERROR Actualizando");
                       });
@@ -730,6 +640,110 @@ function CreateInvoice(props) {
         identificacion();
       });
   };
+
+  const actualizaItemsPedidos = () => {
+    console.log("Items pedidos : ", dataitemspedidos);
+    console.log("Productos : ", dataproductos);
+    console.log("Pedidos : ", datapedidos);
+    setLoading(true);
+
+    const newItems = [];
+    let cantidad = newItems.length;
+    let contar = 0;
+    let totalitems = 0;
+    let longituditems = dataitemspedidos.length;
+
+    dataitemspedidos &&
+      dataitemspedidos.map((items, index) => {
+       
+        let estado;
+        let delivery;
+
+        datapedidos &&
+          datapedidos.map((facturas, index) => {
+
+            if (facturas.id_fact == items.pedido) {
+              estado = facturas.status;
+              delivery = facturas.delivery_type;
+            }
+
+          });
+
+        const params = {
+          pedido: items.pedido,
+          nombre: items.nombre,
+          apellido: items.apellido,
+          email: items.email,
+          ciudad: items.ciudad,
+          departamento: items.departamento,
+          codigopostal: items.codigopostal,
+          direccion: items.direccion,
+          status: estado,
+          delivery_type: delivery,
+          phone: items.phone
+        };
+
+        const datosped = async () => {
+          await axios({
+            method: "post",
+            url: "https://sitbusiness.co/cyclewear/api/213",
+            params,
+          })
+            .then((res) => {
+              console.log("DATOS PEDIDO : ", params);
+            })
+            .catch(function (error) {
+              console.log("ERROR EN DATOS PEDIDO");
+            });
+        };
+        datosped();
+      });
+
+    dataitemspedidos &&
+      dataitemspedidos.map((items, index) => {
+        dataproductos &&
+          dataproductos.map((row, index) => {
+            if (items.variant_sku == row.sku) {
+
+              console.log("COMPARA : ", items.variant_sku, " --", row.sku);
+
+              const actualiza = async () => {
+                const params = {
+                  estado: 2,
+                  itempedido: items.itempedido,
+                  codigosiigo: row.codigo
+                };
+
+                await axios({
+                  method: "post",
+                  url: "https://sitbusiness.co/cyclewear/api/718",
+                  params,
+                })
+                  .then((res) => {
+                    totalitems = totalitems + 1;
+                    console.log("Actualizando : ", params);
+                    console.log("RESPUESTA : ", res);
+                    contar = contar + 1;
+                    if(totalitems == longituditems){
+                      setLoading(false);
+                      alert("DATOS ACTUALIZADOS");
+                    }
+                  })
+                  .catch(function (error) {
+                    contar = contar + 1;
+
+                    console.log("ERROR Actualizando");
+                  });
+              };
+              actualiza();
+            }
+          });
+      });
+  
+    //setInterval(setLoading(false),100000);
+  }
+
+
 
   return (
     <div>

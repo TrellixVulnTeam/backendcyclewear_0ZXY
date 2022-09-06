@@ -103,6 +103,53 @@ function UpdateCodigoPrd(props) {
     dataitemspedidos &&
       dataitemspedidos.map((items, index) => {
 
+        let estado;
+        let delivery;
+
+        datapedidos &&
+          datapedidos.map((facturas, index) => {
+
+            if (facturas.id_fact == items.pedido) {
+              estado = facturas.status;
+              delivery = facturas.delivery_type;
+            }
+
+          });
+
+        const params = {
+          pedido: items.pedido,
+          nombre: items.nombre,
+          apellido: items.apellido,
+          email: items.email,
+          ciudad: items.ciudad,
+          departamento: items.departamento,
+          codigopostal: items.codigopostal,
+          direccion: items.direccion,
+          status: estado,
+          delivery_type: delivery,
+          phone: items.phone
+        };
+
+        const datosped = async () => {
+          await axios({
+            method: "post",
+            url: "https://sitbusiness.co/cyclewear/api/213",
+            params,
+          })
+            .then((res) => {
+              console.log("DATOS PEDIDO : ", params);
+            })
+            .catch(function (error) {
+              console.log("ERROR EN DATOS PEDIDO");
+            });
+        };
+        datosped();
+      });
+
+
+    dataitemspedidos &&
+      dataitemspedidos.map((items, index) => {
+
         dataproductos &&
           dataproductos.map((row, index) => {
             if (items.variant_sku == row.sku) {
