@@ -492,7 +492,7 @@ function CreateInvoice(props) {
       setLoading(true);
 
       // Actualiza codigo producto desde SIIGO a Base de datos intermedia
-
+/*
       dataitemspedidos &&
       dataitemspedidos.map((items, index) => {
 
@@ -526,7 +526,7 @@ function CreateInvoice(props) {
             }
           });
       });
-
+*/
       const newItemPed = [];
       dataitemspedidos &&
         dataitemspedidos.map((items, index) => {

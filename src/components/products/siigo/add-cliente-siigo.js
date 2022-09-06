@@ -294,6 +294,7 @@ function AddClientSiigo(props) {
               "success",
               { button: "Aceptar" }
             );
+            setActualizar(true);
           } else {
             swal(
               "CYCLE WEAR",
@@ -313,7 +314,7 @@ function AddClientSiigo(props) {
   }
 
   const grabarDatos = (datos) => {
-    //console.log("DATOS : ", datos)
+    console.log("DATOS : ", datos)
     const params = {
       apellido: datos.apellido,
       ciudad: datos.ciudad,

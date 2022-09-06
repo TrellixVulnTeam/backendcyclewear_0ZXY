@@ -79,6 +79,10 @@ function SaveInvoiceSiigo(props) {
         setShowModalMensajes(!showModalMensajes);
     }
 
+    const abrirCerrarModal = () => {
+        setShowModalMensajes(true);
+    }
+
     useEffect(() => {
         const newDet = [];
         let contadordos = 0;
@@ -226,10 +230,10 @@ function SaveInvoiceSiigo(props) {
                         let numfact = 0;
 
                         console.log("DATOS RESPONSE : ", res)
-                        //console.log("RESPONSE DATA XXX : ", res.data)
+                        console.log("NUMERO FACTURA : ", res.data.id)
                         if (res.data.status == 200) {
-                            setNumeroFactura(res.data.id)
-                            abrirCerrarModalMensajes();
+                            setNumeroFactura(res.data.id);
+                            abrirCerrarModal(true);
                         }
                         setLoading(false);
                     }
