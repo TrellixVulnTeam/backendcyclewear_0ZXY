@@ -247,7 +247,7 @@ function CreateInvoice(props) {
                         categoriacuatro: categoriacuatro,
                         codigoconsecutivo: codigoconsecutivo
                       };
-                      //console.log("ITEM PEDIDO : ", item)
+                      console.log("ITEM PEDIDO : ", item)
                       newDetPed.push(item);
                     }
                   });
@@ -274,18 +274,13 @@ function CreateInvoice(props) {
     }
   }, [leeFacturas]);
 
-  const readPedidos = () => {
-    setLeePedidos(true);
-    //setLeeFacturas(true);
-  };
-
   useEffect(() => {
     //console.log("TERCEROS CREADOS : ", listaTercerosCreados);
     //console.log("FACTURAS LEIDAS : ", datosClientesFacturas);
     if (actualizaBD) {
       setLoading(true);
-      console.log("ENCABEZADO PEDIDOS : ", lisPedidos);
-      console.log("DETALLE PEDIDOS : ", listDetalleFacturas);
+      //console.log("ENCABEZADO PEDIDOS : ", lisPedidos);
+      //console.log("DETALLE PEDIDOS : ", listDetalleFacturas);
 
       let longitud = lisPedidos.length;
       let contador = 0;
@@ -442,7 +437,7 @@ function CreateInvoice(props) {
           });
       };
       pedidos();
-
+/*
       const itemspedidos = async () => {
         await axios({
           method: "post",
@@ -457,6 +452,8 @@ function CreateInvoice(props) {
           });
       };
       itemspedidos();
+*/
+      setDataitemspedidos(listDetalleFacturas);
 
       const consecutivoscategorias = async () => {
         await axios({
@@ -649,9 +646,8 @@ function CreateInvoice(props) {
 
     const newItems = [];
     let cantidad = newItems.length;
-    let contar = 0;
     let totalitems = 0;
-    let longituditems = dataitemspedidos.length;
+    let longituditems = (dataitemspedidos.length - 50);
 
     dataitemspedidos &&
       dataitemspedidos.map((items, index) => {
@@ -713,7 +709,7 @@ function CreateInvoice(props) {
                   itempedido: items.itempedido,
                   codigosiigo: row.codigo
                 };
-
+               
                 await axios({
                   method: "post",
                   url: "https://sitbusiness.co/cyclewear/api/718",
@@ -721,17 +717,16 @@ function CreateInvoice(props) {
                 })
                   .then((res) => {
                     totalitems = totalitems + 1;
+                    console.log("TOTAL ITEMS : ", totalitems);
+                    console.log("LONGITUD ITEMS : ", longituditems);
                     console.log("Actualizando : ", params);
                     console.log("RESPUESTA : ", res);
-                    contar = contar + 1;
                     if(totalitems == longituditems){
-                      setLoading(false);
-                      alert("DATOS ACTUALIZADOS");
+                        terminaProceso();
                     }
                   })
                   .catch(function (error) {
-                    contar = contar + 1;
-
+                    totalitems = totalitems + 1;
                     console.log("ERROR Actualizando");
                   });
               };
@@ -743,6 +738,10 @@ function CreateInvoice(props) {
     //setInterval(setLoading(false),100000);
   }
 
+  const terminaProceso = () => {
+    setLoading(false);
+    alert("DATOS ACTUALIZADOS");
+  }
 
 
   return (

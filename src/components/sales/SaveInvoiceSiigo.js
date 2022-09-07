@@ -70,7 +70,7 @@ function SaveInvoiceSiigo(props) {
     const [loading, setLoading] = useState(false);
     const [showModalMensajes, setShowModalMensajes] = useState(false);
     const fechaactual = Moment(new Date()).format("YYYY-MM-DD");
-    const [tituloMensajes, setTituloMensajes] = useState(false);
+    const [tituloMensajes, setTituloMensajes] = useState("");
     const [numeroFactura, setNumeroFactura] = useState(0);
 
 
@@ -151,7 +151,7 @@ function SaveInvoiceSiigo(props) {
         console.log("FECHA ACTUAL  : ", fechaactual);
 
         setLoading(true);
-    
+
         lisPedidos && lisPedidos.map((facturas, index) => {
             let control = 0;
             if (facturas.id_fact == numeroPedido) {
@@ -233,6 +233,25 @@ function SaveInvoiceSiigo(props) {
                         console.log("NUMERO FACTURA : ", res.data.id)
                         if (res.data.status == 200) {
                             setNumeroFactura(res.data.id);
+                            let mensaje = "Factura de venta N. : " + res.data.id;
+                            setTituloMensajes(mensaje)
+                            abrirCerrarModal(true);
+                        } else {
+                            let cadena = res.data.Error;
+                            let posicion = cadena.search(':');
+                            let valor = cadena.slice(posicion + 1);
+                            let inicial = cadena.slice(0, posicion);
+                            
+                            let mensaje;
+                            if (inicial == "The code doesn't exist")
+                                mensaje = "Codigo de producto no existe : " + valor;
+                            else
+                                if (inicial == "The customer doesn't exist")
+                                    mensaje = "Tercero no existe : " + valor;
+                                else
+                                    mensaje = "Error creando factura "
+
+                            setTituloMensajes(mensaje)
                             abrirCerrarModal(true);
                         }
                         setLoading(false);
@@ -296,20 +315,15 @@ function SaveInvoiceSiigo(props) {
         }
     ]
 
-    const seleccionarPedido = (pedido, caso) => {
-        console.log("PEDIDO : ", pedido);
-    }
-
-    const ordenInsertar = (
+    const mostrarMensaje = (
         <div className="App" >
             <div className={styles.modal2}>
                 <h3 className='centratexto'>Factura de venta - CWR</h3>
                 <hr />
                 <br />
+                <h3 className='centratexto'> {tituloMensajes} </h3>
                 <br />
-                <h3 className='centratexto'>Factura de venta N. : {numeroFactura} </h3>
-                <br />
-                <div align="right">
+                <div align="center">
                     <Button className={styles.button} onClick={() => abrirCerrarModalMensajes()} >Cerrar</Button>
                 </div>
             </div>
@@ -359,7 +373,6 @@ function SaveInvoiceSiigo(props) {
                         Crear Facturas
                     </button>
                 </Col>
-
             </Row>
             <hr />
             <Modal
@@ -367,7 +380,7 @@ function SaveInvoiceSiigo(props) {
                 open={showModalMensajes}
                 onClose={abrirCerrarModalMensajes}
             >
-                {ordenInsertar}
+                {mostrarMensaje}
             </Modal>
             {loading ? <Loading /> : null}
             <MaterialTable
