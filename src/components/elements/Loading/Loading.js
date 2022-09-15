@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from "reactstrap";
-import "./loading.css";
+import "./Loading.css";
 
 function Loading(props) {
     return (

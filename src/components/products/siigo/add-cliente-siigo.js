@@ -191,7 +191,7 @@ function AddClientSiigo(props) {
   };
 
   const seleccionarPedido = (pedido) => {
-    //console.log("DATOS CLIENTES : ",pedido)
+    console.log("DATOS CLIENTES : ",pedido)
 
     let valida = true;
     if (pedido.cedula == "") {
@@ -287,7 +287,7 @@ function AddClientSiigo(props) {
         }).then((res) => {
           console.log("RESPONSE : ", res)
 
-          if (res.status === 200) {
+          if (res.data.Status === 200) {
             swal(
               "CYCLE WEAR",
               "Registro interlocutor SIIGO de forma correcta!",

@@ -294,6 +294,7 @@ function AddProductSiigo(props) {
           categoriados: datos.categoriatres,
           categoriatres: datos.categoriacuatro
         };
+        //console.log("PARAMETROS CONSECUTIVO : ", params);
 
         await axios({
           method: "post",
@@ -325,7 +326,7 @@ function AddProductSiigo(props) {
               account_group: grupo
             };
 
-            console.log("NEW CREA PRODUCTO : ", params);
+            //console.log("NEW CREA PRODUCTO : ", params);
 
             const creaproducto = async () => {
               await axios({
@@ -407,6 +408,12 @@ function AddProductSiigo(props) {
                   setLoading(false);
                 })
                 .catch(function (error) {
+                  swal(
+                    "CYCLE WEAR",
+                    "Consecutivo Prefijo no existe!",
+                    "success",
+                    { button: "Aceptar" }
+                  );
                   console.log("ERROR Actualizando");
                 });
             };

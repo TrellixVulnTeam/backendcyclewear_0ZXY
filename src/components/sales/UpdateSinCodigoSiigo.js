@@ -176,7 +176,7 @@ function UpdateSinCodigoSiigo(props) {
           pagina: i,
         };
 
-        if (i == 245) {
+        if (i == 248) {
           setLoading(false);
           setListProductosSiigo(newDetPed);
           console.log("PRODUCTOS SIIGO : ", newDetPed);
@@ -185,7 +185,7 @@ function UpdateSinCodigoSiigo(props) {
 
         await axios({
           method: "post",
-          url: "https://sitbusiness.co/cyclewear/api/715",
+          url: "https://sitbusiness.co/cyclewear/api/ ",
           params,
         })
           .then((res) => {
