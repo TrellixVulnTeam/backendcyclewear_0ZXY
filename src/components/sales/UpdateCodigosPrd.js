@@ -99,7 +99,7 @@ function UpdateCodigoPrd(props) {
     const newItems = [];
     let cantidad = newItems.length;
     let contar = 0;
-
+/*
     dataitemspedidos &&
       dataitemspedidos.map((items, index) => {
 
@@ -145,7 +145,7 @@ function UpdateCodigoPrd(props) {
         };
         datosped();
       });
-
+*/
 
     dataitemspedidos &&
       dataitemspedidos.map((items, index) => {

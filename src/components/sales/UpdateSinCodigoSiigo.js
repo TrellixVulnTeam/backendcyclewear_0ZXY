@@ -185,7 +185,7 @@ function UpdateSinCodigoSiigo(props) {
 
         await axios({
           method: "post",
-          url: "https://sitbusiness.co/cyclewear/api/ ",
+          url: "https://sitbusiness.co/cyclewear/api/715",
           params,
         })
           .then((res) => {
