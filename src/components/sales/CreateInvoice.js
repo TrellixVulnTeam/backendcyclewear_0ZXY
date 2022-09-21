@@ -560,7 +560,7 @@ function CreateInvoice(props) {
     setLoading(true);
 
     let contador = datapedidos.length;
-    console.log("LONGITUD DATA PEDIDOS : ", contador);
+   
 
     let contadordos = 0;
     const newItems = [];
@@ -581,7 +581,8 @@ function CreateInvoice(props) {
 
               //console.log("CEDULAS : ", res.data);
               contadordos = contadordos + 1;
-              console.log("Contador : ", contadordos);
+              console.log("Contador DOS: ", contadordos);
+              console.log("LONGITUD DATA PEDIDOS : ", contador);
 
               let items = {
                 pedido: pedido.id_fact,
@@ -589,7 +590,8 @@ function CreateInvoice(props) {
               };
               newItems.push(items);
 
-              if (contadordos == contador) {
+              if (contadordos > contador) {
+                contador = 10000;
                 let long = newItems.length;
                 let cont = 0;
 
