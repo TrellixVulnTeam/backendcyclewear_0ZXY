@@ -171,12 +171,12 @@ function UpdateSinCodigoSiigo(props) {
   const readSiigo = () => {
     const leeProductosSiigo = async () => {
       const newDetPed = [];
-      for (var i = 1; i < 320; i++) {
+      for (var i = 1; i < 10; i++) {
         const params = {
           pagina: i,
         };
 
-        if (i == 318) {
+        if (i == 8) {
           setLoading(false);
           setListProductosSiigo(newDetPed);
           console.log("PRODUCTOS SIIGO : ", newDetPed);

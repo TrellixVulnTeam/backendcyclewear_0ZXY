@@ -226,6 +226,7 @@ function AddProductSiigo(props) {
     let valida = true;
     let codigosiigo;
     let grupo;
+    let datoscreaproducto;
 
     if (lisProductosSiigo.length > 0)
       setValidarDatos(true)
@@ -244,7 +245,7 @@ function AddProductSiigo(props) {
       return
     }
 
-    lisProductosSiigo &&
+    /*lisProductosSiigo &&
       lisProductosSiigo.map((items, index) => {
         if (items.sku == datos.variant_sku) {
           setValidarDatos(false)
@@ -252,7 +253,7 @@ function AddProductSiigo(props) {
           codigosiigo = items.code;
         }
       });
-    console.log("VALOR VALIDA : ", valida)
+    console.log("VALOR VALIDA : ", valida)*/
 
     if (!valida) {
       swal(
@@ -260,7 +261,7 @@ function AddProductSiigo(props) {
         "Producto ya existe en SIIGO, revisar!",
         "warning",
         { button: "Aceptar" }
-      );  
+      );
 
       const actualiza = async () => {
         params = {
@@ -335,20 +336,26 @@ function AddProductSiigo(props) {
                 params,
               })
                 .then((rest) => {
-                  console.log("RETORNA API :", rest);
-                  if (rest.status === 200) {
+                  console.log("RETORNA API :", rest.data);
+
+                  //DATOS PARA CREAR PRODUCTO EN SIIGO
+                  datoscreaproducto = rest.data;
+
+                  if (rest.data.status === 200) {
                     swal(
                       "CYCLE WEAR",
                       "Producto registrado en SIIGO de forma correcta!",
                       "success",
                       { button: "Aceptar" }
                     );
+
                     const actualizaPrefijo = async () => {
                       //alert("ENTRE")
                       params = {
                         consecutivo: contador,
                         prefijo: prefijo
                       }
+
                       await axios({
                         method: "post",
                         url: "https://sitbusiness.co/cyclewear/api/19",
@@ -362,6 +369,7 @@ function AddProductSiigo(props) {
                               "success",
                               { button: "Aceptar" }
                             );
+
                             const actualiza = async () => {
                               params = {
                                 estado: 2,
@@ -377,12 +385,59 @@ function AddProductSiigo(props) {
                                 .then((res) => {
                                   console.log("Actualizando : ", params);
 
+                                  const creaprdsiigo = async () => {
+                                    params = {
+                                      bodega: datoscreaproducto.bodega,
+                                      cantidad: datoscreaproducto. cantidad,
+                                      codigo: datoscreaproducto.codigo,
+                                      codigobarra: datoscreaproducto.codigobarra,
+                                      estado: datoscreaproducto.estado,
+                                      fechadecreacion: datoscreaproducto.fechadecreacion,
+                                      id: datoscreaproducto.id,
+                                      idgrupo: datoscreaproducto.idgrupo,
+                                      idiva: datoscreaproducto.idiva,
+                                      marca: datoscreaproducto.marca,
+                                      nombre: datoscreaproducto.nombre,
+                                      nombrebodega: datoscreaproducto.nombrebodega,
+                                      nombregrp: datoscreaproducto.nombregrp,
+                                      sku: datoscreaproducto.sku,
+                                      valor: datoscreaproducto.valor,
+                                      valoriva:datoscreaproducto.valoriva,
+                                    };
+
+                                    await axios({
+                                      method: "post",
+                                      url: "https://sitbusiness.co/cyclewear/api/22",
+                                      params,
+                                    })
+                                      .then((res) => {
+                                        console.log("RESPTA PRODUCTO : ", res)
+                                        if (res.data.type === 1) {
+                                          swal(
+                                            "CYCLE WEAR",
+                                            "Producto creado correctamente en SIIGO!",
+                                            "success",
+                                            { button: "Aceptar" }
+                                          );
+                                        }
+                                      })
+                                      .catch(function (error) {
+                                        swal(
+                                          "CYCLE WEAR",
+                                          "Error creando Producto en SIIGO!",
+                                          "warning",
+                                          { button: "Aceptar" }
+                                        );
+                                      });
+                                  };
+                                  creaprdsiigo();
                                 })
                                 .catch(function (error) {
                                   console.log("ERROR Actualizando");
                                 });
                             };
                             actualiza();
+
                           } else {
                             swal(
                               "CYCLE WEAR",
