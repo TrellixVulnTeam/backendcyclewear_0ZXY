@@ -8,6 +8,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import EditAttributesIcon from "@material-ui/icons/EditAttributes";
 import Moment from "moment";
 import swal from "sweetalert";
+import "./ordenes.css";
 import {
   Card,
   CardBody,
@@ -90,62 +91,64 @@ function UpdateCodigoPrd(props) {
   }, []);
 
   const leerProductoSiigo = () => {
+    setLoading(true)
     console.log("Items pedidos : ", dataitemspedidos);
     console.log("Productos : ", dataproductos);
     console.log("Pedidos : ", datapedidos);
     console.log("Codigos Categorias : ", codigoscategorias);
-    setLoading(true);
 
     const newItems = [];
     let cantidad = newItems.length;
     let contar = 0;
-/*
-    dataitemspedidos &&
-      dataitemspedidos.map((items, index) => {
-
-        let estado;
-        let delivery;
-
-        datapedidos &&
-          datapedidos.map((facturas, index) => {
-
-            if (facturas.id_fact == items.pedido) {
-              estado = facturas.status;
-              delivery = facturas.delivery_type;
-            }
-
+    /*
+        dataitemspedidos &&
+          dataitemspedidos.map((items, index) => {
+    
+            let estado;
+            let delivery;
+    
+            datapedidos &&
+              datapedidos.map((facturas, index) => {
+    
+                if (facturas.id_fact == items.pedido) {
+                  estado = facturas.status;
+                  delivery = facturas.delivery_type;
+                }
+    
+              });
+    
+            const params = {
+              pedido: items.pedido,
+              nombre: items.nombre,
+              apellido: items.apellido,
+              email: items.email,
+              ciudad: items.ciudad,
+              departamento: items.departamento,
+              codigopostal: items.codigopostal,
+              direccion: items.direccion,
+              status: estado,
+              delivery_type: delivery,
+              phone: items.phone
+            };
+    
+            const datosped = async () => {
+              await axios({
+                method: "post",
+                url: "https://sitbusiness.co/cyclewear/api/213",
+                params,
+              })
+                .then((res) => {
+                  console.log("DATOS PEDIDO : ", params);
+                })
+                .catch(function (error) {
+                  console.log("ERROR EN DATOS PEDIDO");
+                });
+            };
+            datosped();
           });
-
-        const params = {
-          pedido: items.pedido,
-          nombre: items.nombre,
-          apellido: items.apellido,
-          email: items.email,
-          ciudad: items.ciudad,
-          departamento: items.departamento,
-          codigopostal: items.codigopostal,
-          direccion: items.direccion,
-          status: estado,
-          delivery_type: delivery,
-          phone: items.phone
-        };
-
-        const datosped = async () => {
-          await axios({
-            method: "post",
-            url: "https://sitbusiness.co/cyclewear/api/213",
-            params,
-          })
-            .then((res) => {
-              console.log("DATOS PEDIDO : ", params);
-            })
-            .catch(function (error) {
-              console.log("ERROR EN DATOS PEDIDO");
-            });
-        };
-        datosped();
-      });
-*/
+    */
+    let longitud = dataitemspedidos.length;
+    let contreg = 0;
 
     dataitemspedidos &&
       dataitemspedidos.map((items, index) => {
@@ -153,8 +156,6 @@ function UpdateCodigoPrd(props) {
         dataproductos &&
           dataproductos.map((row, index) => {
             if (items.variant_sku == row.sku) {
-
-              console.log("COMPARA : ", items.variant_sku, " --", row.sku);
 
               const actualiza = async () => {
                 const params = {
@@ -169,6 +170,11 @@ function UpdateCodigoPrd(props) {
                   params,
                 })
                   .then((res) => {
+                    
+                    if (contar > longitud)
+                      setLoading(false)
+
+                    //console.log("CONTADOR : ", contar);
                     console.log("Actualizando : ", params);
                     console.log("RESPUESTA : ", res);
                     contar = contar + 1;
@@ -183,9 +189,6 @@ function UpdateCodigoPrd(props) {
             }
           });
       });
-
-
-    setLoading(false);
     setContraSiigo(false);
     //setInterval(setLoading(false),100000);
   }
@@ -208,7 +211,7 @@ function UpdateCodigoPrd(props) {
 
         <Col xl={3} lg={3} md={3} xs={3}>
           <button
-            className="botoncrearcliente"
+            className="botonestercero"
             color="primary"
             onClick={leerProductoSiigo}
           >
