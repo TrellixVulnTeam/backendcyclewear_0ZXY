@@ -214,6 +214,7 @@ function CreateInvoice(props) {
                         }
 
                       //console.log("CATEGORIAS : ", divide);
+                      let subtot = itempedido.attributes.subtotal/itempedido.attributes.quantity;
 
                       let item = {
                         itempedido: itempedido.id,
@@ -223,7 +224,7 @@ function CreateInvoice(props) {
                         brand_name: itempedido.attributes.brand_name,
                         price: itempedido.attributes.price,
                         quantity: itempedido.attributes.quantity,
-                        subtotal: itempedido.attributes.subtotal,
+                        subtotal: subtot,
                         tax_total: itempedido.attributes.tax_total,
                         taxon_name: itempedido.attributes.taxon_name,
                         total: itempedido.attributes.total,

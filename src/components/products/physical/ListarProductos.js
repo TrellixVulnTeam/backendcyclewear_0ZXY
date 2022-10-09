@@ -45,89 +45,11 @@ function ListarProductos(props) {
                 url: 'https://sitbusiness.co/cyclewear/api/23'
             }).then(res => {
                 console.log("LISTA DE  PRODUCTOS : ", res.data);
-
+                setListProductos(res.data);
                 const newDet = [];
-                {
-                    res.data && res.data.map((productos, index) => {
-                        {
-                            let imagen = "";
-
-                            if (productos.value === 1) {
-                                imagen = imagen1;
-                            } else
-                                if (productos.value === 2) {
-                                    imagen = imagen2;
-                                } else
-                                    if (productos.value === 3) {
-                                        imagen = imagen3;
-                                    } else
-                                        if (productos.value === 4) {
-                                            imagen = imagen4;
-                                        } else
-                                            if (productos.value === 5) {
-                                                imagen = imagen5;
-                                            } else
-                                                if (productos.value === 6) {
-                                                    imagen = imagen6;
-                                                } else
-                                                    if (productos.value === 7) {
-                                                        imagen = imagen7;
-                                                    } else
-                                                        if (productos.value === 8) {
-                                                            imagen = imagen8;
-                                                        } else
-                                                            if (productos.value === 9) {
-                                                                imagen = imagen9;
-                                                            } else
-                                                                if (productos.value === 10) {
-                                                                    imagen = imagen10;
-                                                                } else
-                                                                    if (productos.value === 11) {
-                                                                        imagen = imagen11;
-                                                                    } else
-                                                                    if (productos.value === 12) {
-                                                                        imagen = imagen12;
-                                                                    } else
-                                                                    if (productos.value === 13) {
-                                                                        imagen = imagen13;
-                                                                    } else
-                                                                    if (productos.value === 14) {
-                                                                        imagen = imagen14;
-                                                                    } else
-                                                                        imagen = "";
-
-                            let item = {
-                                value: productos.value,
-                                label: productos.label,
-                                idproductos: productos.idproductos,
-                                idinterno: productos.idinterno,
-                                codigosiigo: productos.codigosiigo,
-                                codigoproveedor: productos.codigoproveedor,
-                                condicionproducto: productos.condicionproducto,
-                                sexo: productos.sexo,
-                                tipodeproducto: productos.tipodeproducto,
-                                categoriauno: productos.categoriauno,
-                                categoriados: productos.categoriados,
-                                categoriatres: productos.categoriatres,
-                                categoriacuatro: productos.categoriacuatro,
-                                descripcion: productos.descripcion,
-                                fechaingreso: productos.fechaingreso,
-                                fechamodificacion: productos.fechamodificacion,
-                                estado: productos.estado,
-                                empresa: productos.empresa,
-                                nombretipoproducto: productos.nombretipoproducto,
-                                nombrecategoriauno: productos.nombrecategoriauno,
-                                nombrecategoriados: productos.nombrecategoriados,
-                                nombrecategoriatres: productos.nombrecategoriatres,
-                                nombrecategoriacuatro: productos.nombrecategoriacuatro,
-                                imagen: imagen
-                            };
-                            newDet.push(item);
-                        }
-                    })
-                }
+                
                 console.log("NUEVO ARREGLO : ", newDet);
-                setListProductos(newDet);
+                
             }
             ).catch(function (error) {
                 console.log("ERROR LEYENDO LISTA DE PRODUCTOS");
@@ -152,23 +74,23 @@ function ListarProductos(props) {
         {
             title: '',
             field: 'imageUrl',
-            render: rowData => <img src={rowData.imagen} style={{ width: 100, height: 100 }} />
+            render: rowData => <img src={rowData.imagen} style={{ width: 50, height: 50 }} />
         },
         {
-            title: 'Tipo',
-            field: 'nombretipoproducto'
+            title: 'Codigo',
+            field: 'codigo'
         },
         {
-            title: 'CategoríaUno',
-            field: 'nombrecategoriauno'
+            title: 'SKU',
+            field: 'sku'
         },
         {
-            title: 'CategoríaDos',
-            field: 'nombrecategoriauno'
+            title: 'Descripción',
+            field: 'nombre'
         },
         {
-            title: 'CategoríaTres',
-            field: 'nombrecategoriados'
+            title: 'Fecha creación',
+            field: 'fechadecreacion'
         },
         {
             title: 'CategoríaTres',
@@ -246,104 +168,9 @@ function ListarProductos(props) {
     }
 
     const grabarVariantes = () => {
-
         console.log("DATOS VARIaNTEs : ", listVariantesProductoSeleccionada )
-        /*const params = {
-            idinterno: idProducto
-        };
-
-        let longitud = 0;
-        let ultimo = 0;
-
-        const leeUltimaVarianteProducto = async () => {
-            await axios({
-                method: 'post',
-                url: 'https://sitbusiness.co/cyclewear/api/20', params
-            }).then(res => {
-                //console.log("CONSECUTIVO VARIANTE PRODUCTO : ", (res.data));
-                ultimo = res.data.length + 1;
-                grabarVariantesBD(ultimo);
-            }
-            ).catch(function (error) {
-                console.log("ERROR LEYENDO CONSECUTIVO");
-            })
-        }
-        leeUltimaVarianteProducto();*/
     }
 
-    const grabarVariantesBD = (ultimo) => {
-        /*
-                if (formData.precioventavariante >= formData.preciobasevariante) {
-                    swal(
-                        "GRABAR VARIANTE PRODUCTO",
-                        "Precio de Venta debe ser menor a Precio Base!",
-                        "warning",
-                        { button: "Aceptar" }
-                    );
-                    return;
-                }
-        
-                var cadena = "" + formData.preciobasevariante;
-                var cadena1 = cadena.replace(",", "");
-                var preciobase = cadena1.replace("$", "");
-        
-                var cadena = "" + formData.precioventavariante;
-                var cadena1 = cadena.replace(",", "");
-                var precioventa = cadena1.replace("$", "");
-        
-                let idvariante = idProducto + ultimo;
-        
-                const formdata = new FormData();
-                formdata.append("idvariante", idvariante);
-                formdata.append("idinterno", idProducto);
-                formdata.append("nombrevarianteuno", "");
-                formdata.append("nombrevariantedos", "");
-                formdata.append("nombrevariantetres", "");
-                formdata.append("nombrevariantecuatro", "");
-                formdata.append("nombrevariantecinco", "");
-                formdata.append("preciobasevariante", preciobase);
-                formdata.append("precioventavariante", precioventa);
-                formdata.append("cantidadvariante", formData.cantidadvariante);
-                formdata.append("codigobarravariante", formData.codigobarravariante);
-                formdata.append("skuvariante", formData.skuvariante);
-                formdata.append("taxcodevariante", formData.taxcodevariante);
-                formdata.append("fechaingreso", fechaactual);
-                formdata.append("fechamodificacion", fechaactual);
-                formdata.append("estado", 1);
-        
-                const grabarVarianteProducto = async () => {
-                    fetch("https://sitbusiness.co/cyclewear/api/21", {
-                        method: "POST",
-                        body: formdata,
-                    }).then((res) => {
-                        if (res) {
-                            console.log("RESPONSE : ", res)
-        
-                            if (res.status === 200) {
-                                swal(
-                                    "CYCLE WEAR",
-                                    "Ingreso variante producto grabada de forma correcta!",
-                                    "success",
-                                    { button: "Aceptar" }
-                                );
-                                setModalVariantes(false);
-                                //window.location.reload(false);
-                            } else {
-                                swal(
-                                    "CYCLE WEAR",
-                                    "Se presentaron inconvenientes al grabar la variante, Intenta nuevamente!",
-                                    "warning",
-                                    { button: "Aceptar" }
-                                );
-                            }
-                        } else {
-                            console.log("RESPONSE GRABAR PRODUCTOS : ", res);
-                        }
-                    });
-                }
-                grabarVarianteProducto();
-                */
-    }
 
     return (
         <Fragment>

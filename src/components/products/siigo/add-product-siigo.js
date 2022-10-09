@@ -211,277 +211,273 @@ function AddProductSiigo(props) {
     leeProductosSiigo();
   };
 
-  const validaContraSiigo = async () => {
-    setContraSiigo(true);
-  };
-
   const grabarDatos = (datos) => {
     console.log("DATOS ITEM PEDIDO : ", datos);
+
+    const validaprdsiigo = async () => {
+      let params = {
+        sku: datos.variant_sku
+      };
+
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/24",
+        params,
+      })
+        .then((res) => {
+          console.log("LEE PRODUCTO : ", res)
+          console.log("PRODUCTO EXISTE EN SIIGo")
+          swal(
+            "CYCLE WEAR",
+            "Producto existe en SIIGO!",
+            "warning",
+            { button: "Aceptar" }
+          );
+        })
+        .catch(function (error) {
+          console.log("PRODUCTO EXISTE EN SIIGo")
+          grabarDatosBD(datos)
+        });
+    };
+    validaprdsiigo();
+  };
+
+  const grabarDatosBD = (datos) => {
     console.log("PRODUCTOS SIIGO : ", lisProductosSiigo);
+    return
     let prefijo;
     let contador;
     let consecutivo;
     let resultado;
     let params;
-    let valida = true;
     let codigosiigo;
     let grupo;
     let datoscreaproducto;
 
-    if (lisProductosSiigo.length > 0)
-      setValidarDatos(true)
-    else {
-      valida = false;
-      setValidarDatos(false)
-    }
-
-    if (!valida) {
-      swal(
-        "CYCLE WEAR",
-        "Autorización SIIGO vencida, debe renovar!",
-        "warning",
-        { button: "Aceptar" }
-      );
-      return
-    }
-
-    /*lisProductosSiigo &&
-      lisProductosSiigo.map((items, index) => {
-        if (items.sku == datos.variant_sku) {
-          setValidarDatos(false)
-          valida = false;
-          codigosiigo = items.code;
-        }
-      });
-    console.log("VALOR VALIDA : ", valida)*/
-
-    if (!valida) {
-      swal(
-        "CYCLE WEAR",
-        "Producto ya existe en SIIGO, revisar!",
-        "warning",
-        { button: "Aceptar" }
-      );
-
-      const actualiza = async () => {
-        params = {
-          estado: 2,
-          itempedido: datos.itempedido,
-          codigosiigo: codigosiigo
-        };
-
-        await axios({
-          method: "post",
-          url: "https://sitbusiness.co/cyclewear/api/718",
-          params,
-        })
-          .then((res) => {
-            console.log("Actualizando : ", params);
-
-          })
-          .catch(function (error) {
-            console.log("ERROR Actualizando");
-          });
+    const actualiza = async () => {
+      params = {
+        estado: 2,
+        itempedido: datos.itempedido,
+        codigosiigo: codigosiigo
       };
-      actualiza();
-      return
-    }
 
-    if (valida) {
-      const leeConsecutivo = async () => {
-        params = {
-          tipoproducto: datos.categoriauno,
-          categoriauno: datos.categoriados,
-          categoriados: datos.categoriatres,
-          categoriatres: datos.categoriacuatro
-        };
-        //console.log("PARAMETROS CONSECUTIVO : ", params);
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/718",
+        params,
+      })
+        .then((res) => {
+          console.log("Actualizando : ", params);
 
-        await axios({
-          method: "post",
-          url: "https://sitbusiness.co/cyclewear/api/28",
-          params,
         })
-          .then((res) => {
-            //console.log("CONSECUTIVO : ", res.data[0].codigo);
-            prefijo = res.data[0].codigo;
-            contador = res.data[0].consecutivo + 1;
-            consecutivo = String(contador);
-            resultado = prefijo + consecutivo.padStart(6, '000000');
-            grupo = res.data[0].grupoinventario;
-            //console.log("CONSECUTIVO : ", resultado);
-            //setListIdentificacion(newDetId[0]);
+        .catch(function (error) {
+          console.log("ERROR Actualizando");
+        });
+    };
+    actualiza();
 
-            params = {
-              code: resultado,
-              name: datos.advert_name,
-              reference: datos.variant_sku,
-              description: datos.taxon_name,
-              barcode: datos.variant_barcode,
-              marca: datos.brand_name,
-              tariff: "19",
-              model: "",
-              price: datos.price,
-              precio1: datos.price,
-              precio2: datos.price,
-              account_group: grupo
-            };
+    const leeConsecutivo = async () => {
+      params = {
+        tipoproducto: datos.categoriauno,
+        categoriauno: datos.categoriados,
+        categoriados: datos.categoriatres,
+        categoriatres: datos.categoriacuatro
+      };
 
-            //console.log("NEW CREA PRODUCTO : ", params);
+      await axios({
+        method: "post",
+        url: "https://sitbusiness.co/cyclewear/api/28",
+        params,
+      })
+        .then((res) => {
+          //console.log("CONSECUTIVO : ", res.data[0].codigo);
+          prefijo = res.data[0].codigo;
+          contador = res.data[0].consecutivo + 1;
+          consecutivo = String(contador);
+          resultado = prefijo + consecutivo.padStart(6, '000000');
+          grupo = res.data[0].grupoinventario;
+          //console.log("CONSECUTIVO : ", resultado);
+          //setListIdentificacion(newDetId[0]);
 
-            const creaproducto = async () => {
-              await axios({
-                method: "post",
-                url: "https://sitbusiness.co/cyclewear/api/711",
-                params,
-              })
-                .then((rest) => {
-                  console.log("RETORNA API :", rest.data);
+          params = {
+            code: resultado,
+            name: datos.advert_name,
+            reference: datos.variant_sku,
+            description: datos.taxon_name,
+            barcode: datos.variant_barcode,
+            marca: datos.brand_name,
+            tariff: "19",
+            model: "",
+            price: datos.price,
+            precio1: datos.price,
+            precio2: datos.price,
+            account_group: grupo
+          };
 
-                  //DATOS PARA CREAR PRODUCTO EN SIIGO
-                  datoscreaproducto = rest.data;
+          //console.log("NEW CREA PRODUCTO : ", params);
 
-                  if (rest.data.status === 200) {
-                    swal(
-                      "CYCLE WEAR",
-                      "Producto registrado en SIIGO de forma correcta!",
-                      "success",
-                      { button: "Aceptar" }
-                    );
+          const creaproducto = async () => {
+            await axios({
+              method: "post",
+              url: "https://sitbusiness.co/cyclewear/api/711",
+              params,
+            })
+              .then((rest) => {
+                console.log("RETORNA API :", rest.data);
 
-                    const actualizaPrefijo = async () => {
-                      //alert("ENTRE")
-                      params = {
-                        consecutivo: contador,
-                        prefijo: prefijo
-                      }
+                //DATOS PARA CREAR PRODUCTO EN SIIGO
+                datoscreaproducto = rest.data;
+                console.log("DATOS  CREA PRODUCTO : ", res.data);
 
-                      await axios({
-                        method: "post",
-                        url: "https://sitbusiness.co/cyclewear/api/19",
-                        params
-                      })
-                        .then((result) => {
-                          if (result.status === 200) {
-                            swal(
-                              "CYCLE WEAR",
-                              "Consecutivo prefijo actualizado de forma correcta!",
-                              "success",
-                              { button: "Aceptar" }
-                            );
-
-                            const actualiza = async () => {
-                              params = {
-                                estado: 2,
-                                itempedido: datos.itempedido,
-                                codigosiigo: resultado
-                              };
-
-                              await axios({
-                                method: "post",
-                                url: "https://sitbusiness.co/cyclewear/api/718",
-                                params,
-                              })
-                                .then((res) => {
-                                  console.log("Actualizando : ", params);
-
-                                  const creaprdsiigo = async () => {
-                                    params = {
-                                      bodega: datoscreaproducto.bodega,
-                                      cantidad: datoscreaproducto. cantidad,
-                                      codigo: datoscreaproducto.codigo,
-                                      codigobarra: datoscreaproducto.codigobarra,
-                                      estado: datoscreaproducto.estado,
-                                      fechadecreacion: datoscreaproducto.fechadecreacion,
-                                      id: datoscreaproducto.id,
-                                      idgrupo: datoscreaproducto.idgrupo,
-                                      idiva: datoscreaproducto.idiva,
-                                      marca: datoscreaproducto.marca,
-                                      nombre: datoscreaproducto.nombre,
-                                      nombrebodega: datoscreaproducto.nombrebodega,
-                                      nombregrp: datoscreaproducto.nombregrp,
-                                      sku: datoscreaproducto.sku,
-                                      valor: datoscreaproducto.valor,
-                                      valoriva:datoscreaproducto.valoriva,
-                                    };
-
-                                    await axios({
-                                      method: "post",
-                                      url: "https://sitbusiness.co/cyclewear/api/22",
-                                      params,
-                                    })
-                                      .then((res) => {
-                                        console.log("RESPTA PRODUCTO : ", res)
-                                        if (res.data.type === 1) {
-                                          swal(
-                                            "CYCLE WEAR",
-                                            "Producto creado correctamente en SIIGO!",
-                                            "success",
-                                            { button: "Aceptar" }
-                                          );
-                                        }
-                                      })
-                                      .catch(function (error) {
-                                        swal(
-                                          "CYCLE WEAR",
-                                          "Error creando Producto en SIIGO!",
-                                          "warning",
-                                          { button: "Aceptar" }
-                                        );
-                                      });
-                                  };
-                                  creaprdsiigo();
-                                })
-                                .catch(function (error) {
-                                  console.log("ERROR Actualizando");
-                                });
-                            };
-                            actualiza();
-
-                          } else {
-                            swal(
-                              "CYCLE WEAR",
-                              "Error al actualizar consecutivo prefijo, Intenta nuevamente!",
-                              "warning",
-                              { button: "Aceptar" }
-                            );
-                          }
-                        })
-                        .catch(function (error) {
-                          console.log("ERROR ACTUALIZANDO PREFIJOS");
-                        });
-                    };
-                    actualizaPrefijo();
-                  } else {
-                    swal(
-                      "CYCLE WEAR",
-                      "Error al grabar el producto en SIIGO, Intenta nuevamente!",
-                      "warning",
-                      { button: "Aceptar" }
-                    );
-                  }
-                  setLoading(false);
-                })
-                .catch(function (error) {
+                if (rest.data.status === 200) {
                   swal(
                     "CYCLE WEAR",
-                    "Consecutivo Prefijo no existe!",
+                    "Producto registrado en SIIGO de forma correcta!",
                     "success",
                     { button: "Aceptar" }
                   );
-                  console.log("ERROR Actualizando");
-                });
-            };
-            creaproducto();
 
-          })
-          .catch(function (error) {
-            console.log("ERROR LEYENDO FACTURAS");
-          });
-      };
-      leeConsecutivo();
-    }
+                  const actualizaPrefijo = async () => {
+                    //alert("ENTRE")
+                    params = {
+                      consecutivo: contador,
+                      prefijo: prefijo
+                    }
 
+                    await axios({
+                      method: "post",
+                      url: "https://sitbusiness.co/cyclewear/api/19",
+                      params
+                    })
+                      .then((result) => {
+                        if (result.status === 200) {
+                          swal(
+                            "CYCLE WEAR",
+                            "Consecutivo prefijo actualizado de forma correcta!",
+                            "success",
+                            { button: "Aceptar" }
+                          );
+
+                          const actualiza = async () => {
+                            params = {
+                              estado: 2,
+                              itempedido: datos.itempedido,
+                              codigosiigo: resultado
+                            };
+
+                            await axios({
+                              method: "post",
+                              url: "https://sitbusiness.co/cyclewear/api/718",
+                              params,
+                            })
+                              .then((res) => {
+                                console.log("Actualizando : ", params);
+
+                                let porcetajeiva = 0;
+                                if (datoscreaproducto.idiva == 745)
+                                  porcetajeiva = 19
+                                else
+                                  if (datoscreaproducto.idiva == 746)
+                                    porcetajeiva = 5
+                                  else
+                                    porcetajeiva = 0
+
+                                const creaprdsiigo = async () => {
+                                  params = {
+                                    bodega: datoscreaproducto.bodega,
+                                    cantidad: datoscreaproducto.cantidad,
+                                    codigo: datoscreaproducto.codigo,
+                                    codigobarra: datoscreaproducto.codigobarra,
+                                    estado: datoscreaproducto.estado,
+                                    fechadecreacion: datoscreaproducto.fechadecreacion,
+                                    id: datoscreaproducto.id,
+                                    idgrupo: datoscreaproducto.idgrupo,
+                                    idiva: datoscreaproducto.idiva,
+                                    marca: datoscreaproducto.marca,
+                                    nombre: datoscreaproducto.nombre,
+                                    nombrebodega: datoscreaproducto.nombrebodega,
+                                    nombregrp: datoscreaproducto.nombregrp,
+                                    sku: datoscreaproducto.sku,
+                                    valor: datoscreaproducto.valor,
+                                    valoriva: datoscreaproducto.valoriva,
+                                    porcetajeiva: datoscreaproducto.valoriva,
+                                  };
+
+                                  await axios({
+                                    method: "post",
+                                    url: "https://sitbusiness.co/cyclewear/api/22",
+                                    params,
+                                  })
+                                    .then((res) => {
+                                      console.log("RESPTA PRODUCTO : ", res)
+                                      if (res.data.type === 1) {
+                                        swal(
+                                          "CYCLE WEAR",
+                                          "Producto creado correctamente en SIIGO!",
+                                          "success",
+                                          { button: "Aceptar" }
+                                        );
+                                      }
+                                    })
+                                    .catch(function (error) {
+                                      swal(
+                                        "CYCLE WEAR",
+                                        "Error creando Producto en SIIGO!",
+                                        "warning",
+                                        { button: "Aceptar" }
+                                      );
+                                    });
+                                };
+                                creaprdsiigo();
+                              })
+                              .catch(function (error) {
+                                console.log("ERROR Actualizando");
+                              });
+                          };
+                          actualiza();
+
+                        } else {
+                          swal(
+                            "CYCLE WEAR",
+                            "Error al actualizar consecutivo prefijo, Intenta nuevamente!",
+                            "warning",
+                            { button: "Aceptar" }
+                          );
+                        }
+                      })
+                      .catch(function (error) {
+                        console.log("ERROR ACTUALIZANDO PREFIJOS");
+                      });
+                  };
+                  actualizaPrefijo();
+                } else {
+                  swal(
+                    "CYCLE WEAR",
+                    "Error al grabar el producto en SIIGO, Intenta nuevamente!",
+                    "warning",
+                    { button: "Aceptar" }
+                  );
+                }
+                setLoading(false);
+              })
+              .catch(function (error) {
+                swal(
+                  "CYCLE WEAR",
+                  "Consecutivo Prefijo no existe!",
+                  "success",
+                  { button: "Aceptar" }
+                );
+                console.log("ERROR Actualizando");
+              });
+          };
+          creaproducto();
+
+        })
+        .catch(function (error) {
+          console.log("ERROR LEYENDO FACTURAS");
+        });
+    };
+    leeConsecutivo();
   }
 
   const columnas = [
